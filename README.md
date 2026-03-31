@@ -1,4 +1,4 @@
-# Habitarium
+# LifeHub
 
 A Personal Everything App
 
