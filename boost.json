@@ -7,15 +7,18 @@
     "mcp": true,
     "nightwatch_mcp": false,
     "packages": [
-        "laravel/fortify"
+        "laravel/fortify",
+        "spatie/laravel-query-builder"
     ],
     "sail": false,
     "skills": [
         "laravel-best-practices",
+        "configuring-horizon",
         "wayfinder-development",
         "pest-testing",
         "inertia-vue-development",
         "tailwindcss-development",
-        "fortify-development"
+        "fortify-development",
+        "laravel-query-builder"
     ]
 }
