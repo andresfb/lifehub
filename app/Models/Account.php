@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
 use Database\Factories\AccountFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @property-read string $id
@@ -26,17 +28,18 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read User $owner
  * @property-read Collection<User> $users
  */
-class Account extends Model
+final class Account extends Model
 {
     /** @use HasFactory<AccountFactory> */
     use HasFactory;
+
     use HasSlug;
     use HasUuids;
     use SoftDeletes;
 
-    protected $keyType = 'string';
-
     public $incrementing = false;
+
+    protected $keyType = 'string';
 
     /** @return BelongsTo<User, $this> */
     public function owner(): BelongsTo

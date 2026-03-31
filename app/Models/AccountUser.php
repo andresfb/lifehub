@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\AccountType;
@@ -23,16 +25,17 @@ use Override;
  * @property-read Account $account
  * @property-read User $user
  */
-class AccountUser extends Model
+final class AccountUser extends Model
 {
     /** @use HasFactory<AccountUserFactory> */
     use HasFactory;
+
     use HasUuids;
     use SoftDeletes;
 
-    protected $keyType = 'string';
-
     public $incrementing = false;
+
+    protected $keyType = 'string';
 
     /** @return BelongsTo<Account, $this> */
     public function account(): BelongsTo

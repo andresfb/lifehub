@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__laravel-boost__search-docs",
+      "Bash(php artisan:*)",
+      "Bash(vendor/bin/pint --dirty --format agent 2>&1)",
+      "Bash(git diff:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "laravel-boost"
+  ]
+}

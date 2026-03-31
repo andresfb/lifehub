@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use App\Models\Account;
@@ -7,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /** @mixin Account */
-class AccountResource extends JsonResource
+final class AccountResource extends JsonResource
 {
     public function toArray(Request $request): array
     {

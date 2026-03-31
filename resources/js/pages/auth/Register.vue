@@ -10,10 +10,17 @@ import { Spinner } from '@/components/ui/spinner';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
 
+const props = defineProps<{
+    invitation: {
+        token: string;
+        email: string;
+    };
+}>();
+
 defineOptions({
     layout: {
         title: 'Create an account',
-        description: 'Enter your details below to create your account',
+        description: 'You have been invited to create an account',
     },
 });
 </script>
@@ -27,6 +34,8 @@ defineOptions({
         v-slot="{ errors, processing }"
         class="flex flex-col gap-6"
     >
+        <input type="hidden" name="invitation" :value="props.invitation.token" />
+
         <div class="grid gap-6">
             <div class="grid gap-2">
                 <Label for="name">Name</Label>
@@ -49,10 +58,12 @@ defineOptions({
                     id="email"
                     type="email"
                     required
+                    readonly
                     :tabindex="2"
                     autocomplete="email"
                     name="email"
-                    placeholder="email@example.com"
+                    :value="props.invitation.email"
+                    class="bg-muted"
                 />
                 <InputError :message="errors.email" />
             </div>

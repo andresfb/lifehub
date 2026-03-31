@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Actions\CreateAdminAction;
@@ -17,7 +19,7 @@ use function Laravel\Prompts\intro;
 use function Laravel\Prompts\outro;
 use function Laravel\Prompts\warning;
 
-class CreateAdminCommand extends Command
+final class CreateAdminCommand extends Command
 {
     protected $signature = 'create:admin';
 
