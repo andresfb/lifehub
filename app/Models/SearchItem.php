@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Contracts\AccountModelInterface;
 use App\Traits\BelongsToAccount;
 use Carbon\CarbonImmutable;
@@ -30,6 +31,7 @@ use Override;
  */
 class SearchItem extends Model implements AccountModelInterface
 {
+    use HasFactory;
     use HasUuids;
     use Searchable;
     use BelongsToAccount;

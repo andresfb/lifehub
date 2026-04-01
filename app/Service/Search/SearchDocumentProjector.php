@@ -8,14 +8,17 @@ class SearchDocumentProjector
 {
     public function upsert(array $payload): SearchItem
     {
-        return SearchItem::updateOrCreate(
-            ['id' => $payload['id']],
-            $payload
-        );
+        return SearchItem::query()
+            ->updateOrCreate(
+                ['id' => $payload['id']],
+                $payload
+            );
     }
 
     public function remove(string $identifier): void
     {
-        SearchItem::where('id', $identifier)->delete();
+        SearchItem::query()
+            ->where('id', $identifier)
+            ->delete();
     }
 }

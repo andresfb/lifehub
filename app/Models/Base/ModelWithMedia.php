@@ -2,6 +2,7 @@
 
 namespace App\Models\Base;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Libraries\MediaLibrary\MediaNamesLibrary;
 use App\Models\Media;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
 abstract class ModelWithMedia extends Model implements HasMedia
 {
+    use HasFactory;
     use InteractsWithMedia;
 
     public function registerMediaConversions(Media|SpatieMedia|null $media = null): void

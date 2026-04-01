@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use App\Models\Tag;
 
 return [
@@ -27,6 +28,6 @@ return [
         /*
          * The fully qualified class name of the pivot model.
          */
-        'class_name' => Illuminate\Database\Eloquent\Relations\MorphPivot::class,
+        'class_name' => MorphPivot::class,
     ],
 ];

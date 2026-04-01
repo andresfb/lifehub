@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Contracts\AccountModelInterface;
 use App\Traits\BelongsToAccount;
 use Carbon\CarbonImmutable;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class EntityLink extends Model implements AccountModelInterface
 {
+    use HasFactory;
     use BelongsToAccount;
     use HasUuids;
 

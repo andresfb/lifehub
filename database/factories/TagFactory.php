@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use Illuminate\Support\Facades\Date;
 use App\Models\Account;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
 
+/**
+ * @extends Factory<Tag>
+ */
 final class TagFactory extends Factory
 {
     protected $model = Tag::class;
@@ -21,8 +24,8 @@ final class TagFactory extends Factory
             'name' => $this->faker->name(),
             'type' => $this->faker->word(),
             'order_column' => $this->faker->randomNumber(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => Date::now(),
+            'updated_at' => Date::now(),
         ];
     }
 }

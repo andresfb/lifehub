@@ -63,6 +63,7 @@ try {
             ThrowIfRector::class,
             ThrowIfAndThrowUnlessExceptionsToUseClassStringRector::class,
             __DIR__.'/config/database.php',
+            __DIR__.'/config/media-library.php',
         ])
         ->withPreparedSets(
             deadCode: true,

@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use Illuminate\Support\Facades\Date;
 use App\Models\Account;
 use App\Models\Media;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
 
+/**
+ * @extends Factory<Media>
+ */
 final class MediaFactory extends Factory
 {
     protected $model = Media::class;
@@ -36,8 +39,8 @@ final class MediaFactory extends Factory
             'model_id' => $this->faker->word(),
             'model_type' => $this->faker->word(),
             'uuid' => $this->faker->uuid(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => Date::now(),
+            'updated_at' => Date::now(),
             'extension' => $this->faker->word(),
             'type' => $this->faker->word(),
         ];
