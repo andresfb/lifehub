@@ -30,7 +30,7 @@ final class CreateAdminAction
 
             $user->email_verified_at = now();
             $user->is_admin = base64_encode(
-                hash_hmac('sha256', $user->id, Config::string('app.key'))
+                hash_hmac('sha256', (string) $user->id, Config::string('app.key'))
             );
             $user->save();
 

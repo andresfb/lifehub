@@ -61,7 +61,7 @@ final class User extends Authenticatable implements MustVerifyEmail
             now()->addMonth(),
             function (): bool {
                 return hash_equals(
-                    hash_hmac('sha256', $this->id, Config::string('app.key')),
+                    hash_hmac('sha256', (string) $this->id, Config::string('app.key')),
                     base64_decode($this->is_admin)
                 );
             }
