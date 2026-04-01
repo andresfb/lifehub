@@ -6,7 +6,6 @@ namespace App\Actions;
 
 use App\Dtos\NewUserItem;
 use App\Models\User;
-use App\Traits\AccountCreatable;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -14,14 +13,12 @@ use Throwable;
 
 final class CreateAdminAction
 {
-    use AccountCreatable;
-
     /**
      * @throws Throwable
      */
     public function handle(NewUserItem $input): string
     {
-        return DB::transaction(function () use ($input): string {
+        return DB::transaction(static function () use ($input): string {
             $user = User::query()->create([
                 'name' => $input->name,
                 'email' => $input->email,
@@ -33,8 +30,6 @@ final class CreateAdminAction
                 hash_hmac('sha256', (string) $user->id, Config::string('app.key'))
             );
             $user->save();
-
-            $this->createAccount($user);
 
             return $user->createToken('auth-token')->plainTextToken;
         });

@@ -33,7 +33,6 @@ use Override;
  * @property-read CarbonImmutable|null $deleted_at
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
- * @property-read Account $account
  */
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token', 'is_admin'])]
@@ -47,12 +46,6 @@ final class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
-
-    /** @return HasOne<Account, $this> */
-    public function account(): HasOne
-    {
-        return $this->hasOne(Account::class, 'owner_user_id', 'id');
-    }
 
     public function isAdmin(): bool
     {

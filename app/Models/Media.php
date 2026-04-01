@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Contracts\AccountModelInterface;
-use App\Traits\BelongsToAccount;
+use App\Contracts\UserModelInterface;
+use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Database\Factories\MediaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +15,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
 /**
  * @property-read int $id
- * @property-read int $account_id
+ * @property-read int $user_id
  * @property-read int $model_id
  * @property-read string $model_type
  * @property string $collection_name
@@ -35,11 +35,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
  * @property-read CarbonImmutable|null $deleted_at
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
- * @property-read Account $account
+ * @property-read User $user
  */
-final class Media extends SpatieMedia implements AccountModelInterface
+final class Media extends SpatieMedia implements UserModelInterface
 {
-    use BelongsToAccount;
+    use BelongsToUser;
 
     /** @use HasFactory<MediaFactory> */
     use HasFactory;

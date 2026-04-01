@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\Account;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('reminders', static function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Account::class)
-                ->constrained('accounts')
+            $table->foreignIdFor(User::class)
+                ->constrained()
                 ->cascadeOnDelete();
             $table->morphs('remindable');
             $table->string('title');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index(['account_id', 'due_at']);
+            $table->index(['user_id', 'due_at']);
             $table->index(['remindable_id', 'remindable_type']);
         });
     }

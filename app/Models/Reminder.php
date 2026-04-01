@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Contracts\AccountModelInterface;
+use App\Contracts\UserModelInterface;
 use App\Contracts\GlobalSearchInterface;
 use App\Observers\ReminderObserver;
-use App\Traits\BelongsToAccount;
+use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Override;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Models\Audit;
 use Spatie\Tags\HasTags;
 
 /**
  * @property-read int $id
- * @property-read int $account_id
+ * @property-read int $user_id
  * @property-read int $remindable_id
  * @property-read string $remindable_type
  * @property string $title
@@ -32,14 +32,15 @@ use Spatie\Tags\HasTags;
  * @property CarbonImmutable|null $snoozed_until
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
- * @property Collection<Tag> $tags
- * @property Collection<Audit> $audits
+ * @property-read User $user
+ * @property-read Collection<Tag> $tags
+ * @property-read Collection<Audit> $audits
  */
 #[ObservedBy([ReminderObserver::class])]
-final class Reminder extends Model implements AccountModelInterface, Auditable, GlobalSearchInterface
+final class Reminder extends Model implements UserModelInterface, Auditable, GlobalSearchInterface
 {
     use AuditableTrait;
-    use BelongsToAccount;
+    use BelongsToUser;
     use HasFactory;
     use HasTags;
     use SoftDeletes;
@@ -57,7 +58,7 @@ final class Reminder extends Model implements AccountModelInterface, Auditable, 
     {
         return [
             'id' => $this->getIdentifier(),
-            'account_id' => (string) $this->account_id,
+            'user_id' => (string) $this->user_id,
             'entity_type' => 'reminder',
             'entity_id' => (string) $this->id,
             'module' => 'core',

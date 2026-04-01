@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Models\Account;
-use App\Models\AccountUser;
 use App\Models\Invitation;
 use Laravel\Fortify\Features;
 
@@ -59,9 +57,7 @@ test('new users can register with a valid invitation', function () {
     $invitation->refresh();
     expect($invitation->accepted_at)
         ->not
-        ->toBeNull()
-        ->and(Account::query()->count())->toBe(1)
-        ->and(AccountUser::query()->count())->toBe(1);
+        ->toBeNull();
 
 });
 

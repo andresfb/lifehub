@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Contracts\AccountModelInterface;
-use App\Traits\BelongsToAccount;
+use App\Contracts\UserModelInterface;
+use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -15,7 +14,7 @@ use Override;
 
 /**
  * @property int $id
- * @property int $account_id
+ * @property int $user_id
  * @property string $entity_type
  * @property int $entity_id
  * @property string $module
@@ -30,10 +29,11 @@ use Override;
  * @property-read CarbonImmutable|null $source_updated_at
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
+ * @property-read User $user
  */
-final class SearchItem extends Model implements AccountModelInterface
+final class SearchItem extends Model implements UserModelInterface
 {
-    use BelongsToAccount;
+    use BelongsToUser;
     use HasFactory;
     use Searchable;
 
@@ -41,7 +41,7 @@ final class SearchItem extends Model implements AccountModelInterface
     {
         return [
             'id' => (string) $this->id,
-            'account_id' => (string) $this->account_id,
+            'user_id' => (string) $this->user_id,
             'entity_type' => $this->entity_type,
             'entity_id' => (string) $this->entity_id,
             'module' => $this->module,

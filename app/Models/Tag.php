@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Contracts\AccountModelInterface;
-use App\Traits\BelongsToAccount;
+use App\Contracts\UserModelInterface;
+use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Database\Factories\TagFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +14,7 @@ use Spatie\Tags\Tag as SpatieTag;
 
 /**
  * @property-read int $id
- * @property-read int $account_id
+ * @property-read int $user_id
  * @property string $slug
  * @property string $name
  * @property string $type
@@ -22,11 +22,11 @@ use Spatie\Tags\Tag as SpatieTag;
  * @property-read CarbonImmutable|null $deleted_at
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
- * @property-read Account $account
+ * @property-read User $user
  */
-final class Tag extends SpatieTag implements AccountModelInterface
+final class Tag extends SpatieTag implements UserModelInterface
 {
-    use BelongsToAccount;
+    use BelongsToUser;
 
     /** @use HasFactory<TagFactory> */
     use HasFactory;

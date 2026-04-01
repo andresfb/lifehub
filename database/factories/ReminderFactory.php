@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Account;
 use App\Models\Reminder;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Date;
 
@@ -27,7 +27,7 @@ final class ReminderFactory extends Factory
             'created_at' => Date::now(),
             'updated_at' => Date::now(),
 
-            'account_id' => Account::factory(),
+            'user_id' => User::factory(),
         ];
     }
 }

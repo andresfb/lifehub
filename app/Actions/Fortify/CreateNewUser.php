@@ -8,7 +8,6 @@ use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Models\Invitation;
 use App\Models\User;
-use App\Traits\AccountCreatable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -17,7 +16,6 @@ use Throwable;
 
 final class CreateNewUser implements CreatesNewUsers
 {
-    use AccountCreatable;
     use PasswordValidationRules;
     use ProfileValidationRules;
 
@@ -47,14 +45,12 @@ final class CreateNewUser implements CreatesNewUsers
             ]);
         }
 
-        return DB::transaction(function () use ($input, $invitation) {
+        return DB::transaction(static function () use ($input, $invitation) {
             $user = User::query()->create([
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'password' => $input['password'],
             ]);
-
-            $this->createAccount($user);
 
             $invitation->update(['accepted_at' => now()]);
 

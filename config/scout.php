@@ -193,7 +193,7 @@ return [
                     'name' => 'global_search',
                     'fields' => [
                         ['name' => 'id', 'type' => 'string'],
-                        ['name' => 'account_id', 'type' => 'string', 'facet' => true],
+                        ['name' => 'user_id', 'type' => 'string', 'facet' => true],
                         ['name' => 'entity_type', 'type' => 'string', 'facet' => true],
                         ['name' => 'entity_id', 'type' => 'string'],
                         ['name' => 'module', 'type' => 'string', 'facet' => true],
