@@ -20,7 +20,7 @@ services:
     env_file:
       - .env
     volumes:
-      - pg_volume:/var/lib/postgresql/data:rw
+      - database:/var/lib/postgresql/data:rw
       - ./docker/postgres/postgres.conf:/etc/postgresql/postgresql.conf:ro
     command: [ "postgres", "-c", "config_file=/etc/postgresql/postgresql.conf", "-c", "log_statement=none", "-c", "log_min_duration_statement=1000", "-c", "log_connections=on", "-c", "log_disconnections=on" ]
     user: "70:70" # Postgres user
@@ -34,6 +34,21 @@ services:
     networks:
       - project_network
 
+  typesense:
+    image: typesense/typesense:27.1
+    container_name: typesense
+    restart: unless-stopped
+    volumes:
+      - search:/data
+    ports:
+      - "8108:8108"
+    networks:
+      - project_network
+    environment:
+      - TYPESENSE_DATA_DIR=/data
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
+      - GLOG_minloglevel=1
+
 networks:
   project_network:
     driver: bridge
@@ -41,5 +56,7 @@ networks:
 volumes:
   cache:
     driver: local
-  pg_volume:
+  database:
+    driver: local
+  search:
     driver: local

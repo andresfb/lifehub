@@ -27,6 +27,8 @@ use Spatie\Sluggable\SlugOptions;
  * @property-read CarbonImmutable|null $updated_at
  * @property-read User $owner
  * @property-read Collection<User> $users
+ * @property-read Collection<Media> $media
+ * @property-read Collection<Tag> $tags
  */
 final class Account extends Model
 {
@@ -51,6 +53,18 @@ final class Account extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    /** @return HasMany<Media, $this> */
+    public function media(): HasMany
+    {
+        return $this->hasMany(Media::class);
+    }
+
+    /** @return HasMany<Tag, $this> */
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
     }
 
     public function getSlugOptions(): SlugOptions

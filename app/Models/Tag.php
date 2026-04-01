@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Contracts\AccountModelInterface;
+use App\Traits\BelongsToAccount;
+use Carbon\CarbonImmutable;
+use Database\Factories\TagFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Tags\Tag as SpatieTag;
+
+/**
+ * @property-read string $id
+ * @property-read string $account_id
+ * @property string $slug
+ * @property string $name
+ * @property string $type
+ * @property int $order_column
+ * @property-read CarbonImmutable|null $deleted_at
+ * @property-read CarbonImmutable|null $created_at
+ * @property-read CarbonImmutable|null $updated_at
+ * @property-read Account $account
+ */
+final class Tag extends SpatieTag implements AccountModelInterface
+{
+    use BelongsToAccount;
+
+    /** @use HasFactory<TagFactory> */
+    use HasFactory;
+
+    use HasUuids;
+    use SoftDeletes;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+}

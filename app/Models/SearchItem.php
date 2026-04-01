@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Models;
+
+use App\Contracts\AccountModelInterface;
+use App\Traits\BelongsToAccount;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
+use Override;
+
+/**
+ * @property string $id
+ * @property string $account_id
+ * @property string $entity_type
+ * @property string $entity_id
+ * @property string $module
+ * @property string $title
+ * @property string $body
+ * @property array $tags
+ * @property array $keywords
+ * @property array $metadata
+ * @property array $urls
+ * @property bool $is_private
+ * @property bool $is_archived
+ * @property-read CarbonImmutable|null $source_updated_at
+ * @property-read CarbonImmutable|null $created_at
+ * @property-read CarbonImmutable|null $updated_at
+ */
+class SearchItem extends Model implements AccountModelInterface
+{
+    use HasUuids;
+    use Searchable;
+    use BelongsToAccount;
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'account_id' => $this->account_id,
+            'entity_type' => $this->entity_type,
+            'entity_id' => $this->entity_id,
+            'module' => $this->module,
+            'title' => $this->title ?? '',
+            'body' => $this->body ?? '',
+            'tags' => $this->tags ?? [],
+            'keywords' => $this->keywords ?? [],
+            'urls' => $this->urls ?? [],
+            'is_private' => $this->is_private,
+            'is_archived' => $this->is_archived,
+            'created_at' => $this->created_at?->timestamp,
+            'updated_at' => $this->updated_at?->timestamp,
+            'source_updated_at' => $this->source_updated_at?->timestamp,
+        ];
+    }
+
+    #[Override]
+    protected function casts(): array
+    {
+        return [
+            'tags' => 'array',
+            'keyboards' => 'array',
+            'metadata' => 'array',
+            'is_private' => 'boolean',
+            'is_archived' => 'boolean',
+            'source_updated_at' => 'timestamp',
+        ];
+    }
+}

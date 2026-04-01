@@ -13,6 +13,17 @@ use Illuminate\Support\Facades\Route;
 | Routes for API version 1.
 |
 */
-Route::get('/user', static function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+
+Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function (): void {
+
+    Route::get('/user', static function (Request $request) {
+        return $request->user();
+    });
+
+    // TODO: Change this to a API Controller
+    Route::get('/reminder/{reminder}', static function (Request $request) {
+        echo 'TODO: Change this to a API Controller';
+    })->name('api.v1.reminder.show');
+
+});
+

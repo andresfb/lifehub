@@ -199,12 +199,12 @@ return [
     */
 
     'defaults' => [
-        'supervisor-1' => [
+        'supervisor' => [
             'connection' => 'redis',
             'queue' => ['default'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 1,
+            'minProcesses' => 1,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 128,
@@ -216,17 +216,58 @@ return [
 
     'environments' => [
         'production' => [
-            'supervisor-1' => [
+            'supervisor' => [
                 'maxProcesses' => 10,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
+
+            'media-supervisor' => [
+                'connection' => 'redis',
+                'queue' => ['media'],
+                'autoScalingStrategy' => 'size',
+                'balance' => 'auto',
+                'minProcesses' => 2,
+                'maxProcesses' => 10,
+                'memory' => 256,
+                'timeout' => 600, // 10 Minutes
+                'tries' => 1,
+            ],
+
+            'scout-supervisor' => [
+                'connection' => 'redis',
+                'queue' => ['scout'],
+                'balance' => 'auto',
+                'autoScalingStrategy' => 'size',
+                'minProcesses' => 1,
+                'maxProcesses' => 2,
+                'timeout' => 120, // 2 Minutes
+                'tries' => 1,
+            ],
+
         ],
 
         'local' => [
-            'supervisor-1' => [
+            'supervisor' => [
                 'maxProcesses' => 3,
             ],
+
+            'media-supervisor' => [
+                'connection' => 'redis',
+                'queue' => ['media'],
+                'autoScalingStrategy' => 'size',
+                'balance' => 'auto',
+                'tries' => 1,
+            ],
+
+            'scout-supervisor' => [
+                'connection' => 'redis',
+                'queue' => ['scout'],
+                'balance' => 'auto',
+                'autoScalingStrategy' => 'size',
+                'tries' => 1,
+            ],
+
         ],
     ],
 

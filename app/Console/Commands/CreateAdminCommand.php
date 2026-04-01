@@ -48,7 +48,7 @@ final class CreateAdminCommand extends Command
                 ->password(
                     label: 'Password',
                     required: true,
-                    validate: 'string|min:8|max:255',
+                    validate: 'string|min:12|max:255',
                     name: 'password',
                 )->password(
                     label: 'Confirm Password',
