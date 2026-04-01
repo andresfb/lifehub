@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\AdminHashable;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Override;
@@ -26,16 +28,16 @@ use Override;
  * @property CarbonImmutable|null $email_verified_at
  * @property string $password
  * @property string $remember_token
- * @property string $dek
- * @property string $is_admin
+ * @property string|null $admin_hash
  * @property-read CarbonImmutable|null $deleted_at
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  */
 #[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token', 'is_admin'])]
+#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token', 'admin_hash'])]
 final class User extends Authenticatable implements MustVerifyEmail
 {
+    use AdminHashable;
     use HasApiTokens;
 
     /** @use HasFactory<UserFactory> */
@@ -45,16 +47,25 @@ final class User extends Authenticatable implements MustVerifyEmail
     use SoftDeletes;
     use TwoFactorAuthenticatable;
 
+    public function userModules(): HasMany
+    {
+        return $this->hasMany(UserModule::class);
+    }
+
+    public function modules(): BelongsToMany
+    {
+        return $this->belongsToMany(AppModule::class, 'user_modules')
+            ->withPivot(['enabled', 'access_level', 'visibility', 'settings', 'granted_by'])
+            ->withTimestamps();
+    }
+
     public function isAdmin(): bool
     {
         return Cache::remember(
-            md5("USER:IS_ADMIN:{$this->id}"),
+            md5("USER:ADMIN_HASH:{$this->id}"),
             now()->addMonth(),
             function (): bool {
-                return hash_equals(
-                    hash_hmac('sha256', (string) $this->id, Config::string('app.key')),
-                    base64_decode($this->is_admin)
-                );
+                return $this->isHashValid($this->id, $this->admin_hash);
             }
         );
     }

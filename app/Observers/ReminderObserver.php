@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Observers;
 
 use App\Models\Reminder;
-use App\Service\Search\SearchDocumentProjector;
+use App\Services\Search\SearchDocumentProjector;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

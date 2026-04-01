@@ -14,6 +14,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         echo 'TODO: Change this to a Inertia component';
     })->name('reminder.show');
 
+    // TODO: Module access example 👇
+    //    Route::prefix('journal')
+    //        ->middleware(['module.access:journal,read'])
+    //        ->group(function () {
+    //            Route::get('/', [JournalController::class, 'index']);
+    //            Route::post('/', [JournalController::class, 'store'])
+    //                ->middleware('module.access:journal,write');
+    //        });
 });
 
 require __DIR__.'/settings.php';
