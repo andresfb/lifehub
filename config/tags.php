@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use App\Models\Tag;
+use Illuminate\Database\Eloquent\Relations\MorphPivot;
 
 return [
 

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Search;
 
 use App\Models\SearchItem;
 
-class SearchDocumentProjector
+final class SearchDocumentProjector
 {
     public function upsert(array $payload): SearchItem
     {

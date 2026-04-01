@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Contracts\AccountModelInterface;
@@ -14,8 +16,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Override;
-use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Tags\HasTags;
 
 /**
@@ -34,32 +36,22 @@ use Spatie\Tags\HasTags;
  * @property Collection<Audit> $audits
  */
 #[ObservedBy([ReminderObserver::class])]
-class Reminder extends Model implements AccountModelInterface, GlobalSearchInterface, Auditable
+final class Reminder extends Model implements AccountModelInterface, Auditable, GlobalSearchInterface
 {
     use AuditableTrait;
     use BelongsToAccount;
-    use HasUuids;
     use HasFactory;
-    use SoftDeletes;
     use HasTags;
+    use HasUuids;
+    use SoftDeletes;
+
+    public $incrementing = false;
 
     protected $keyType = 'string';
 
     protected array $auditExclude = [
-        'tags', 'audits'
+        'tags', 'audits',
     ];
-
-    public $incrementing = false;
-
-    #[Override]
-    protected function casts(): array
-    {
-        return [
-            'due_at' => 'timestamp',
-            'completed_at' => 'timestamp',
-            'snoozed_until' => 'timestamp',
-        ];
-    }
 
     public function getIdentifier(): string
     {
@@ -88,6 +80,16 @@ class Reminder extends Model implements AccountModelInterface, GlobalSearchInter
             'is_private' => true,
             'is_archived' => false,
             'source_updated_at' => $this->updated_at,
+        ];
+    }
+
+    #[Override]
+    protected function casts(): array
+    {
+        return [
+            'due_at' => 'timestamp',
+            'completed_at' => 'timestamp',
+            'snoozed_until' => 'timestamp',
         ];
     }
 }

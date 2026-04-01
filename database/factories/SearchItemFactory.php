@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Illuminate\Support\Facades\Date;
 use App\Models\Account;
 use App\Models\SearchItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Date;
 
 /**
  * @extends Factory<SearchItem>
  */
-class SearchItemFactory extends Factory
+final class SearchItemFactory extends Factory
 {
     protected $model = SearchItem::class;
 

@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Illuminate\Support\Facades\Date;
 use App\Models\Account;
 use App\Models\EntityLink;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Date;
 
 /**
  * @extends Factory<EntityLink>
  */
-class EntityLinkFactory extends Factory
+final class EntityLinkFactory extends Factory
 {
     protected $model = EntityLink::class;
 

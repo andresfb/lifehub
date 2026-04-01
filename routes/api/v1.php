@@ -26,4 +26,3 @@ Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function ()
     })->name('api.v1.reminder.show');
 
 });
-

@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Illuminate\Support\Facades\Date;
 use App\Models\Account;
 use App\Models\Reminder;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Date;
 
 /**
  * @extends Factory<Reminder>
  */
-class ReminderFactory extends Factory
+final class ReminderFactory extends Factory
 {
     protected $model = Reminder::class;
 

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Contracts\AccountModelInterface;
 use App\Traits\BelongsToAccount;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 use Override;
@@ -29,16 +31,16 @@ use Override;
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  */
-class SearchItem extends Model implements AccountModelInterface
+final class SearchItem extends Model implements AccountModelInterface
 {
+    use BelongsToAccount;
     use HasFactory;
     use HasUuids;
     use Searchable;
-    use BelongsToAccount;
-
-    protected $keyType = 'string';
 
     public $incrementing = false;
+
+    protected $keyType = 'string';
 
     public function toSearchableArray(): array
     {

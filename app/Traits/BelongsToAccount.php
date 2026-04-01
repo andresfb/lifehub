@@ -31,7 +31,7 @@ trait BelongsToAccount
 
                 if ($accountId) {
                     $builder->where(sprintf(
-                        "%s.account_id",
+                        '%s.account_id',
                         $builder->getModel()->getTable()),
                         $accountId
                     );

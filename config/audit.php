@@ -1,10 +1,12 @@
 <?php
 
-use OwenIt\Auditing\Resolvers\UserResolver;
-use OwenIt\Auditing\Resolvers\IpAddressResolver;
-use OwenIt\Auditing\Resolvers\UserAgentResolver;
-use OwenIt\Auditing\Resolvers\UrlResolver;
+declare(strict_types=1);
+
 use App\Models\Audit;
+use OwenIt\Auditing\Resolvers\IpAddressResolver;
+use OwenIt\Auditing\Resolvers\UrlResolver;
+use OwenIt\Auditing\Resolvers\UserAgentResolver;
+use OwenIt\Auditing\Resolvers\UserResolver;
 
 return [
 
