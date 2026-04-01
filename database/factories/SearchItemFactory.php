@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\SearchItem;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 
-class SearchItemFactory extends Factory
+/**
+ * @extends Factory<SearchItem>
+ */
+final class SearchItemFactory extends Factory
 {
     protected $model = SearchItem::class;
 
@@ -26,9 +31,9 @@ class SearchItemFactory extends Factory
             'is_private' => $this->faker->boolean(),
             'is_archived' => $this->faker->boolean(),
             'keyboards' => $this->faker->words(),
-            'source_updated_at' => Carbon::now(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'source_updated_at' => Date::now(),
+            'created_at' => Date::now(),
+            'updated_at' => Date::now(),
 
             'user_id' => User::factory(),
         ];

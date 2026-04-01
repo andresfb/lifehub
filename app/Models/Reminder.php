@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Contracts\UserModelInterface;
 use App\Contracts\GlobalSearchInterface;
+use App\Contracts\UserModelInterface;
 use App\Observers\ReminderObserver;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
@@ -37,7 +37,7 @@ use Spatie\Tags\HasTags;
  * @property-read Collection<Audit> $audits
  */
 #[ObservedBy([ReminderObserver::class])]
-final class Reminder extends Model implements UserModelInterface, Auditable, GlobalSearchInterface
+final class Reminder extends Model implements Auditable, GlobalSearchInterface, UserModelInterface
 {
     use AuditableTrait;
     use BelongsToUser;
