@@ -7,14 +7,13 @@ namespace App\Models;
 use Carbon\CarbonImmutable;
 use Database\Factories\InvitationFactory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Override;
 
 /**
- * @property-read string $id
+ * @property-read int $id
  * @property string $email
  * @property string $token
  * @property CarbonImmutable|null $accepted_at
@@ -28,12 +27,7 @@ final class Invitation extends Model
     /** @use HasFactory<InvitationFactory> */
     use HasFactory;
 
-    use HasUuids;
     use SoftDeletes;
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
 
     /** @param Builder<self> $query */
     protected function scopeValid(Builder $query): void

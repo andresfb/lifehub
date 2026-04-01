@@ -21,9 +21,9 @@ use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Tags\HasTags;
 
 /**
- * @property-read string $id
- * @property-read string $account_id
- * @property-read string $remindable_id
+ * @property-read int $id
+ * @property-read int $account_id
+ * @property-read int $remindable_id
  * @property-read string $remindable_type
  * @property string $title
  * @property string|null $notes
@@ -42,12 +42,7 @@ final class Reminder extends Model implements AccountModelInterface, Auditable, 
     use BelongsToAccount;
     use HasFactory;
     use HasTags;
-    use HasUuids;
     use SoftDeletes;
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
 
     protected array $auditExclude = [
         'tags', 'audits',
@@ -62,9 +57,9 @@ final class Reminder extends Model implements AccountModelInterface, Auditable, 
     {
         return [
             'id' => $this->getIdentifier(),
-            'account_id' => $this->account_id,
+            'account_id' => (string) $this->account_id,
             'entity_type' => 'reminder',
-            'entity_id' => $this->id,
+            'entity_id' => (string) $this->id,
             'module' => 'core',
             'title' => $this->title,
             'body' => $this->notes ?? '',

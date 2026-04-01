@@ -1,40 +1,34 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Database\Factories;
 
 use App\Models\Account;
 use App\Models\SearchItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Carbon;
 
-/**
- * @extends Factory<SearchItem>
- */
-final class SearchItemFactory extends Factory
+class SearchItemFactory extends Factory
 {
     protected $model = SearchItem::class;
 
     public function definition(): array
     {
         return [
-            'entity_id' => $this->faker->word(),
             'entity_type' => $this->faker->word(),
+            'entity_id' => $this->faker->randomNumber(),
             'module' => $this->faker->word(),
             'title' => $this->faker->word(),
             'body' => $this->faker->word(),
             'tags' => $this->faker->words(),
-            'keyboards' => $this->faker->words(),
+            'keywords' => $this->faker->words(),
             'metadata' => $this->faker->words(),
-            'url' => $this->faker->url(),
+            'urls' => $this->faker->words(),
             'is_private' => $this->faker->boolean(),
             'is_archived' => $this->faker->boolean(),
-            'source_updated_at' => Date::now(),
-            'created_at' => Date::now(),
-            'updated_at' => Date::now(),
-            'keywords' => $this->faker->words(),
-            'urls' => $this->faker->words(),
+            'keyboards' => $this->faker->words(),
+            'source_updated_at' => Carbon::now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
 
             'account_id' => Account::factory(),
         ];

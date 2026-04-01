@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('entity_links', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->foreignIdFor(Account::class)
                 ->constrained('accounts')
                 ->cascadeOnDelete();
-            $table->uuidMorphs('source');
-            $table->uuidMorphs('target');
+            $table->morphs('source');
+            $table->morphs('target');
             $table->string('relation_type');
             $table->timestamps();
 
@@ -29,7 +29,7 @@ return new class extends Migration
                 'source_type',
                 'target_id',
                 'target_type',
-            ]);
+            ], 'unq_entity_types');
         });
     }
 

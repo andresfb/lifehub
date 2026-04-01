@@ -12,10 +12,10 @@ return new class extends Migration
     {
         Schema::create('media', static function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('account_id')
+            $table->foreignId('account_id')
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->uuidMorphs('model');
+            $table->morphs('model');
             $table->uuid()->nullable()->unique();
             $table->string('collection_name');
             $table->string('name');

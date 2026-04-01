@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('accounts', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->foreignIdFor(User::class, 'owner_user_id')
                 ->constrained('users')
                 ->onDelete('cascade');

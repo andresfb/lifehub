@@ -58,12 +58,12 @@ trait BelongsToAccount
         return $this->belongsTo(Account::class);
     }
 
-    public function getAccountId(): string
+    public function getAccountId(): int
     {
         return $this->account_id;
     }
 
-    public function setAccountId(string $accountId): void
+    public function setAccountId(int $accountId): void
     {
         $this->account_id = $accountId;
     }

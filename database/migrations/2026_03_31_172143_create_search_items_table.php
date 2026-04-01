@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('search_items', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->foreignIdFor(Account::class)
                 ->constrained('accounts')
                 ->cascadeOnDelete();
-            $table->uuidMorphs('entity');
+            $table->morphs('entity');
             $table->string('module');
             $table->string('title')->nullable();
             $table->longText('body')->nullable();

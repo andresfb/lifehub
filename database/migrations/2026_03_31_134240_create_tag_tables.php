@@ -11,8 +11,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tags', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('account_id')
+            $table->id();
+            $table->foreignId('account_id')
                 ->constrained()
                 ->cascadeOnDelete();
             $table->json('slug');
@@ -25,7 +25,7 @@ return new class extends Migration
         });
 
         Schema::create('taggables', static function (Blueprint $table) {
-            $table->foreignUuid('tag_id')
+            $table->foreignId('tag_id')
                 ->constrained()
                 ->cascadeOnDelete();
 

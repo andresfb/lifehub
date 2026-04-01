@@ -12,25 +12,33 @@ services:
       - cache:/data
 
   database:
-    image: postgres:16.11-alpine3.22
-    container_name: postgres
-    restart: unless-stopped
+    image: mysql
+    container_name: database
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_HOST=%
     ports:
-      - "5432:5432"
-    env_file:
-      - .env
+      - "3306:3306"
     volumes:
-      - database:/var/lib/postgresql/data:rw
-      - ./docker/postgres/postgres.conf:/etc/postgresql/postgresql.conf:ro
-    command: [ "postgres", "-c", "config_file=/etc/postgresql/postgresql.conf", "-c", "log_statement=none", "-c", "log_min_duration_statement=1000", "-c", "log_connections=on", "-c", "log_disconnections=on" ]
-    user: "70:70" # Postgres user
-    healthcheck:
-      test: [ "CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER:-postgres}" -d "$${POSTGRES_DB:-postgres}" -h localhost || exit 1' ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
-    stop_grace_period: 120s
+      - database:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
+    networks:
+      - project_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - database
+    ports:
+      - "8330:80"
+    environment:
+      - PMA_HOST=database
+      - PMA_POST=3306
     networks:
       - project_network
 
@@ -38,16 +46,16 @@ services:
     image: typesense/typesense:27.1
     container_name: typesense
     restart: unless-stopped
-    volumes:
-      - search:/data
-    ports:
-      - "8108:8108"
-    networks:
-      - project_network
     environment:
       - TYPESENSE_DATA_DIR=/data
       - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
       - GLOG_minloglevel=1
+    ports:
+      - "8108:8108"
+    volumes:
+      - search:/data
+    networks:
+      - project_network
 
 networks:
   project_network:
@@ -55,8 +63,5 @@ networks:
 
 volumes:
   cache:
-    driver: local
   database:
-    driver: local
   search:
-    driver: local

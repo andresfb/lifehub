@@ -8,7 +8,6 @@ use App\Contracts\AccountModelInterface;
 use App\Traits\BelongsToAccount;
 use Carbon\CarbonImmutable;
 use Database\Factories\MediaFactory;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Override;
@@ -16,9 +15,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
 /**
  * @property-read int $id
- * @property-read string $account_id
+ * @property-read int $account_id
+ * @property-read int $model_id
  * @property-read string $model_type
- * @property-read string $model_id
  * @property string $collection_name
  * @property string $name
  * @property string $file_name
@@ -45,7 +44,6 @@ final class Media extends SpatieMedia implements AccountModelInterface
     /** @use HasFactory<MediaFactory> */
     use HasFactory;
 
-    use HasUuids;
     use SoftDeletes;
 
     public function isEncrypted(): bool

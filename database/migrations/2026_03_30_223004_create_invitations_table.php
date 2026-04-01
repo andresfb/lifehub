@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('invitations', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('email')->index();
             $table->string('token', 64)->unique();
             $table->timestamp('accepted_at')->nullable();

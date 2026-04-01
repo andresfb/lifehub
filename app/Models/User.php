@@ -22,7 +22,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Override;
 
 /**
- * @property-read string $id
+ * @property-read int $id
  * @property string $name
  * @property string $email
  * @property CarbonImmutable|null $email_verified_at
@@ -36,7 +36,7 @@ use Override;
  * @property-read Account $account
  */
 #[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token', 'dek', 'is_admin'])]
+#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token', 'is_admin'])]
 final class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
@@ -44,14 +44,9 @@ final class User extends Authenticatable implements MustVerifyEmail
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
-    use HasUuids;
     use Notifiable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
 
     /** @return HasOne<Account, $this> */
     public function account(): HasOne

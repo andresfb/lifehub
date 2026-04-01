@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reminders', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->foreignIdFor(Account::class)
                 ->constrained('accounts')
                 ->cascadeOnDelete();
-            $table->uuidMorphs('remindable');
+            $table->morphs('remindable');
             $table->string('title');
             $table->text('notes')->nullable();
             $table->timestamp('due_at');

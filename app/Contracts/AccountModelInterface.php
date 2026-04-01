@@ -12,7 +12,7 @@ interface AccountModelInterface
 
     public function account(): BelongsTo;
 
-    public function getAccountId(): string;
+    public function getAccountId(): int;
 
-    public function setAccountId(string $accountId): void;
+    public function setAccountId(int $accountId): void;
 }

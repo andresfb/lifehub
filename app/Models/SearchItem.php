@@ -14,10 +14,10 @@ use Laravel\Scout\Searchable;
 use Override;
 
 /**
- * @property string $id
- * @property string $account_id
+ * @property int $id
+ * @property int $account_id
  * @property string $entity_type
- * @property string $entity_id
+ * @property int $entity_id
  * @property string $module
  * @property string $title
  * @property string $body
@@ -35,20 +35,15 @@ final class SearchItem extends Model implements AccountModelInterface
 {
     use BelongsToAccount;
     use HasFactory;
-    use HasUuids;
     use Searchable;
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
 
     public function toSearchableArray(): array
     {
         return [
-            'id' => $this->id,
-            'account_id' => $this->account_id,
+            'id' => (string) $this->id,
+            'account_id' => (string) $this->account_id,
             'entity_type' => $this->entity_type,
-            'entity_id' => $this->entity_id,
+            'entity_id' => (string) $this->entity_id,
             'module' => $this->module,
             'title' => $this->title ?? '',
             'body' => $this->body ?? '',
