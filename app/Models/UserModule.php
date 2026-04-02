@@ -22,7 +22,7 @@ use Override;
  * @property ModuleVisibility $visibility
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
- * @property-read AppModule $module
+ * @property-read Module $module
  * @property-read User $user
  * @property-read User $grantedBy
  */
@@ -32,7 +32,7 @@ final class UserModule extends Model
 
     public function module(): BelongsTo
     {
-        return $this->belongsTo(AppModule::class);
+        return $this->belongsTo(Module::class);
     }
 
     public function user(): BelongsTo

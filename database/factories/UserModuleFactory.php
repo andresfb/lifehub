@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\AppModule;
+use App\Models\Module;
 use App\Models\User;
 use App\Models\UserModule;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -27,7 +27,7 @@ final class UserModuleFactory extends Factory
             'created_at' => Date::now(),
             'updated_at' => Date::now(),
 
-            'module_id' => AppModule::factory(),
+            'module_id' => Module::factory(),
             'user_id' => User::factory(),
             'granted_by' => User::factory(),
         ];

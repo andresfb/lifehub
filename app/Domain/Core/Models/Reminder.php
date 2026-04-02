@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Domain\Core\Models;
 
 use App\Contracts\GlobalSearchInterface;
 use App\Contracts\UserModelInterface;
+use App\Domain\Core\Observers\ReminderObserver;
 use App\Enums\MorphTypes;
-use App\Observers\ReminderObserver;
+use App\Models\Tag;
+use App\Models\User;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -45,6 +47,8 @@ final class Reminder extends Model implements Auditable, GlobalSearchInterface, 
     use HasFactory;
     use HasTags;
     use SoftDeletes;
+
+    protected $table = 'core_reminders';
 
     protected array $auditExclude = [
         'tags', 'audits',

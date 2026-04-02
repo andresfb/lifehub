@@ -13,7 +13,6 @@ parameters:
         - database
         - public
         - routes
-        - Modules
 
     excludePaths:
         - ./configs/*.php

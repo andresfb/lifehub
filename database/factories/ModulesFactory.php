@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\AppModule;
+use App\Models\Module;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Date;
 
 /**
- * @extends Factory<AppModule>
+ * @extends Factory<Module>
  */
-final class AppModulesFactory extends Factory
+final class ModulesFactory extends Factory
 {
-    protected $model = AppModule::class;
+    protected $model = Module::class;
 
     public function definition(): array
     {

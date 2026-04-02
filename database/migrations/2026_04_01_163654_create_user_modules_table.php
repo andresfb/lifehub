@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\AppModule;
+use App\Models\Module;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('user_modules', static function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(AppModule::class, 'module_id')
-                ->constrained('app_modules')
+            $table->foreignIdFor(Module::class, 'module_id')
+                ->constrained('modules')
                 ->cascadeOnDelete();
             $table->foreignIdFor(User::class)
                 ->constrained('users')

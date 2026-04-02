@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
-use App\Models\Reminder;
+use App\Domain\Core\Models\Reminder;
 
 enum MorphTypes: string
 {

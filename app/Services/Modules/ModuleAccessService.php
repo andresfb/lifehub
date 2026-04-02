@@ -8,7 +8,7 @@ use App\Enums\ModuleAccessLevel;
 use App\Enums\ModuleKey;
 use App\Enums\ModuleStatus;
 use App\Enums\ModuleVisibility;
-use App\Models\AppModule;
+use App\Models\Module;
 use App\Models\User;
 
 final class ModuleAccessService
@@ -18,7 +18,7 @@ final class ModuleAccessService
         ModuleKey $moduleKey,
         ModuleAccessLevel $requiredLevel = ModuleAccessLevel::READ
     ): bool {
-        $module = AppModule::query()
+        $module = Module::query()
             ->where('key', $moduleKey)
             ->first();
 
@@ -44,7 +44,7 @@ final class ModuleAccessService
 
     public function grant(
         User $targetUser,
-        AppModule $module,
+        Module $module,
         bool $enabled = true,
         ?User $grantedBy = null,
         ?array $settings = null,

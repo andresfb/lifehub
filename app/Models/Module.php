@@ -25,7 +25,7 @@ use Override;
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  */
-final class AppModule extends Model
+final class Module extends Model
 {
     use HasFactory;
 

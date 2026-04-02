@@ -11,10 +11,10 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class EnsureModuleEnabledMiddleware
+final readonly class EnsureModuleEnabledMiddleware
 {
     public function __construct(
-        protected ModuleAccessService $moduleAccess
+        private ModuleAccessService $moduleAccess
     ) {}
 
     public function handle(

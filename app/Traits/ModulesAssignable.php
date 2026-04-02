@@ -6,16 +6,16 @@ namespace App\Traits;
 
 use App\Enums\ModuleAccessLevel;
 use App\Enums\ModuleStatus;
-use App\Models\AppModule;
+use App\Models\Module;
 use App\Models\User;
 use App\Services\Modules\ModuleAccessService;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 trait ModulesAssignable
 {
-    private User $admin;
+    private ?User $admin = null;
 
-    private ModuleAccessService $service;
+    private ?ModuleAccessService $service = null;
 
     private function getAdmin(): User
     {
@@ -47,12 +47,12 @@ trait ModulesAssignable
 
     private function assignDefaultModules(User $user): void
     {
-        $modules = AppModule::query()
+        $modules = Module::query()
             ->where('status', ModuleStatus::ACTIVE)
             ->where('is_public', true)
             ->get();
 
-        $modules->each(function (AppModule $module) use ($user) {
+        $modules->each(function (Module $module) use ($user) {
             $this->getService()->grant(
                 targetUser: $user,
                 module: $module,
@@ -63,7 +63,7 @@ trait ModulesAssignable
 
     private function assignModulesToAdmin(User $user): void
     {
-        AppModule::query()->each(function (AppModule $module) use ($user) {
+        Module::query()->each(function (Module $module) use ($user) {
             $this->getService()->grant(
                 targetUser: $user,
                 module: $module,

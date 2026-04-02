@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_modules', static function (Blueprint $table) {
+        Schema::create('modules', static function (Blueprint $table) {
             $table->id();
             $table->string('key', 50)->unique();
             $table->string('name', 150);
@@ -25,6 +25,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('app_modules');
+        Schema::dropIfExists('modules');
     }
 };

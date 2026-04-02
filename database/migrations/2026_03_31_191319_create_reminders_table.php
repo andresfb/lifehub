@@ -11,7 +11,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('reminders', static function (Blueprint $table) {
+        Schema::create('core_reminders', static function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)
                 ->constrained()
@@ -32,6 +32,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('reminders');
+        Schema::dropIfExists('core_reminders');
     }
 };

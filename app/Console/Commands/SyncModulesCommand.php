@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Dtos\ModuleRecordItem;
 use App\Services\Modules\ModuleRegistry;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
+use RuntimeException;
 use Throwable;
 
 use function Laravel\Prompts\clear;
@@ -25,7 +28,17 @@ final class SyncModulesCommand extends Command
             clear();
             intro('Syncing modules');
 
-            $registry->syncToDatabase();
+            $modules = resolve('module_records');
+            if ($modules instanceof Collection) {
+                throw new RuntimeException('Modules Records not found');
+            }
+
+            if ($modules->isEmpty()) {
+                throw new RuntimeException('Modules Records not found');
+            }
+
+            $modules->each(fn (ModuleRecordItem $item) => $registry->syncToDatabase($item->toArray()));
+            $registry->assign();
 
             info('Modules synced successfully.');
 

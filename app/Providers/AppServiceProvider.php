@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Dtos\MorphTypesItems;
-use App\Enums\MorphTypes;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -28,15 +27,8 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind('morph_types', fn($app): Collection => collect());
-        $this->app->resolving('morph_types', function (Collection $types): void {
-            $types->add(
-                new MorphTypesItems(
-                    MorphTypes::CORE_REMINDER->name,
-                    MorphTypes::CORE_REMINDER->value,
-                )
-            );
-        });
+        $this->app->bind('morph_types', fn ($app): Collection => collect());
+        $this->app->bind('module_records', fn ($app): Collection => collect());
     }
 
     /**

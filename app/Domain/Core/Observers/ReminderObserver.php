@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Observers;
+namespace App\Domain\Core\Observers;
 
-use App\Models\Reminder;
+use App\Domain\Core\Models\Reminder;
 use App\Services\Search\SearchDocumentProjector;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;

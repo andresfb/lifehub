@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Logging;
 
 use Monolog\Handler\RotatingFileHandler;
 
-class HostBasedDailyLogger
+final class HostBasedDailyLogger
 {
     public function __invoke($logger): void
     {

@@ -54,7 +54,7 @@ final class User extends Authenticatable implements MustVerifyEmail
 
     public function modules(): BelongsToMany
     {
-        return $this->belongsToMany(AppModule::class, 'user_modules')
+        return $this->belongsToMany(Module::class, 'user_modules')
             ->withPivot(['enabled', 'access_level', 'visibility', 'settings', 'granted_by'])
             ->withTimestamps();
     }
