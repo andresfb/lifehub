@@ -22,7 +22,6 @@
         "laravel/wayfinder": "^0.1.14",
         "league/flysystem-aws-s3-v3": "^3.32",
         "nunomaduro/essentials": "^1.2",
-        "nwidart/laravel-modules": "^13.0",
         "owen-it/laravel-auditing": "^14.0",
         "spatie/laravel-data": "^4.20",
         "spatie/laravel-medialibrary": "^11.21",
@@ -130,8 +129,7 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true,
-            "wikimedia/composer-merge-plugin": true
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "stable"

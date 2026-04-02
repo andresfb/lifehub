@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Contracts\GlobalSearchInterface;
 use App\Contracts\UserModelInterface;
+use App\Enums\MorphTypes;
 use App\Observers\ReminderObserver;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
@@ -59,7 +60,7 @@ final class Reminder extends Model implements Auditable, GlobalSearchInterface, 
         return [
             'id' => $this->getIdentifier(),
             'user_id' => (string) $this->user_id,
-            'entity_type' => 'reminder',
+            'entity_type' => MorphTypes::CORE_REMINDER->name,
             'entity_id' => (string) $this->id,
             'module' => 'core',
             'title' => $this->title,
