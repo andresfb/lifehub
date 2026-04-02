@@ -64,3 +64,6 @@ _ide_helper_models.php
 /.zed
 laradumps.yaml
 /.junie
+/resources/js/routes
+/resources/js/wayfinder
+/resources/js/actions

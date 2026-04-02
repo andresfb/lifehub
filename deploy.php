@@ -23,7 +23,7 @@ if (! file_exists($localEnvFile)) {
         throw new RuntimeException('Deployer env file not found');
     }
 
-    exec("cp $envDeployer $localEnvFile");
+    exec("cp -v $envDeployer $localEnvFile");
 }
 
 if (file_exists($localEnvFile)) {
@@ -68,6 +68,8 @@ set('cleanup_files', [
     'phpunit.xml',
     'README.md',
     'LICENSE',
+    'AGENTS.md',
+    'CLAUDE.md',
     'deploy.php',
     'peck.json',
     'phpstan-baseline.neon',
@@ -162,21 +164,15 @@ task('storage:symlinks', function () {
     $releasePath = get('release_path');
 
     run("rm -rf $releasePath/storage/logs");
-    run("ln -sfn /server-logs/habits $releasePath/storage/logs");
+    run("ln -sfn /server-logs/lifehub $releasePath/storage/logs");
 });
 
 desc('Composer install');
 task('deploy:vendors', function () {
     $releasePath = get('release_path');
-    $sharedVendor = "$releasePath/../shared/vendor";
 
-    if (! test("[ -d $sharedVendor ]")) {
-        writeln('🧩 First deploy: composer install --no-dev');
-        run("cd $releasePath && composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader");
-    } else {
-        writeln('🔁 Subsequent deploy: composer install');
-        run("cd $releasePath && composer install --prefer-dist --no-interaction --optimize-autoloader");
-    }
+    writeln('🧩 Run composer install');
+    run("cd $releasePath && composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader");
 });
 
 // Override the Laravel‐recipe cache/migrate tasks with empty implementations:
@@ -205,6 +201,11 @@ task('artisan:migrate', function () {
     writeln('<comment>→ artisan:migrate disabled</comment>');
 })->hidden();
 
+desc('Laravel wayfinder commands');
+task('laravel:wayfinder', function () {
+    run('{{bin/php}} {{release_path}}/artisan wayfinder:generate');
+});
+
 desc('Install NPM deps & compile front-end assets');
 task('build:assets', function () {
     if (get('skip_npm', false)) {
@@ -224,6 +225,27 @@ task('laravel:optimize', function () {
     run('{{bin/php}} {{release_path}}/artisan optimize');
 });
 
+// Supervisor restart
+task('supervisor:restart', function () {
+    if (get('skip_supervisor', false)) {
+        writeln('⚠️  Supervisor is not installed on this server – skipping.');
+
+        return;
+    }
+
+    $checkSupervisor = run('systemctl is-active supervisor.service || true');
+
+    if (trim($checkSupervisor) === 'active') {
+        writeln('🔄 Supervisor is running, restarting programs...');
+        run('sudo systemctl restart supervisor.service');
+    } else {
+        writeln('🚀 Supervisor not running. Starting supervisor service...');
+        run('sudo systemctl start supervisor.service');
+    }
+
+    run('sleep 2'); // Wait a bit
+});
+
 // ==== CLEANUP LOCAL SECRETS AFTER DEPLOY ====
 task('deploy:cleanup_local_secrets', function () {
     $localEnvDir = __DIR__.'/.envs';
@@ -239,7 +261,8 @@ before('deploy:shared', 'env:pull');
 after('env:pull', 'env:upload');
 after('deploy:update_code', 'deploy:cleanup_release');
 after('artisan:storage:link', 'storage:symlinks');
-before('deploy:symlink', 'build:assets');
+after('deploy:symlink', 'laravel:wayfinder');
+after('laravel:wayfinder', 'build:assets');
 after('build:assets', 'laravel:optimize');
 after('deploy:success', 'deploy:cleanup_local_secrets');
 after('deploy:failed', 'deploy:unlock');
