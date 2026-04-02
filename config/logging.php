@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Logging\HostBasedDailyLogger;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -69,9 +70,10 @@ return [
 
         'daily' => [
             'driver' => 'daily',
+            'tap' => [HostBasedDailyLogger::class],
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => env('LOG_DAILY_DAYS', 14),
+            'days' => env('LOG_DAILY_DAYS', 7),
             'replace_placeholders' => true,
         ],
 

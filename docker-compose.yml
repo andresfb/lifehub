@@ -39,6 +39,9 @@ services:
     environment:
       - PMA_HOST=database
       - PMA_POST=3306
+    volumes:
+      - ui:/sessions:rw
+      - ./docker/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
     networks:
       - project_network
 
@@ -65,3 +68,4 @@ volumes:
   cache:
   database:
   search:
+  ui:
