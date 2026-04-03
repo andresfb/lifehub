@@ -2,24 +2,25 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Core\Providers;
+namespace App\Domain\Bookmarks\Providers;
 
-use App\Domain\Core\Enums\MorphTypes;
+use App\Domain\Bookmarks\Enums\MorphTypes;
 use App\Dtos\ModuleRecordItem;
 use App\Dtos\MorphTypesItems;
 use App\Enums\ModuleStatus;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 
-final class CoreServiceProvider extends ServiceProvider
+final class BookmarksServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->app->resolving('morph_types', function (Collection $types): void {
             $types->add(
                 new MorphTypesItems(
-                    MorphTypes::CORE_REMINDER->name,
-                    MorphTypes::CORE_REMINDER->value,
+                    MorphTypes::BOOKMARKS_MARKER->name,
+                    MorphTypes::BOOKMARKS_MARKER->value,
                 )
             );
         });
@@ -27,10 +28,10 @@ final class CoreServiceProvider extends ServiceProvider
         $this->app->resolving('module_records', function (Collection $records): void {
             $records->add(
                 new ModuleRecordItem(
-                    key: 'CORE',
-                    name: 'Core Module',
-                    description: 'The base Module where all starts',
-                    is_core: true,
+                    key: 'BOOKMARKS',
+                    name: 'Bookmarks',
+                    description: 'A Bookmark Management System',
+                    is_core: false,
                     is_public: true,
                     status: ModuleStatus::ACTIVE,
                 )
@@ -38,8 +39,11 @@ final class CoreServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function boot(): void
     {
-        //
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
     }
 }

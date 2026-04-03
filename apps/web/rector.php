@@ -15,6 +15,7 @@ use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnR
 use Rector\TypeDeclaration\Rector\Function_\AddFunctionVoidReturnTypeWhereNoReturnRector;
 use RectorLaravel\Rector\FuncCall\ThrowIfAndThrowUnlessExceptionsToUseClassStringRector;
 use RectorLaravel\Rector\If_\ThrowIfRector;
+use RectorLaravel\Rector\StaticCall\DispatchToHelperFunctionsRector;
 use RectorLaravel\Set\LaravelSetList;
 use RectorLaravel\Set\LaravelSetProvider;
 
@@ -61,6 +62,7 @@ try {
             EncapsedStringsToSprintfRector::class,
             ThrowIfRector::class,
             ThrowIfAndThrowUnlessExceptionsToUseClassStringRector::class,
+            DispatchToHelperFunctionsRector::class,
             __DIR__.'/config/database.php',
             __DIR__.'/config/media-library.php',
         ])

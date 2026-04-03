@@ -6,8 +6,8 @@ namespace App\Domain\Core\Models;
 
 use App\Contracts\GlobalSearchInterface;
 use App\Contracts\UserModelInterface;
+use App\Domain\Core\Enums\MorphTypes;
 use App\Domain\Core\Observers\ReminderObserver;
-use App\Enums\MorphTypes;
 use App\Models\Tag;
 use App\Models\User;
 use App\Traits\BelongsToUser;
@@ -66,7 +66,7 @@ final class Reminder extends Model implements Auditable, GlobalSearchInterface, 
             'user_id' => (string) $this->user_id,
             'entity_type' => MorphTypes::CORE_REMINDER->name,
             'entity_id' => (string) $this->id,
-            'module' => 'core',
+            'module' => 'CORE',
             'title' => $this->title,
             'body' => $this->notes ?? '',
             'tags' => $this->tags?->pluck('name')->values()->all() ?? [],
@@ -78,8 +78,8 @@ final class Reminder extends Model implements Auditable, GlobalSearchInterface, 
                 'web' => route('reminder.show', $this),
                 'api' => route('api.v1.reminder.show', $this),
             ],
-            'is_private' => true,
-            'is_archived' => false,
+            'is_private' => false,
+            'is_archived' => filled($this->deleted_at),
             'source_updated_at' => $this->updated_at,
         ];
     }

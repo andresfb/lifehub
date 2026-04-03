@@ -39,24 +39,44 @@ final class MediaPathGenerator implements PathGenerator
      */
     private function getBasePath(Media $media): string
     {
-        $contentId = mb_str_pad((string) $media->model_id, 12, '0', STR_PAD_LEFT);
+        $contentId = mb_str_pad((string) $media->model_id, 6, '0', STR_PAD_LEFT);
+        $mediaId = mb_str_pad((string) $media->id, 6, '0', STR_PAD_LEFT);
+        $userId = $this->getUserId($media);
 
-        return Str::of(
-            collect(mb_str_split($contentId, 3))
-                ->reverse()
-                ->implode('/')
-        )
+        return Str::of($media->model_type)
+            ->replace('_', '-')
+            ->lower()
             ->append('/')
-            ->append(
-                Str::of($media->model_type)
-                    ->classBasename()
-                    ->kebab()
-                    ->toString()
-            )
+            ->append($userId)
             ->append('/')
             ->append($media->collection_name)
             ->append('/')
-            ->append((string) $media->id)
+            ->append(
+                collect(mb_str_split($contentId, 3))
+                    ->implode('/')
+            )
+            ->append('/')
+            ->append('media')
+            ->append('/')
+            ->append(
+                collect(mb_str_split($mediaId, 3))
+                    ->implode('/')
+            )
+            ->trim()
+            ->toString();
+    }
+
+    private function getUserId(Media $media): string
+    {
+        $userId = mb_str_pad((string) $media->user_id, 6, '0', STR_PAD_LEFT);
+
+        return Str::of('user')
+            ->append('/')
+            ->append(
+                collect(mb_str_split($userId, 3))
+                    ->implode('/')
+            )
+            ->trim()
             ->toString();
     }
 }
