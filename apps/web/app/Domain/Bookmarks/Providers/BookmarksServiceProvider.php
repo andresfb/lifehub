@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Bookmarks\Providers;
 
+use App\Domain\Bookmarks\Commands\CreateMarkerCommand;
 use App\Domain\Bookmarks\Enums\MorphTypes;
-use App\Dtos\ModuleRecordItem;
-use App\Dtos\MorphTypesItems;
+use App\Dtos\Modules\ModuleRecordItem;
+use App\Dtos\Modules\MorphTypesItems;
 use App\Enums\ModuleStatus;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
@@ -14,8 +15,14 @@ use Illuminate\Support\ServiceProvider;
 
 final class BookmarksServiceProvider extends ServiceProvider
 {
+    private array $commands = [
+        CreateMarkerCommand::class,
+    ];
+
     public function register(): void
     {
+        $this->commands($this->commands);
+
         $this->app->resolving('morph_types', function (Collection $types): void {
             $types->add(
                 new MorphTypesItems(
@@ -45,5 +52,8 @@ final class BookmarksServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        $this->mergeConfigFrom(__DIR__.'/../Configs/config.php', 'markers');
+        $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../Routes/api/v1.php');
     }
 }

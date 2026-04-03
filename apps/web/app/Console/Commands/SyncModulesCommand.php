@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Dtos\ModuleRecordItem;
+use App\Dtos\Modules\ModuleRecordItem;
 use App\Services\Modules\ModuleRegistry;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;

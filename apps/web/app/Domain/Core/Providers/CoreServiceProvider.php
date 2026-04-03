@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Core\Providers;
 
 use App\Domain\Core\Enums\MorphTypes;
-use App\Dtos\ModuleRecordItem;
-use App\Dtos\MorphTypesItems;
+use App\Dtos\Modules\ModuleRecordItem;
+use App\Dtos\Modules\MorphTypesItems;
 use App\Enums\ModuleStatus;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;

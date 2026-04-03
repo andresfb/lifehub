@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Dtos;
+namespace App\Dtos\Modules;
 
 use App\Enums\ModuleStatus;
 use Spatie\LaravelData\Data;

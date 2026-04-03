@@ -21,6 +21,7 @@ final class ReminderObserver implements ShouldQueue
     {
         $this->projector->upsert(
             $reminder->buildGlobalSearch(),
+            $reminder->user_id,
         );
     }
 

@@ -9,7 +9,8 @@
     "packages": [
         "laravel/fortify",
         "spatie/laravel-query-builder",
-        "spatie/laravel-medialibrary"
+        "spatie/laravel-medialibrary",
+        "laravel/ai"
     ],
     "sail": false,
     "skills": [
@@ -20,6 +21,7 @@
         "pest-testing",
         "inertia-vue-development",
         "tailwindcss-development",
+        "ai-sdk-development",
         "fortify-development",
         "medialibrary-development",
         "laravel-query-builder"

@@ -20,13 +20,13 @@ return new class extends Migration
             $table->foreignIdFor(Category::class, 'category_id')
                 ->constrained('bookmarks_categories')
                 ->cascadeOnDelete();
+            $table->string('hash')->unique();
             $table->string('status', 10)->default('active');
-            $table->string('slug', 100)->unique();
             $table->string('title')->nullable();
-            $table->string('site_title')->nullable();
             $table->text('url');
             $table->string('domain')->nullable();
             $table->text('description')->nullable();
+            $table->text('summary')->nullable();
             $table->text('notes')->nullable();
             $table->unsignedSmallInteger('priority')->default(9999);
             $table->softDeletes();

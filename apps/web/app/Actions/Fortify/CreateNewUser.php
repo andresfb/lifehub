@@ -48,11 +48,12 @@ final class CreateNewUser implements CreatesNewUsers
         }
 
         return DB::transaction(function () use ($input, $invitation) {
-            $user = User::query()->create([
-                'name' => $input['name'],
-                'email' => $input['email'],
-                'password' => $input['password'],
-            ]);
+            $user = User::query()
+                ->create([
+                    'name' => $input['name'],
+                    'email' => $input['email'],
+                    'password' => $input['password'],
+                ]);
 
             $this->assignDefaultModules($user);
 

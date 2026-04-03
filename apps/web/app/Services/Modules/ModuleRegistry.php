@@ -18,11 +18,12 @@ final class ModuleRegistry
             return;
         }
 
-        Module::query()->upsert(
-            $records,
-            ['key'],
-            ['name', 'description', 'is_core', 'is_public', 'status']
-        );
+        Module::query()
+            ->upsert(
+                $records,
+                ['key'],
+                ['name', 'description', 'is_core', 'is_public', 'status']
+            );
     }
 
     public function syncAndAssign(array $records): void

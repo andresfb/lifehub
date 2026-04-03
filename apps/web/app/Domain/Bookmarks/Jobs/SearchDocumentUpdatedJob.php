@@ -34,6 +34,7 @@ final class SearchDocumentUpdatedJob implements ShouldQueue
 
             $projector->upsert(
                 $marker->buildGlobalSearch(),
+                $marker->user_id,
             );
 
         } catch (Exception $e) {

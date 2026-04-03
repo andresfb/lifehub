@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Domain\Bookmarks\Jobs;
 
 use App\Domain\Bookmarks\Models\Marker;
-use App\Domain\Core\Services\MarkerMutatorService;
+use App\Domain\Bookmarks\Services\MarkerMutatorService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 final class MarkerMutatorJob implements ShouldQueue
@@ -29,12 +30,18 @@ final class MarkerMutatorJob implements ShouldQueue
     {
         try {
             $marker = Marker::query()
+                ->withoutGlobalScopes()
+                ->with('user')
                 ->where('id', $this->markerId)
                 ->firstOrFail();
+
+            Auth::setUser($marker->user);
 
             $service->execute($marker);
         } catch (Exception $e) {
             Log::error($e->getMessage());
+        } finally {
+            MarkerAiSummaryJob::dispatch($this->markerId);
         }
     }
 }

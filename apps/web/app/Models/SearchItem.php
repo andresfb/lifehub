@@ -13,10 +13,11 @@ use Laravel\Scout\Searchable;
 use Override;
 
 /**
- * @property int $id
- * @property int $user_id
- * @property string $entity_type
- * @property int $entity_id
+ * @property-read int $id
+ * @property-read string $creator_id
+ * @property-read int $user_id
+ * @property-read string $entity_type
+ * @property-read int $entity_id
  * @property string $module
  * @property string $title
  * @property string $body
@@ -37,24 +38,31 @@ final class SearchItem extends Model implements UserModelInterface
     use HasFactory;
     use Searchable;
 
+    // TODO: Rename this Model to GlobalSearch
+    public function searchableAs(): string
+    {
+        return 'global_search';
+    }
+
     public function toSearchableArray(): array
     {
         return [
             'id' => (string) $this->id,
+            'creator_id' => $this->creator_id,
             'user_id' => (string) $this->user_id,
             'entity_type' => $this->entity_type,
             'entity_id' => (string) $this->entity_id,
             'module' => $this->module,
             'title' => $this->title ?? '',
             'body' => $this->body ?? '',
-            'tags' => $this->tags ?? [],
-            'keywords' => $this->keywords ?? [],
-            'urls' => $this->urls ?? [],
+            'tags' => is_array($this->tags) ? $this->tags : [],
+            'keywords' => is_array($this->keywords) ? $this->keywords : [],
+            'urls' => is_array($this->urls) ? array_values($this->urls) : [],
             'is_private' => $this->is_private,
             'is_archived' => $this->is_archived,
-            'created_at' => $this->created_at?->timestamp,
-            'updated_at' => $this->updated_at?->timestamp,
-            'source_updated_at' => $this->source_updated_at?->timestamp,
+            'created_at' => $this->created_at?->unix(),
+            'updated_at' => $this->updated_at?->unix() ?? now()->unix(),
+            'source_updated_at' => $this->source_updated_at?->unix(),
         ];
     }
 
@@ -63,11 +71,12 @@ final class SearchItem extends Model implements UserModelInterface
     {
         return [
             'tags' => 'array',
-            'keyboards' => 'array',
+            'keywords' => 'array',
+            'urls' => 'array',
             'metadata' => 'array',
             'is_private' => 'boolean',
             'is_archived' => 'boolean',
-            'source_updated_at' => 'timestamp',
+            'source_updated_at' => 'datetime',
         ];
     }
 }

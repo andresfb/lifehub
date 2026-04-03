@@ -63,13 +63,14 @@ trait ModulesAssignable
 
     private function assignModulesToAdmin(User $user): void
     {
-        Module::query()->each(function (Module $module) use ($user) {
-            $this->getService()->grant(
-                targetUser: $user,
-                module: $module,
-                grantedBy: $user,
-                accessLevel: ModuleAccessLevel::ADMIN,
-            );
-        });
+        Module::query()
+            ->each(function (Module $module) use ($user) {
+                $this->getService()->grant(
+                    targetUser: $user,
+                    module: $module,
+                    grantedBy: $user,
+                    accessLevel: ModuleAccessLevel::ADMIN,
+                );
+            });
     }
 }

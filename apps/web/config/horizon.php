@@ -245,6 +245,17 @@ return [
                 'tries' => 1,
             ],
 
+            'ai-supervisor' => [
+                'connection' => 'redis',
+                'queue' => ['ai'],
+                'balance' => 'auto',
+                'autoScalingStrategy' => 'size',
+                'minProcesses' => 1,
+                'maxProcesses' => 2,
+                'timeout' => 300, // 5 Minutes
+                'tries' => 1,
+            ],
+
         ],
 
         'local' => [
@@ -263,6 +274,14 @@ return [
             'scout-supervisor' => [
                 'connection' => 'redis',
                 'queue' => ['scout'],
+                'balance' => 'auto',
+                'autoScalingStrategy' => 'size',
+                'tries' => 1,
+            ],
+
+            'ai-supervisor' => [
+                'connection' => 'redis',
+                'queue' => ['ai'],
                 'balance' => 'auto',
                 'autoScalingStrategy' => 'size',
                 'tries' => 1,

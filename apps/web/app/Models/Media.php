@@ -14,10 +14,10 @@ use Override;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
 /**
- * @property int $id
- * @property int $user_id
- * @property int $model_id
- * @property string $model_type
+ * @property-read int $id
+ * @property-read int $user_id
+ * @property-read int $model_id
+ * @property-read string $model_type
  * @property string $collection_name
  * @property string $name
  * @property string $file_name

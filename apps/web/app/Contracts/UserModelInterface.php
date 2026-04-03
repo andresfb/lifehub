@@ -12,7 +12,7 @@ interface UserModelInterface
 
     public function user(): BelongsTo;
 
-    public function getUserId(): int;
+    public function getUserId(): ?int;
 
     public function setUserId(int $userId): void;
 }

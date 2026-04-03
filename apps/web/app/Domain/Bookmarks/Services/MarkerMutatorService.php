@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Core\Services;
+namespace App\Domain\Bookmarks\Services;
 
 use App\Domain\Bookmarks\Models\Marker;
 use Exception;
@@ -15,10 +15,23 @@ final class MarkerMutatorService
     public function execute(Marker $marker): void
     {
         try {
-            [
-                $marker->site_title,
-                $marker->description
-            ] = $this->extractMeta($marker->url);
+            [$title, $description] = $this->extractMeta($marker->url);
+
+            if (blank($marker->title)) {
+                $marker->title = $title;
+            } else {
+                $description = str($title ?? '')
+                    ->newLine(2)
+                    ->append($description ?? '')
+                    ->trim()
+                    ->toString();
+
+                if ($description === '') {
+                    $description = null;
+                }
+            }
+
+            $marker->description = $description;
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }
@@ -39,6 +52,14 @@ final class MarkerMutatorService
             ->get($url);
 
         if (! $response->successful()) {
+            Log::error(
+                sprintf("Error getting meta data for url '%s'. Status: %s. Response: %s",
+                    $url,
+                    $response->status(),
+                    $response->body()
+                )
+            );
+
             return [null, null];
         }
 

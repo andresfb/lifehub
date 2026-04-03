@@ -14,10 +14,11 @@ final class CreateInvitationAction
      */
     public function execute(string $email): Invitation
     {
-        return Invitation::query()->create([
-            'email' => $email,
-            'token' => bin2hex(random_bytes(32)),
-            'expires_at' => now()->addDays(7),
-        ]);
+        return Invitation::query()
+            ->create([
+                'email' => $email,
+                'token' => bin2hex(random_bytes(32)),
+                'expires_at' => now()->addDays(7),
+            ]);
     }
 }

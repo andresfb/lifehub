@@ -8,11 +8,14 @@ use App\Models\SearchItem;
 
 final class SearchDocumentProjector
 {
-    public function upsert(array $payload): SearchItem
+    public function upsert(array $payload, int $userId): SearchItem
     {
         return SearchItem::query()
             ->updateOrCreate(
-                ['id' => $payload['id']],
+                [
+                    'creator_id' => $payload['creator_id'],
+                    'user_id' => $userId,
+                ],
                 $payload
             );
     }
@@ -20,7 +23,7 @@ final class SearchDocumentProjector
     public function remove(string $identifier): void
     {
         SearchItem::query()
-            ->where('id', $identifier)
+            ->where('creator_id', $identifier)
             ->delete();
     }
 }

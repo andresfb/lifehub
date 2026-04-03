@@ -6,6 +6,7 @@ namespace App\Domain\Bookmarks\Traits;
 
 use App\Enums\ModuleKey;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 use Spatie\Sluggable\SlugOptions;
 
 trait SlugOptionable
@@ -15,14 +16,15 @@ trait SlugOptionable
         return SlugOptions::create()
             ->generateSlugsFrom($titleField)
             ->saveSlugsTo('slug')
-            ->slugsShouldBeNoLongerThan(100)
-            ->useSuffixOnFirstOccurrence()
+            ->slugsShouldBeNoLongerThan(200)
             ->usingSuffixGenerator(
                 fn (string $slug, int $iteration) => str(ModuleKey::BOOKMARKS->value)
                     ->replace('_', '-')
-                    ->prepend("-{$this->id}")
-                    ->slug()
+                    ->append('-')
+                    ->append(Str::random(9))
+                    ->toString()
             )
-            ->extraScope(fn (Builder $builder) => $builder->where('user_id', $this->user_id));
+            ->extraScope(fn (Builder $builder) => $builder->where('user_id', $this->user_id))
+            ->useSuffixOnFirstOccurrence();
     }
 }

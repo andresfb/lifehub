@@ -55,9 +55,22 @@ trait BelongsToUser
         return $this->belongsTo(User::class);
     }
 
-    public function getUserId(): int
+    public function getUserId(): ?int
     {
-        return $this->user_id;
+        if (blank($this->user_id)) {
+            return null;
+        }
+
+        $userId = $this->user_id;
+        if (is_string($userId)) {
+            $userId = (int) $userId;
+        }
+
+        if (blank($userId)) {
+            return null;
+        }
+
+        return $userId;
     }
 
     public function setUserId(int $userId): void

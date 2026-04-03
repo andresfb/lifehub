@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('search_items', static function (Blueprint $table) {
             $table->id();
+            $table->string('creator_id')->unique();
             $table->foreignIdFor(User::class)
                 ->constrained()
                 ->cascadeOnDelete();
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->longText('body')->nullable();
             $table->json('tags')->nullable();
-            $table->json('keyboards')->nullable();
+            $table->json('keywords')->nullable();
             $table->json('metadata')->nullable();
             $table->json('urls')->nullable();
             $table->boolean('is_private')
@@ -33,6 +34,7 @@ return new class extends Migration
             $table->timestamp('source_updated_at')->nullable();
             $table->timestamps();
 
+            $table->index(['user_id', 'creator_id']);
             $table->index(['entity_id', 'entity_type']);
         });
     }

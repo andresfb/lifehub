@@ -46,13 +46,10 @@ services:
       - project_network
 
   typesense:
-    image: typesense/typesense:27.1
+    image: typesense/typesense:30.1
     container_name: typesense
     restart: unless-stopped
-    environment:
-      - TYPESENSE_DATA_DIR=/data
-      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
-      - GLOG_minloglevel=1
+    command: '--data-dir /data --api-key=xyz'
     ports:
       - "8108:8108"
     volumes:

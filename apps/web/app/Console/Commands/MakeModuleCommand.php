@@ -136,14 +136,7 @@ final class MakeModuleCommand extends Command
 
         namespace App\Domain\\{$name}\Providers;
 
-        use App\Domain\\{$name}\Enums\MorphTypes;
-        use App\Dtos\ModuleRecordItem;
-        use App\Dtos\MorphTypesItems;
-        use App\Enums\ModuleStatus;
-        use Illuminate\Support\Collection;
-        use Illuminate\Support\ServiceProvider;
-        use Illuminate\Contracts\Container\BindingResolutionException;
-        use Illuminate\Database\Eloquent\Factories\Factory;
+        use App\Dtos\Modules\ModuleRecordItem;use App\Dtos\Modules\MorphTypesItems;use App\Enums\ModuleStatus;use Illuminate\Contracts\Container\BindingResolutionException;use Illuminate\Database\Eloquent\Factories\Factory;use Illuminate\Support\Collection;{$name}\Enums\MorphTypes;
 
         final class {$name}ServiceProvider extends ServiceProvider
         {

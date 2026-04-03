@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Actions\CreateAdminAction;
-use App\Dtos\NewUserItem;
+use App\Dtos\Profile\NewUserItem;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
@@ -70,7 +70,6 @@ final class CreateAdminCommand extends Command
                 NewUserItem::from($results)
             );
 
-            info('User created');
             warning("API Token: {$token}");
 
             return self::SUCCESS;
