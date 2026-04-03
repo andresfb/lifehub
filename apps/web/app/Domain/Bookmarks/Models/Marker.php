@@ -37,6 +37,7 @@ use Spatie\Tags\HasTags;
  * @property-read string $slug
  * @property string $title
  * @property string|null $site_title
+ * @property string $status
  * @property string $url
  * @property string|null $description
  * @property string|null $notes
@@ -108,7 +109,7 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Us
                 //                'api' => route('api.v1.marker.show', $this),
             ],
             'is_private' => false,
-            'is_archived' => filled($this->deleted_at),
+            'is_archived' => $this->status === MarkerStatus::ARCHIVED->value,
             'source_updated_at' => $this->updated_at,
         ];
     }
