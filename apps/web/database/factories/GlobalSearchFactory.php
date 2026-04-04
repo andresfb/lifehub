@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\SearchItem;
+use App\Models\GlobalSearch;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Date;
 
 /**
- * @extends Factory<SearchItem>
+ * @extends Factory<GlobalSearch>
  */
-final class SearchItemFactory extends Factory
+final class GlobalSearchFactory extends Factory
 {
-    protected $model = SearchItem::class;
+    protected $model = GlobalSearch::class;
 
     public function definition(): array
     {

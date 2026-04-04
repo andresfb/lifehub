@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\SearchItem;
+use App\Models\GlobalSearch;
 
 return [
 
@@ -188,9 +188,9 @@ return [
         ],
         // 'max_total_results' => env('TYPESENSE_MAX_TOTAL_RESULTS', 1000),
         'model-settings' => [
-            SearchItem::class => [
+            GlobalSearch::class => [
                 'collection-schema' => [
-                    'name' => 'global_search',
+                    'name' => 'global_search_index',
                     'fields' => [
                         ['name' => 'id', 'type' => 'string'],
                         ['name' => 'creator_id', 'type' => 'string'],

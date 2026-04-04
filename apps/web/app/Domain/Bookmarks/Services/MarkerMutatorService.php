@@ -6,6 +6,7 @@ namespace App\Domain\Bookmarks\Services;
 
 use App\Domain\Bookmarks\Models\Marker;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\DomCrawler\Crawler;
@@ -36,8 +37,9 @@ final class MarkerMutatorService
             Log::error($e->getMessage());
         }
 
-        $marker->domain = $this->getDomain($marker->url);
+        $marker->domain = $marker->domain ?: $this->getDomain($marker->url);
         $marker->saveQuietly();
+        Cache::tags('markers')->flush();
     }
 
     /**

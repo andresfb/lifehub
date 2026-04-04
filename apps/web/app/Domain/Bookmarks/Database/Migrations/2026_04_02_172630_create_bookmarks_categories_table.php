@@ -24,6 +24,8 @@ return new class extends Migration
             $table->smallInteger('order')->default(0);
             $table->softDeletes();
             $table->timestamps();
+
+            $table->index(['user_id', 'title']);
         });
     }
 

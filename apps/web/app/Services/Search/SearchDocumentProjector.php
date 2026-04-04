@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services\Search;
 
-use App\Models\SearchItem;
+use App\Models\GlobalSearch;
 
 final class SearchDocumentProjector
 {
-    public function upsert(array $payload, int $userId): SearchItem
+    public function upsert(array $payload, int $userId): GlobalSearch
     {
-        return SearchItem::query()
+        return GlobalSearch::query()
             ->updateOrCreate(
                 [
                     'creator_id' => $payload['creator_id'],
@@ -22,7 +22,7 @@ final class SearchDocumentProjector
 
     public function remove(string $identifier): void
     {
-        SearchItem::query()
+        GlobalSearch::query()
             ->where('creator_id', $identifier)
             ->delete();
     }

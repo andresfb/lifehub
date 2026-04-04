@@ -15,7 +15,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-final class MarkerMutatorJob implements ShouldQueue
+final class MarkerMutatorAIJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -41,7 +41,7 @@ final class MarkerMutatorJob implements ShouldQueue
         } catch (Exception $e) {
             Log::error($e->getMessage());
         } finally {
-            SearchDocumentUpdatedJob::dispatch($this->markerId);
+            MarkerAiSummaryJob::dispatch($this->markerId);
         }
     }
 }

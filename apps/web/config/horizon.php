@@ -256,6 +256,17 @@ return [
                 'tries' => 1,
             ],
 
+            'importer-supervisor' => [
+                'connection' => 'redis',
+                'queue' => ['import'],
+                'balance' => 'auto',
+                'autoScalingStrategy' => 'size',
+                'minProcesses' => 1,
+                'maxProcesses' => 6,
+                'timeout' => 300, // 5 Minutes
+                'tries' => 1,
+            ],
+
         ],
 
         'local' => [
@@ -282,6 +293,14 @@ return [
             'ai-supervisor' => [
                 'connection' => 'redis',
                 'queue' => ['ai'],
+                'balance' => 'auto',
+                'autoScalingStrategy' => 'size',
+                'tries' => 1,
+            ],
+
+            'importer-supervisor' => [
+                'connection' => 'redis',
+                'queue' => ['import'],
                 'balance' => 'auto',
                 'autoScalingStrategy' => 'size',
                 'tries' => 1,

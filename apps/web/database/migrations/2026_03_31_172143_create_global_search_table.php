@@ -11,7 +11,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('search_items', static function (Blueprint $table) {
+        Schema::create('global_searches', static function (Blueprint $table) {
             $table->id();
             $table->string('creator_id')->unique();
             $table->foreignIdFor(User::class)
@@ -41,6 +41,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('search_items');
+        Schema::dropIfExists('global_searches');
     }
 };

@@ -16,12 +16,16 @@ use App\Models\User;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
+use Laravel\Scout\Searchable;
 use Override;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -30,12 +34,13 @@ use Spatie\Tags\HasTags;
 
 /**
  * @property-read int $id
- * @property-read int $user_id
- * @property-read int $category_id
+ * @property int $user_id
+ * @property int $category_id
  * @property string $hash
  * @property string $status
  * @property string $url
  * @property string|null $title
+ * @property string|null $domain
  * @property string|null $description
  * @property string|null $summary
  * @property string|null $notes
@@ -57,6 +62,7 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Us
     use HasFactory;
     use HasTags;
     use SoftDeletes;
+    use Searchable;
 
     protected $table = 'bookmarks_markers';
 
@@ -77,6 +83,32 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Us
             ModuleKey::BOOKMARKS->value,
             $this->id
         );
+    }
+
+    public function searchableAs(): string
+    {
+        return 'bookmarks_markers_index';
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'user_id' => (string) $this->user_id,
+            'category_id' => (string) $this->category_id,
+            'status' => $this->status->value,
+            'category' => $this->category->title,
+            'title' => $this->title,
+            'url' => $this->url,
+            'domain' => $this->domain ?? '',
+            'description' => $this->description ?? '',
+            'summary' => $this->summary ?? '',
+            'notes' => $this->notes ?? '',
+            'deleted_at' => $this->deleted_at?->unix(),
+            'created_at' => $this->created_at?->unix(),
+            'updated_at' => $this->updated_at?->unix() ?? now()->unix(),
+            'tags' => $this->tags?->pluck('name')->values()->all() ?? [],
+        ];
     }
 
     public function buildGlobalSearch(): array
@@ -104,12 +136,60 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Us
         ];
     }
 
+    protected static function booted(): void
+    {
+        self::addGlobalScope(static function (Builder $builder) {
+            $builder->with('category')
+                ->with('user')
+                ->with('tags');
+        });
+    }
+
+    #[Scope]
+    protected function active(Builder $query): Builder
+    {
+        return $query->where('status', MarkerStatus::ACTIVE)
+            ->orderBy('priority')
+            ->latest();
+    }
+
+    #[Scope]
+    protected function archived(Builder $query): Builder
+    {
+        return $query->where('status', MarkerStatus::ARCHIVED)
+            ->orderBy('priority')
+            ->latest();
+    }
+
+    #[Scope]
+    protected function hidden(Builder $query): Builder
+    {
+        return $query->where('status', MarkerStatus::HIDDEN)
+            ->orderBy('priority');
+    }
+
     #[Override]
     protected function casts(): array
     {
         return [
             'status' => MarkerStatus::class,
         ];
+    }
+
+    public static function found(string $url): bool
+    {
+        $urlHash = md5($url);
+
+        return Cache::tags('markers')
+            ->remember(
+                $urlHash,
+                now()->addMonth(),
+                function () use ($urlHash): bool {
+                    return self::query()
+                        ->where('hash', $urlHash)
+                        ->exists();
+                }
+            );
     }
 
     private function parseBody(): string
@@ -127,7 +207,7 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Us
             ->append($this->parseSummary())
             ->trim()
             ->newLine(2)
-            ->append($this->notes ?? '')
+            ->append($this->parseNotes())
             ->trim()
             ->toString();
     }
@@ -154,6 +234,19 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Us
         return str('SUMMARY')
             ->newLine(2)
             ->append($this->summary)
+            ->trim()
+            ->toString();
+    }
+
+    private function parseNotes(): string
+    {
+        if (blank($this->notes)) {
+            return '';
+        }
+
+        return str('NOTES')
+            ->newLine(2)
+            ->append($this->notes)
             ->trim()
             ->toString();
     }

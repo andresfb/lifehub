@@ -6,6 +6,7 @@ namespace App\Domain\Bookmarks\Services;
 
 use App\Domain\Bookmarks\Models\Marker;
 use App\Domain\Bookmarks\Tasks\MarkerAiSummaryTask;
+use Illuminate\Support\Facades\Cache;
 use RuntimeException;
 
 final readonly class MarkerAiSummaryService
@@ -26,6 +27,7 @@ final readonly class MarkerAiSummaryService
 
         $marker->summary = $response['summary'];
         $marker->saveQuietly();
+        Cache::tags('markers')->flush();
 
         if (! is_array($response['tags']) || blank($response['tags'])) {
             return;

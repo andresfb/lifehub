@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Observers\UserObserver;
 use App\Traits\AdminHashable;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Override;
@@ -33,6 +36,7 @@ use Override;
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  */
+#[ObservedBy([UserObserver::class])]
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token', 'admin_hash'])]
 final class User extends Authenticatable implements MustVerifyEmail
@@ -61,13 +65,28 @@ final class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdmin(): bool
     {
-        return Cache::remember(
-            md5("USER:ADMIN_HASH:{$this->id}"),
-            now()->addMonth(),
-            function (): bool {
-                return $this->isHashValid($this->id, $this->admin_hash);
-            }
-        );
+        return Cache::tags('users')
+            ->remember(
+                md5("USER:ADMIN_HASH:{$this->id}"),
+                now()->addMonth(),
+                function (): bool {
+                    return $this->isHashValid($this->id, $this->admin_hash);
+                }
+            );
+    }
+
+    public static function getAdmin(): self
+    {
+        return Cache::tags('users')
+            ->remember(
+                md5('GET:ADMIN'),
+                now()->addMonth(),
+                function (): User {
+                    return self::query()
+                        ->where('email', Config::string('constants.admin_email'))
+                        ->firstOrFail();
+                }
+            );
     }
 
     /**

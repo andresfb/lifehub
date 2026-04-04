@@ -8,3 +8,4 @@ resources/js/routes
 resources/js/wayfinder
 resources/js/actions
 node_modules
+/public/hot

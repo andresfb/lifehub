@@ -32,16 +32,15 @@ use Override;
  * @property-read CarbonImmutable|null $updated_at
  * @property-read User $user
  */
-final class SearchItem extends Model implements UserModelInterface
+final class GlobalSearch extends Model implements UserModelInterface
 {
     use BelongsToUser;
     use HasFactory;
     use Searchable;
 
-    // TODO: Rename this Model to GlobalSearch
     public function searchableAs(): string
     {
-        return 'global_search';
+        return 'global_search_index';
     }
 
     public function toSearchableArray(): array

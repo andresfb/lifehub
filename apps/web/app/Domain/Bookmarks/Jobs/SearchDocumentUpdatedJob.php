@@ -37,6 +37,7 @@ final class SearchDocumentUpdatedJob implements ShouldQueue
                 $marker->user_id,
             );
 
+            $marker->searchable();
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }
