@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Bookmarks\Http\Controllers\Api\V1;
 
 use App\Domain\Bookmarks\Actions\BulkMarkerImportAction;
 use App\Domain\Bookmarks\Http\Requests\Api\V1\BulkMarkerImportRequest;
 use App\Http\Controllers\ApiController;
+use Illuminate\Http\JsonResponse;
 
-class BulkMarkerImportController extends ApiController
+final class BulkMarkerImportController extends ApiController
 {
-    public function __invoke(BulkMarkerImportRequest $request, BulkMarkerImportAction $action)
+    public function __invoke(BulkMarkerImportRequest $request, BulkMarkerImportAction $action): JsonResponse
     {
         $action->handle($request->markers);
 
-        return $this->noContent();
+        return $this->success(
+            message: 'Markers queued for import successfully',
+        );
     }
 }

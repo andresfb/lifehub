@@ -17,6 +17,7 @@ return [
     */
 
     'default' => env('DB_CONNECTION', 'sqlite'),
+    'bookmarks' => env('BOOKM_DB_CONNECTION'),
 
     /*
     |--------------------------------------------------------------------------

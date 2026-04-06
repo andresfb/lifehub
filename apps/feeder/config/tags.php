@@ -1,5 +1,7 @@
 <?php
 
+use Spatie\Tags\Tag;
+
 return [
 
     /*
@@ -11,7 +13,7 @@ return [
     /*
      * The fully qualified class name of the tag model.
      */
-    'tag_model' => Spatie\Tags\Tag::class,
+    'tag_model' => Tag::class,
 
     /*
      * The name of the table associated with the taggable morph relation.

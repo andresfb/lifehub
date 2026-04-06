@@ -25,6 +25,7 @@
         "league/flysystem-aws-s3-v3": "^3.32",
         "nunomaduro/essentials": "^1.2",
         "owen-it/laravel-auditing": "^14.0",
+        "spatie/browsershot": "^5.2",
         "spatie/laravel-data": "^4.20",
         "spatie/laravel-medialibrary": "^11.21",
         "spatie/laravel-query-builder": "^7.1",

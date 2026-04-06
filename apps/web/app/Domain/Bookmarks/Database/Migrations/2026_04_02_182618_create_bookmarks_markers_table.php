@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('hash')->unique();
             $table->string('status', 10)->default('active');
             $table->string('title')->nullable();
-            $table->text('url');
+            $table->text('url')->index();
             $table->string('domain')->nullable();
             $table->text('description')->nullable();
             $table->text('summary')->nullable();

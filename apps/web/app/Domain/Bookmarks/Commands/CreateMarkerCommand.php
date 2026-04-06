@@ -69,7 +69,7 @@ final class CreateMarkerCommand extends BaseUserCommand
                 )
                 ->submit();
 
-            $urlHash = md5($result['url']);
+            $urlHash = Marker::getHash($result['url']);
             if (Marker::query()->where('hash', $urlHash)->exists()) {
                 throw new RuntimeException('URL already exists');
             }

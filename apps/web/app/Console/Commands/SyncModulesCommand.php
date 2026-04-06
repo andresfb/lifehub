@@ -29,8 +29,8 @@ final class SyncModulesCommand extends Command
             intro('Syncing modules');
 
             $modules = resolve('module_records');
-            if ($modules instanceof Collection) {
-                throw new RuntimeException('Modules Records not found');
+            if (! $modules instanceof Collection) {
+                throw new RuntimeException('Modules List is empty');
             }
 
             if ($modules->isEmpty()) {

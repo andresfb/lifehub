@@ -16,7 +16,7 @@ final readonly class MarkerObserver
     {
         $marker->title = trim($marker->title);
         $marker->url = trim($marker->url);
-        $marker->hash = md5($marker->url);
+        $marker->hash = Marker::getHash($marker->url);
     }
 
     public function created(Marker $marker): void

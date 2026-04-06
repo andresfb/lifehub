@@ -51,6 +51,13 @@ final class User extends Authenticatable implements MustVerifyEmail
     use SoftDeletes;
     use TwoFactorAuthenticatable;
 
+    public static function getAdmin(): self
+    {
+        return self::query()
+            ->where('email', Config::string('constants.admin_email'))
+            ->firstOrFail();
+    }
+
     public function userModules(): HasMany
     {
         return $this->hasMany(UserModule::class);
@@ -71,20 +78,6 @@ final class User extends Authenticatable implements MustVerifyEmail
                 now()->addMonth(),
                 function (): bool {
                     return $this->isHashValid($this->id, $this->admin_hash);
-                }
-            );
-    }
-
-    public static function getAdmin(): self
-    {
-        return Cache::tags('users')
-            ->remember(
-                md5('GET:ADMIN'),
-                now()->addMonth(),
-                function (): User {
-                    return self::query()
-                        ->where('email', Config::string('constants.admin_email'))
-                        ->firstOrFail();
                 }
             );
     }

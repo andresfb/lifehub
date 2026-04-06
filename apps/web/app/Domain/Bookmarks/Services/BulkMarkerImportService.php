@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Bookmarks\Services;
 
 use App\Domain\Bookmarks\Dtos\BulkMarkerImportItem;
@@ -16,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-readonly class BulkMarkerImportService
+final readonly class BulkMarkerImportService
 {
     private Collection $errors;
 
@@ -26,7 +28,7 @@ readonly class BulkMarkerImportService
     }
 
     /**
-     * @param Collection<BulkMarkerImportItem> $markers
+     * @param  Collection<BulkMarkerImportItem>  $markers
      */
     public function execute(Collection $markers): void
     {
@@ -36,6 +38,12 @@ readonly class BulkMarkerImportService
             try {
                 DB::transaction(function () use ($item, &$markerId): void {
                     if (Marker::found($item->url)) {
+                        Log::notice(sprintf(
+                            'Url %s already exists for User %s',
+                            $item->url,
+                            Auth::id())
+                        );
+
                         return;
                     }
 
@@ -44,7 +52,7 @@ readonly class BulkMarkerImportService
                     $marker = new Marker;
                     $marker->user_id = Auth::id();
                     $marker->category_id = $this->getCategory($item->category);
-                    $marker->hash = md5($url);
+                    $marker->hash = Marker::getHash($url);
                     $marker->url = $url;
                     $marker->title = trim($item->title);
                     $marker->status = MarkerStatus::from($item->status);
@@ -62,8 +70,11 @@ readonly class BulkMarkerImportService
                     }
                 });
 
+                if (blank($markerId)) {
+                    return;
+                }
+
                 MarkerMutatorJob::dispatch($markerId);
-                Cache::tags('markers')->flush();
             } catch (Throwable $e) {
                 Log::error($e->getMessage());
 
@@ -80,6 +91,8 @@ readonly class BulkMarkerImportService
             }
         });
 
+        Cache::tags('markers')->flush();
+
         if ($this->errors->isEmpty()) {
             return;
         }
@@ -91,7 +104,7 @@ readonly class BulkMarkerImportService
     {
         return Category::query()
             ->firstOrCreate([
-                'title' => ucwords(strtolower($category)),
+                'title' => ucwords(mb_strtolower($category)),
                 'user_id' => Auth::id(),
             ])->id;
     }

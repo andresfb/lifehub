@@ -210,6 +210,7 @@ return [
                         ['name' => 'source_updated_at', 'type' => 'int64', 'sort' => true, 'optional' => true],
                     ],
                     'default_sorting_field' => 'updated_at',
+                    'enable_nested_fields' => true,
                 ],
                 'search-parameters' => [
                     'query_by' => 'title,body,tags,keywords',

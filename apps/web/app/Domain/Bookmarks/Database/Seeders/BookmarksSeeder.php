@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Bookmarks\Seeders;
+namespace App\Domain\Bookmarks\Database\Seeders;
 
 use App\Services\Modules\ModuleRegistry;
 use Illuminate\Database\Seeder;

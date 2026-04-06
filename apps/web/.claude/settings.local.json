@@ -7,7 +7,12 @@
       "Bash(git diff:*)",
       "Bash(find /Volumes/Personal/SourceControl/Projects/lifehub/database/migrations -type f -name *media* -o -name *tag*)",
       "Bash(git -C /Volumes/Personal/SourceControl/Projects/lifehub/apps/web checkout bootstrap/providers.php database/seeders/DatabaseSeeder.php app/Enums/ModuleKey.php)",
-      "mcp__laravel-boost__database-schema"
+      "mcp__laravel-boost__database-schema",
+      "Bash(composer require:*)",
+      "Bash(npm install:*)",
+      "Bash(vendor/bin/pint:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

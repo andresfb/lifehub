@@ -57,6 +57,7 @@ trait ModulesAssignable
                 targetUser: $user,
                 module: $module,
                 grantedBy: $this->getAdmin(),
+                accessLevel: ModuleAccessLevel::WRITE,
             );
         });
     }

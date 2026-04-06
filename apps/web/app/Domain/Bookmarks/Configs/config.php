@@ -11,4 +11,8 @@ return [
 
     'hidden_key' => 'MARKER:HIDDEN:SHOW:%s',
 
+    'browsershot_fallback' => (bool) env('BOOKMARKS_BROWSERSHOT_FALLBACK', true),
+
+    'browsershot_timeout' => (int) env('BOOKMARKS_BROWSERSHOT_TIMEOUT', 30),
+
 ];

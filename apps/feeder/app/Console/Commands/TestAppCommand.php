@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Console\Commands\Base\BaseUserCommand;
 use Exception;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
 use function Laravel\Prompts\clear;
@@ -14,7 +14,7 @@ use function Laravel\Prompts\intro;
 use function Laravel\Prompts\outro;
 use function Laravel\Prompts\warning;
 
-final class TestAppCommand extends BaseUserCommand
+final class TestAppCommand extends Command
 {
     protected $signature = 'test:app {--user=}';
 
@@ -26,8 +26,6 @@ final class TestAppCommand extends BaseUserCommand
             clear();
             intro('Running tests');
             Log::notice('Running tests');
-
-            $user = $this->loadUser();
 
             return self::SUCCESS;
         } catch (Exception $e) {

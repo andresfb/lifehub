@@ -24,12 +24,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Scout\Searchable;
 use Override;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Models\Audit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Tags\HasTags;
 
 /**
@@ -55,16 +58,49 @@ use Spatie\Tags\HasTags;
  */
 #[ObservedBy([MarkerObserver::class])]
 #[UsePolicy(MarkerPolicy::class)]
-final class Marker extends Model implements Auditable, GlobalSearchInterface, UserModelInterface
+final class Marker extends Model implements Auditable, GlobalSearchInterface, HasMedia, UserModelInterface
 {
     use AuditableTrait;
     use BelongsToUser;
     use HasFactory;
     use HasTags;
-    use SoftDeletes;
+    use InteractsWithMedia;
     use Searchable;
+    use SoftDeletes;
 
     protected $table = 'bookmarks_markers';
+
+    public static function getHash($url): string
+    {
+        return md5(sprintf(
+            '%s:%s',
+            trim($url),
+            Auth::id()
+        ));
+    }
+
+    public static function found(string $url): bool
+    {
+        $urlHash = self::getHash($url);
+
+        return Cache::tags('markers')
+            ->remember(
+                $urlHash,
+                now()->addMonth(),
+                function () use ($urlHash): bool {
+                    return self::query()
+                        ->where('hash', $urlHash)
+                        ->exists();
+                }
+            );
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('screenshot')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/png', 'image/jpeg', 'image/webp']);
+    }
 
     public function user(): BelongsTo
     {
@@ -83,6 +119,18 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Us
             ModuleKey::BOOKMARKS->value,
             $this->id
         );
+    }
+
+    public function getTags(): array
+    {
+        if (blank($this->tags)) {
+            return [];
+        }
+
+        return $this->tags
+            ->pluck('name')
+            ->values()
+            ->all();
     }
 
     public function searchableAs(): string
@@ -107,7 +155,7 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Us
             'deleted_at' => $this->deleted_at?->unix(),
             'created_at' => $this->created_at?->unix(),
             'updated_at' => $this->updated_at?->unix() ?? now()->unix(),
-            'tags' => $this->tags?->pluck('name')->values()->all() ?? [],
+            'tags' => $this->getTags(),
         ];
     }
 
@@ -121,7 +169,7 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Us
             'module' => 'BOOKMARKS',
             'title' => $this->title,
             'body' => $this->parseBody(),
-            'tags' => $this->tags?->pluck('name')->values()->all() ?? [],
+            'tags' => $this->getTags(),
             'keywords' => [],
             'metadata' => [
                 'icon' => 'link',
@@ -174,22 +222,6 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Us
         return [
             'status' => MarkerStatus::class,
         ];
-    }
-
-    public static function found(string $url): bool
-    {
-        $urlHash = md5($url);
-
-        return Cache::tags('markers')
-            ->remember(
-                $urlHash,
-                now()->addMonth(),
-                function () use ($urlHash): bool {
-                    return self::query()
-                        ->where('hash', $urlHash)
-                        ->exists();
-                }
-            );
     }
 
     private function parseBody(): string

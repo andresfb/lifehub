@@ -5,19 +5,18 @@ declare(strict_types=1);
 namespace App\Models\Base;
 
 use App\Libraries\MediaLibrary\MediaNamesLibrary;
-use App\Models\Media;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
+// TODO: do I need this model? Isn't it better for each Model that needs media to implement the HasMedia and register its own Collections
 abstract class ModelWithMedia extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
 
-    public function registerMediaConversions(Media|SpatieMedia|null $media = null): void
+    public function registerMediaCollections(): void
     {
         $this->addMediaCollection(MediaNamesLibrary::encrypted());
 

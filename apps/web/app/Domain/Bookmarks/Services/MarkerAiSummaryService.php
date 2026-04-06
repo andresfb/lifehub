@@ -17,23 +17,17 @@ final readonly class MarkerAiSummaryService
 
     public function execute(Marker $marker): void
     {
-        $response = $this->task
-            ->setModel($marker)
-            ->handle();
+        [$summary, $tags] = $this->getSummary($marker);
 
-        if (blank($response['summary'])) {
-            throw new RuntimeException('The Agent did not generate an summary');
-        }
-
-        $marker->summary = $response['summary'];
+        $marker->summary = $summary;
         $marker->saveQuietly();
         Cache::tags('markers')->flush();
 
-        if (! is_array($response['tags']) || blank($response['tags'])) {
+        if (! is_array($tags) || blank($tags)) {
             return;
         }
 
-        $tags = collect($response['tags'])
+        $tags = collect($tags)
             ->map(function (string $tag) {
                 return str($tag)
                     ->trim()
@@ -42,5 +36,39 @@ final readonly class MarkerAiSummaryService
             });
 
         $marker->fresh()->attachTags($tags);
+    }
+
+    private function getSummary(Marker $marker): array
+    {
+        [$found, $summary, $tags] = $this->findSimilar($marker);
+        if ($found) {
+            return [$summary, $tags];
+        }
+
+        $response = $this->task
+            ->setModel($marker)
+            ->handle();
+
+        if (blank($response['summary'])) {
+            throw new RuntimeException('The Agent did not generate an summary');
+        }
+
+        return [$response['summary'], $response['tags']];
+    }
+
+    private function findSimilar(Marker $marker): array
+    {
+        $marker = Marker::query()
+            ->with('tags')
+            ->where('url', $marker->url)
+            ->where('id', '!=', $marker->id)
+            ->whereNotNull('summary')
+            ->first();
+
+        return [
+            filled($marker),
+            $marker->summary ?? null,
+            $marker?->getTags(),
+        ];
     }
 }

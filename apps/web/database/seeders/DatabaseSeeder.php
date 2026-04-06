@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Domain\Bookmarks\Seeders\BookmarksSeeder;
+use App\Domain\Bookmarks\Database\Seeders\BookmarksSeeder;
 use App\Domain\Core\Seeders\CoreSeeder;
 use Illuminate\Database\Seeder;
 
