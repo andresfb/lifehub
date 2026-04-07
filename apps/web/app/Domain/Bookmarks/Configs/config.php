@@ -11,8 +11,6 @@ return [
 
     'hidden_key' => 'MARKER:HIDDEN:SHOW:%s',
 
-    'browsershot_fallback' => (bool) env('BOOKMARKS_BROWSERSHOT_FALLBACK', true),
-
-    'browsershot_timeout' => (int) env('BOOKMARKS_BROWSERSHOT_TIMEOUT', 30),
+    'mutator_banded_domains' => explode(',', env('BOOKMARKS_MUTATOR_BANDED_DOMAINS', 'imdb.com')),
 
 ];

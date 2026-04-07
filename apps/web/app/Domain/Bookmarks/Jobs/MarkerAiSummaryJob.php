@@ -25,7 +25,7 @@ final class MarkerAiSummaryJob implements ShouldQueue
     public function __construct(private readonly int $markerId)
     {
         $this->queue = 'ai';
-        $this->delay = now()->addSeconds(10);
+        $this->delay = now()->addSeconds(15);
     }
 
     public function handle(MarkerAiSummaryService $service): void

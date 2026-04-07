@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\Bookmarks\Commands;
 
 use App\Console\Commands\Base\BaseUserCommand;
+use App\Domain\Bookmarks\Dtos\MarkerItem;
 use App\Domain\Bookmarks\Models\Category;
 use App\Domain\Bookmarks\Models\Marker;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Throwable;
@@ -18,11 +20,14 @@ use function Laravel\Prompts\form;
 use function Laravel\Prompts\intro;
 use function Laravel\Prompts\outro;
 use function Laravel\Prompts\text;
+use function Laravel\Prompts\textarea;
 use function Laravel\Prompts\warning;
 
 final class CreateMarkerCommand extends BaseUserCommand
 {
-    protected $signature = 'create:marker {--user=}';
+    protected $signature = 'create:marker
+                            {--user=}
+                            {--form= : Use a form to enter the bookmark info separately}';
 
     protected $description = 'Add a new URL Bookmark';
 
@@ -35,58 +40,26 @@ final class CreateMarkerCommand extends BaseUserCommand
             intro('Add Bookmark');
 
             $this->loadUser();
-            $this->checkCategories();
 
             warning('Creating Bookmark');
 
-            $result = form()
-                ->select(
-                    label: 'Select Category',
-                    options: Category::getSelectableList(),
-                    default: $this->defaultCategory,
-                    scroll: 10,
-                    name: 'category',
-                )
-                ->text(
-                    label: 'Enter the Title',
-                    validate: 'string',
-                    hint: 'Title Titlest',
-                    name: 'title',
-                    transform: fn (string $value): string => trim($value),
-                )
-                ->text(
-                    label: 'Enter the URL',
-                    required: true,
-                    validate: 'string|url|active_url',
-                    name: 'url',
-                    transform: fn (string $value): string => trim($value),
-                )
-                ->text(
-                    label: 'Tags',
-                    validate: 'string',
-                    hint: 'Comma-separated',
-                    name: 'tags',
-                )
-                ->submit();
+            $item = $this->option('form')
+                ? $this->getFormData()
+                : $this->getTextData();
 
-            $urlHash = Marker::getHash($result['url']);
-            if (Marker::query()->where('hash', $urlHash)->exists()) {
+            if (Marker::found($item->url)) {
                 throw new RuntimeException('URL already exists');
             }
 
-            return DB::transaction(static function () use ($result): int {
+            return DB::transaction(static function () use ($item): int {
                 $marker = Marker::query()
-                    ->create([
-                        'category_id' => (int) $result['category'],
-                        'title' => $result['title'],
-                        'url' => $result['url'],
-                    ]);
+                    ->create($item->toArray());
 
-                if (blank($result['tags'])) {
+                if (blank($item->tags)) {
                     return self::SUCCESS;
                 }
 
-                $tags = array_map(trim(...), explode(',', $result['tags']));
+                $tags = array_map(trim(...), explode(',', $item->tags));
                 $marker->attachTags($tags);
 
                 return self::SUCCESS;
@@ -99,6 +72,104 @@ final class CreateMarkerCommand extends BaseUserCommand
             $this->newLine();
             outro('Done');
         }
+    }
+
+    private function getFormData(): MarkerItem
+    {
+        $this->checkCategories();
+
+        $response = form()
+            ->select(
+                label: 'Select Category',
+                options: Category::getSelectableList(),
+                default: $this->defaultCategory,
+                scroll: 10,
+                name: 'category',
+            )
+            ->text(
+                label: 'Enter the Title',
+                validate: 'string',
+                hint: 'Title Titlest',
+                name: 'title',
+                transform: fn (string $value): string => trim($value),
+            )
+            ->text(
+                label: 'Enter the URL',
+                required: true,
+                validate: 'string|url|active_url',
+                name: 'url',
+                transform: fn (string $value): string => trim($value),
+            )
+            ->text(
+                label: 'Tags',
+                validate: 'string',
+                hint: 'Comma-separated',
+                name: 'tags',
+            )
+            ->submit();
+
+        return MarkerItem::from($response);
+    }
+
+    private function getTextData(): MarkerItem
+    {
+        $entry = textarea(
+            label: 'Enter the full URL information',
+            required: true,
+            validate: 'string',
+            hint: "Category\n  Title\n  URL\n  Tags (coma separated)",
+        );
+
+        $parts = collect(explode("\n", $entry));
+        if ($parts->count() < 3) {
+            throw new RuntimeException('Incomplete URL data');
+        }
+
+        $category = str($parts->shift())
+            ->trim()
+            ->title()
+            ->toString();
+
+        if (blank($category)) {
+            throw new RuntimeException('No category provided');
+        }
+
+        $categoryId = Category::query()
+            ->updateOrCreate([
+                'title' => $category,
+                'user_id' => Auth::id(),
+            ])
+            ->id;
+
+        $title = str($parts->shift())
+            ->trim()
+            ->title()
+            ->toString();
+
+        if (blank($title)) {
+            throw new RuntimeException('No title provided');
+        }
+
+        $url = str($parts->shift())
+            ->trim()
+            ->rtrim('/')
+            ->toString();
+
+        if (blank($url)) {
+            throw new RuntimeException('No url provided');
+        }
+
+        $tags = '';
+        if ($parts->count() > 0) {
+            $tags = $parts->first();
+        }
+
+        return new MarkerItem(
+            category_id: $categoryId,
+            title: $title,
+            url: $url,
+            tags: $tags,
+        );
     }
 
     private function checkCategories(): void

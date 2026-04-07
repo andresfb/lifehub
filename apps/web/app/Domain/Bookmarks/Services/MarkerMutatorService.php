@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domain\Bookmarks\Services;
 
+use App\Domain\Bookmarks\Jobs\MarkerScreenshotJob;
+use App\Domain\Bookmarks\Libraries\MediaNamesLibrary;
 use App\Domain\Bookmarks\Models\Marker;
+use App\Dtos\Media\PageScreenshotItem;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
@@ -19,6 +21,13 @@ final class MarkerMutatorService
     public function execute(Marker $marker): void
     {
         try {
+            if ($this->bandedDomain($marker->url)) {
+                Log::notice("{$marker->url} cannot be mutated");
+                $this->saveWithDomain($marker);
+
+                return;
+            }
+
             [$title, $description] = $this->extractMeta($marker->url);
 
             if (blank($marker->title)) {
@@ -40,12 +49,15 @@ final class MarkerMutatorService
             Log::error($e->getMessage());
         }
 
-        $marker->domain = $marker->domain ?: $this->getDomain($marker->url);
-        $marker->saveQuietly();
-        Cache::tags('markers')->flush();
+        $this->saveWithDomain($marker);
 
-        // TODO: change this to a job
-        $this->captureScreenshot($marker);
+        MarkerScreenshotJob::dispatch(
+            new PageScreenshotItem(
+                modelId: $marker->id,
+                url: $marker->url,
+                collection: MediaNamesLibrary::screenshot(),
+            )
+        );
     }
 
     /**
@@ -57,7 +69,7 @@ final class MarkerMutatorService
     {
         [$title, $description] = $this->extractMetaViaHttp($url);
 
-        if (blank($title) && blank($description) && Config::boolean('markers.browsershot_fallback')) {
+        if (blank($title) && blank($description) && Config::boolean('constants.browsershot_fallback')) {
             Log::info("Falling back to headless browser for: {$url}");
             [$title, $description] = $this->extractMetaViaBrowser($url);
         }
@@ -121,7 +133,7 @@ final class MarkerMutatorService
         try {
             $html = Browsershot::url($url)
                 ->userAgent(Config::string('constants.crawler_agent'))
-                ->timeout(Config::integer('markers.browsershot_timeout'))
+                ->timeout(Config::integer('constants.browsershot_timeout'))
                 ->noSandbox()
                 ->dismissDialogs()
                 ->setOption('waitUntil', 'domcontentloaded')
@@ -136,40 +148,6 @@ final class MarkerMutatorService
             Log::error("Browsershot extraction failed for {$url}: {$e->getMessage()}");
 
             return [null, null];
-        }
-    }
-
-    private function captureScreenshot(Marker $marker): void
-    {
-        // TODO: move this to a core level service so other Modules can use it and adapt the config values
-
-        if (! Config::boolean('markers.browsershot_fallback')) {
-            return;
-        }
-
-        if ($marker->hasMedia('screenshot')) {
-            return;
-        }
-
-        try {
-            $directory = storage_path('app/private/screenshots');
-            File::ensureDirectoryExists($directory);
-
-            $tempPath = "{$directory}/{$marker->id}.png";
-
-            Browsershot::url($marker->url)
-                ->userAgent(Config::string('constants.crawler_agent'))
-                ->timeout(Config::integer('markers.browsershot_timeout'))
-                ->noSandbox()
-                ->dismissDialogs()
-                ->setOption('waitUntil', 'domcontentloaded')
-                ->windowSize(1280, 800)
-                ->save($tempPath);
-
-            $marker->addMedia($tempPath)
-                ->toMediaCollection('screenshot');
-        } catch (Exception $e) {
-            Log::error("Screenshot capture failed for {$marker->url}: {$e->getMessage()}");
         }
     }
 
@@ -193,5 +171,24 @@ final class MarkerMutatorService
         }
 
         return [$title, $description];
+    }
+
+    private function bandedDomain(string $url): bool
+    {
+        $banded = Config::array('markers.mutator_banded_domains');
+        foreach ($banded as $item) {
+            if (str($url)->contains($item, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function saveWithDomain(Marker $marker): void
+    {
+        $marker->domain = $marker->domain ?: $this->getDomain($marker->url);
+        $marker->saveQuietly();
+        Cache::tags('markers')->flush();
     }
 }

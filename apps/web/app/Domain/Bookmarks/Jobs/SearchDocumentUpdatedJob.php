@@ -23,7 +23,9 @@ final class SearchDocumentUpdatedJob implements ShouldQueue
 
     public function __construct(
         private readonly int $markerId,
-    ) {}
+    ) {
+        $this->delay = now()->addSeconds(10);
+    }
 
     public function handle(SearchDocumentProjector $projector): void
     {

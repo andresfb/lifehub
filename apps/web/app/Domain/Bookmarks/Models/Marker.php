@@ -8,6 +8,7 @@ use App\Contracts\GlobalSearchInterface;
 use App\Contracts\UserModelInterface;
 use App\Domain\Bookmarks\Enums\MarkerStatus;
 use App\Domain\Bookmarks\Enums\MorphTypes;
+use App\Domain\Bookmarks\Libraries\MediaNamesLibrary;
 use App\Domain\Bookmarks\Observers\MarkerObserver;
 use App\Domain\Bookmarks\Policies\MarkerPolicy;
 use App\Enums\ModuleKey;
@@ -95,13 +96,6 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Ha
             );
     }
 
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('screenshot')
-            ->singleFile()
-            ->acceptsMimeTypes(['image/png', 'image/jpeg', 'image/webp']);
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -110,6 +104,18 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Ha
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection(MediaNamesLibrary::screenshot())
+            ->singleFile()
+            ->acceptsMimeTypes([
+                'image/png',
+                'image/jpeg',
+                'image/webp'
+            ])
+            ->withResponsiveImages();
     }
 
     public function getIdentifier(): string
