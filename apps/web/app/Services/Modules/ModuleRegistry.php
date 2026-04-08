@@ -7,6 +7,7 @@ namespace App\Services\Modules;
 use App\Models\Module;
 use App\Models\User;
 use App\Traits\ModulesAssignable;
+use Illuminate\Support\Facades\Cache;
 
 final class ModuleRegistry
 {
@@ -24,6 +25,8 @@ final class ModuleRegistry
                 ['key'],
                 ['name', 'description', 'is_core', 'is_public', 'status']
             );
+
+        Cache::tags('users')->flush();
     }
 
     public function syncAndAssign(array $records): void

@@ -36,7 +36,9 @@ return new class extends Migration
             $table->index(['user_id', 'status'], 'user_status');
         });
 
-        DB::statement('ALTER TABLE `bookmarks_markers` ADD INDEX (`url`(750));');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('ALTER TABLE `bookmarks_markers` ADD INDEX (`url`(750));');
+        }
     }
 
     public function down(): void

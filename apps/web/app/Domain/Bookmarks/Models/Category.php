@@ -47,14 +47,15 @@ final class Category extends Model implements UserModelInterface
 
     protected $table = 'bookmarks_categories';
 
-    public static function getSelectableList(): array
+    public static function getSelectableList(int $userId): array
     {
-        return Cache::tags('categories')
+        return Cache::tags("categories:{$userId}")
             ->remember(
-                'selectable:list',
+                "selectable:list:{$userId}",
                 now()->addHours(5),
-                function (): array {
+                function () use ($userId): array {
                     return self::query()
+                        ->where('user_id', $userId)
                         ->where('active', true)
                         ->orderBy('order')
                         ->pluck('title', 'id')

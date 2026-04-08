@@ -30,6 +30,7 @@ final class MakeModuleCommand extends Command
             $name = (string) $this->argument('name');
             $pascalName = Str::studly($name);
             $upperName = Str::upper(Str::snake($name));
+            $lowerName = Str::lower($upperName);
             $basePath = app_path("Domain/{$pascalName}");
 
             if (File::isDirectory($basePath)) {
@@ -41,17 +42,21 @@ final class MakeModuleCommand extends Command
             $directories = [
                 'Actions',
                 'Commands',
+                'Configs',
+                'Database/Factories',
+                'Database/Migrations',
+                'Database/Seeders',
                 'Dtos',
                 'Enums',
                 'Http/Controllers',
                 'Http/Requests',
-                'Database/Factories',
-                'Database/Migrations',
+                'Jobs',
+                'Libraries',
                 'Models',
                 'Policies',
                 'Observers',
                 'Providers',
-                'Seeders',
+                'Routes/api',
                 'Services',
                 'Traits',
             ];
@@ -61,8 +66,11 @@ final class MakeModuleCommand extends Command
             }
 
             File::put("{$basePath}/Enums/MorphTypes.php", $this->morphTypesStub($pascalName, $upperName));
-            File::put("{$basePath}/Providers/{$pascalName}ServiceProvider.php", $this->serviceProviderStub($pascalName, $upperName));
-            File::put("{$basePath}/Seeders/{$pascalName}Seeder.php", $this->seederStub($pascalName, $upperName));
+            File::put("{$basePath}/Providers/{$pascalName}ServiceProvider.php", $this->serviceProviderStub($pascalName, $upperName, $lowerName));
+            File::put("{$basePath}/Database/Seeders/{$pascalName}Seeder.php", $this->seederStub($pascalName, $upperName));
+            File::put("{$basePath}/Routes/web.php", $this->webRouteStub($lowerName));
+            File::put("{$basePath}/Routes/api/v1.php", $this->apiRouteStub($lowerName));
+            File::put("{$basePath}/Configs/config.php", $this->configStub());
 
             collect(File::allDirectories($basePath))
                 ->filter(fn (string $dir): bool => count(File::files($dir)) === 0 && count(File::directories($dir)) === 0)
@@ -79,18 +87,17 @@ final class MakeModuleCommand extends Command
             File::put($providersPath, $providersContent);
 
             $seederPath = base_path('database/seeders/DatabaseSeeder.php');
-            $seederClass = "App\\Domain\\{$pascalName}\\Seeders\\{$pascalName}Seeder::class";
+            $seederClass = "App\\Domain\\{$pascalName}\\Database\\Seeders\\{$pascalName}Seeder::class";
             $seederContent = File::get($seederPath);
             $seederContent = str_replace(
-                '];',
-                "    {$seederClass},\n];",
+                ']);',
+                "    {$seederClass},\n]);",
                 $seederContent,
             );
             File::put($seederPath, $seederContent);
 
             $moduleKeyPath = app_path('Enums/ModuleKey.php');
             $moduleKeyContent = File::get($moduleKeyPath);
-            $lowerName = Str::lower($upperName);
             $moduleKeyContent = str_replace(
                 '}',
                 "    case {$upperName} = '{$lowerName}';\n}",
@@ -127,7 +134,7 @@ final class MakeModuleCommand extends Command
         PHP;
     }
 
-    private function serviceProviderStub(string $name, string $upperName): string
+    private function serviceProviderStub(string $name, string $upperName, string $lowerName): string
     {
         return <<<PHP
         <?php
@@ -136,7 +143,16 @@ final class MakeModuleCommand extends Command
 
         namespace App\Domain\\{$name}\Providers;
 
-        use App\Dtos\Modules\ModuleRecordItem;use App\Dtos\Modules\MorphTypesItems;use App\Enums\ModuleStatus;use Illuminate\Contracts\Container\BindingResolutionException;use Illuminate\Database\Eloquent\Factories\Factory;use Illuminate\Support\Collection;{$name}\Enums\MorphTypes;
+        use App\Dtos\Modules\ModuleRecordItem;
+        use App\Dtos\Modules\MorphTypesItems;
+        use App\Enums\ModuleKey;
+        use App\Enums\ModuleStatus;
+        use Illuminate\Contracts\Container\BindingResolutionException;
+        use Illuminate\Database\Eloquent\Factories\Factory;
+        use Illuminate\Support\Facades\Route;
+        use Illuminate\Support\ServiceProvider;
+        use Illuminate\Support\Collection;
+        use App\Domain\{$name}\Enums\MorphTypes;
 
         final class {$name}ServiceProvider extends ServiceProvider
         {
@@ -154,12 +170,13 @@ final class MakeModuleCommand extends Command
                 \$this->app->resolving('module_records', function (Collection \$records): void {
                     \$records->add(
                         new ModuleRecordItem(
-                            key: '{$upperName}',
+                            key: ModuleKey.{$upperName},
                             name: '{$name}',
                             description: 'placeholder description',
                             is_core: false,
                             is_public: false,
                             status: ModuleStatus::ACTIVE,
+                            show_menu: true,
                         )
                     );
                 });
@@ -170,7 +187,10 @@ final class MakeModuleCommand extends Command
              */
             public function boot(): void
             {
-                \$this->app->make(Factory::class)->load(__DIR__ . '/../Database/Factories');
+                \$this->mergeConfigFrom(__DIR__.'/../Configs/config.php', '{$lowerName}');
+
+                Route::middleware('web')->group(__DIR__.'/../Routes/web.php');
+                \$this->loadRoutesFrom(__DIR__.'/../Routes/api/v1.php');
 
                 \$this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
             }
@@ -185,7 +205,7 @@ final class MakeModuleCommand extends Command
 
         declare(strict_types=1);
 
-        namespace App\Domain\\{$name}\Seeders;
+        namespace App\Domain\\{$name}\Database\Seeders;
 
         use App\Services\Modules\ModuleRegistry;
         use Illuminate\Database\Seeder;
@@ -214,6 +234,62 @@ final class MakeModuleCommand extends Command
                 \$this->registry->syncAndAssign(\$records->toArray());
             }
         }
+        PHP;
+    }
+
+    private function webRouteStub(string $lowerName): string
+    {
+        return <<<PHP
+        <?php
+
+        declare(strict_types=1);
+
+        use Illuminate\Support\Facades\Route;
+
+        Route::middleware([
+            'auth',
+            'verified',
+            'module.access:{$lowerName},read',
+        ])
+            ->prefix('{$lowerName}')
+            ->group(function () {
+
+            });
+        PHP;
+    }
+
+    private function apiRouteStub(string $lowerName): string
+    {
+        return <<<PHP
+        <?php
+
+        declare(strict_types=1);
+
+        use Illuminate\Support\Facades\Route;
+
+        Route::middleware([
+            'auth:sanctum',
+            'throttle:authenticated',
+            'module.access:{$lowerName},read',
+        ])
+            ->prefix('api/v1/{$lowerName}')
+            ->group(function (): void {
+
+            });
+        PHP;
+    }
+
+    private function configStub(): string
+    {
+        return <<<'PHP'
+        <?php
+
+        declare(strict_types=1);
+        /** @noinspection LaravelFunctionsInspection */
+
+        return [
+
+        ];
         PHP;
     }
 }

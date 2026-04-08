@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Http\Controllers\HomepageController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([
@@ -11,9 +10,6 @@ Route::middleware([
     'module.access:core,read',
 ])
     ->group(function () {
-
-        Route::get('dashboard', HomepageController::class)
-            ->name('dashboard');
 
         Route::get('/reminders/{reminder}', static function () {
             echo 'TODO: Change this to a Inertia component';

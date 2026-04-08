@@ -7,12 +7,11 @@ namespace App\Domain\Core\Providers;
 use App\Domain\Core\Enums\MorphTypes;
 use App\Dtos\Modules\ModuleRecordItem;
 use App\Dtos\Modules\MorphTypesItems;
+use App\Enums\ModuleKey;
 use App\Enums\ModuleStatus;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-
-// TODO: move the Homepage and Search Providers to a separate Module
 
 final class CoreServiceProvider extends ServiceProvider
 {
@@ -25,23 +24,18 @@ final class CoreServiceProvider extends ServiceProvider
                     MorphTypes::CORE_REMINDER->value,
                 ),
             );
-            $types->add(
-                new MorphTypesItems(
-                    MorphTypes::CORE_HOMEPAGE_ITEM->name,
-                    MorphTypes::CORE_HOMEPAGE_ITEM->value,
-                ),
-            );
         });
 
         $this->app->resolving('module_records', function (Collection $records): void {
             $records->add(
                 new ModuleRecordItem(
-                    key: 'CORE',
+                    key: ModuleKey::CORE,
                     name: 'Core Module',
                     description: 'The base Module where all starts',
-                    is_core: true,
-                    is_public: true,
+                    isCore: true,
+                    isPublic: true,
                     status: ModuleStatus::ACTIVE,
+                    showMenu: false,
                 )
             );
         });

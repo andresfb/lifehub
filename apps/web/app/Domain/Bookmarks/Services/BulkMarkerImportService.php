@@ -32,12 +32,14 @@ final readonly class BulkMarkerImportService
      */
     public function execute(Collection $markers): void
     {
-        $markers->each(function (BulkMarkerImportItem $item) {
+        $userId = Auth::id();
+
+        $markers->each(function (BulkMarkerImportItem $item) use ($userId) {
             $markerId = 0;
 
             try {
-                DB::transaction(function () use ($item, &$markerId): void {
-                    if (Marker::found($item->url)) {
+                DB::transaction(function () use ($item, &$markerId, $userId): void {
+                    if (Marker::found($item->url, $userId)) {
                         Log::notice(sprintf(
                             'Url %s already exists for User %s',
                             $item->url,
@@ -50,9 +52,9 @@ final readonly class BulkMarkerImportService
                     $url = trim($item->url);
 
                     $marker = new Marker;
-                    $marker->user_id = Auth::id();
+                    $marker->user_id = $userId;
                     $marker->category_id = $this->getCategory($item->category);
-                    $marker->hash = Marker::getHash($url);
+                    $marker->hash = Marker::getHash($url, $userId);
                     $marker->url = $url;
                     $marker->title = trim($item->title);
                     $marker->status = MarkerStatus::from($item->status);
@@ -80,8 +82,8 @@ final readonly class BulkMarkerImportService
                 Log::error($e->getMessage());
 
                 $this->errors->push(ApiErrorItem::from([
-                    'user_id' => Auth::id(),
-                    'source_id' => (string) $item->id,
+                    'userId' => $userId,
+                    'sourceId' => (string) $item->id,
                     'type' => Marker::class,
                     'error' => $e->getMessage(),
                     'data' => [
@@ -92,7 +94,7 @@ final readonly class BulkMarkerImportService
             }
         });
 
-        Cache::tags('markers')->flush();
+        Cache::tags("markers:{$userId}")->flush();
 
         if ($this->errors->isEmpty()) {
             return;

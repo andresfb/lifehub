@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Traits\Api\ApiResponse;
 
-final class ApiController extends Controller
+abstract class ApiController extends Controller
 {
     use ApiResponse;
 }

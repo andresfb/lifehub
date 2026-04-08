@@ -135,7 +135,7 @@ task('env:pull', function () {
 
     if (! file_exists($localEnvPath)) {
         runLocally("mkdir -p $envDir");
-        runLocally("op read \"op//{$envVault}/{$envCard}/$envFile\" --out-file \"$localEnvPath\"");
+        runLocally("op read \"op://{$envVault}/{$envCard}/$envFile\" --out-file \"$localEnvPath\"");
     }
 });
 

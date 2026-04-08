@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ModuleAccessLevel;
+use App\Enums\ModuleStatus;
+use App\Enums\ModuleVisibility;
 use App\Observers\UserObserver;
 use App\Traits\AdminHashable;
 use Carbon\CarbonImmutable;
@@ -68,6 +71,19 @@ final class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Module::class, 'user_modules')
             ->withPivot(['enabled', 'access_level', 'visibility', 'settings', 'granted_by'])
             ->withTimestamps();
+    }
+
+    public function accessibleModules(): BelongsToMany
+    {
+        return $this->modules()
+            ->wherePivot('enabled', true)
+            ->wherePivot('visibility', ModuleVisibility::VISIBLE)
+            ->wherePivotIn('access_level', [
+                ModuleAccessLevel::READ,
+                ModuleAccessLevel::WRITE,
+                ModuleAccessLevel::ADMIN,
+            ])
+            ->where('status', ModuleStatus::ACTIVE);
     }
 
     public function isAdmin(): bool

@@ -8,6 +8,7 @@ use App\Console\Commands\Base\BaseUserCommand;
 use App\Domain\Bookmarks\Dtos\MarkerItem;
 use App\Domain\Bookmarks\Models\Category;
 use App\Domain\Bookmarks\Models\Marker;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -33,13 +34,15 @@ final class CreateMarkerCommand extends BaseUserCommand
 
     private string $defaultCategory = '';
 
+    private User $user;
+
     public function handle(): int
     {
         try {
             clear();
             intro('Add Bookmark');
 
-            $this->loadUser();
+            $this->user = $this->loadUser();
 
             warning('Creating Bookmark');
 
@@ -47,7 +50,7 @@ final class CreateMarkerCommand extends BaseUserCommand
                 ? $this->getFormData()
                 : $this->getTextData();
 
-            if (Marker::found($item->url)) {
+            if (Marker::found($item->url, $this->user->id)) {
                 throw new RuntimeException('URL already exists');
             }
 
@@ -81,7 +84,7 @@ final class CreateMarkerCommand extends BaseUserCommand
         $response = form()
             ->select(
                 label: 'Select Category',
-                options: Category::getSelectableList(),
+                options: Category::getSelectableList($this->user->id),
                 default: $this->defaultCategory,
                 scroll: 10,
                 name: 'category',
@@ -165,7 +168,7 @@ final class CreateMarkerCommand extends BaseUserCommand
         }
 
         return new MarkerItem(
-            category_id: $categoryId,
+            categoryId: $categoryId,
             title: $title,
             url: $url,
             tags: $tags,

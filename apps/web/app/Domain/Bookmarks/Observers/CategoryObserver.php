@@ -18,8 +18,8 @@ final class CategoryObserver
         $category->order = Category::query()->max('order') + 1;
     }
 
-    public function saved(): void
+    public function saved(Category $category): void
     {
-        Cache::tags('categories')->flush();
+        Cache::tags("categories:{$category->user_id}")->flush();
     }
 }

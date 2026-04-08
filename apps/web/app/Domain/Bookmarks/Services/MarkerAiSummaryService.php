@@ -21,7 +21,8 @@ final readonly class MarkerAiSummaryService
 
         $marker->summary = $summary;
         $marker->saveQuietly();
-        Cache::tags('markers')->flush();
+
+        Cache::tags("markers:{$marker->user_id}")->flush();
 
         if (! is_array($tags) || blank($tags)) {
             return;

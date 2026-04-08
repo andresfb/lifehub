@@ -189,6 +189,6 @@ final class MarkerMutatorService
     {
         $marker->domain = $marker->domain ?: $this->getDomain($marker->url);
         $marker->saveQuietly();
-        Cache::tags('markers')->flush();
+        Cache::tags("markers:{$marker->user_id}")->flush();
     }
 }

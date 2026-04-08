@@ -8,6 +8,7 @@ use App\Domain\Bookmarks\Jobs\MarkerDeletedJob;
 use App\Domain\Bookmarks\Jobs\MarkerMutatorAIJob;
 use App\Domain\Bookmarks\Jobs\MarkerUpdatedJob;
 use App\Domain\Bookmarks\Models\Marker;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 final readonly class MarkerObserver
@@ -16,7 +17,7 @@ final readonly class MarkerObserver
     {
         $marker->title = trim($marker->title);
         $marker->url = trim($marker->url);
-        $marker->hash = Marker::getHash($marker->url);
+        $marker->hash = Marker::getHash($marker->url, $marker->user_id ?? Auth::id());
     }
 
     public function created(Marker $marker): void
@@ -29,9 +30,9 @@ final readonly class MarkerObserver
         MarkerUpdatedJob::dispatch($marker->id);
     }
 
-    public function saved(): void
+    public function saved(Marker $marker): void
     {
-        Cache::tags('markers')->flush();
+        Cache::tags("markers:{$marker->user_id}")->flush();
     }
 
     public function deleted(Marker $marker): void

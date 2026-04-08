@@ -21,6 +21,7 @@ trait SlugOptionable
                     ->replace('_', '-')
                     ->append('-')
                     ->append(Str::random(6))
+                    ->lower()
                     ->toString()
             )
             ->extraScope(fn (Builder $builder) => $builder->where('user_id', $this->user_id))

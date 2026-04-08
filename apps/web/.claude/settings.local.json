@@ -12,7 +12,11 @@
       "Bash(npm install:*)",
       "Bash(vendor/bin/pint:*)",
       "Bash(find:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "mcp__jcodemunch-mcp__resolve_repo",
+      "mcp__jcodemunch-mcp__search_symbols",
+      "mcp__jcodemunch-mcp__get_symbol_source",
+      "mcp__jcodemunch-mcp__get_file_tree"
     ]
   },
   "enableAllProjectMcpServers": true,

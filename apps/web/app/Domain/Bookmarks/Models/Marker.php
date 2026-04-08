@@ -25,7 +25,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Scout\Searchable;
 use Override;
@@ -71,20 +70,20 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Ha
 
     protected $table = 'bookmarks_markers';
 
-    public static function getHash($url): string
+    public static function getHash(string $url, int $userId): string
     {
         return md5(sprintf(
             '%s:%s',
             trim($url),
-            Auth::id()
+            $userId,
         ));
     }
 
-    public static function found(string $url): bool
+    public static function found(string $url, int $userId): bool
     {
-        $urlHash = self::getHash($url);
+        $urlHash = self::getHash($url, $userId);
 
-        return Cache::tags('markers')
+        return Cache::tags("markers:{$userId}")
             ->remember(
                 $urlHash,
                 now()->addMonth(),
@@ -120,11 +119,13 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Ha
 
     public function getIdentifier(): string
     {
-        return sprintf(
-            '%s:marker:%d',
-            ModuleKey::BOOKMARKS->value,
-            $this->id
-        );
+        return str(ModuleKey::BOOKMARKS->value)
+            ->append(':')
+            ->append('marker')
+            ->append(':')
+            ->append($this->id)
+            ->lower()
+            ->toString();
     }
 
     public function getTags(): array

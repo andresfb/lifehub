@@ -6,8 +6,10 @@ namespace App\Domain\Bookmarks\Providers;
 
 use App\Domain\Bookmarks\Commands\CreateMarkerCommand;
 use App\Domain\Bookmarks\Enums\MorphTypes;
+use App\Dtos\Modules\MenuItem;
 use App\Dtos\Modules\ModuleRecordItem;
 use App\Dtos\Modules\MorphTypesItems;
+use App\Enums\ModuleKey;
 use App\Enums\ModuleStatus;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
@@ -36,12 +38,21 @@ final class BookmarksServiceProvider extends ServiceProvider
         $this->app->resolving('module_records', function (Collection $records): void {
             $records->add(
                 new ModuleRecordItem(
-                    key: 'BOOKMARKS',
+                    key: ModuleKey::BOOKMARKS,
                     name: 'Bookmarks',
                     description: 'A Bookmark Management System',
-                    is_core: false,
-                    is_public: true,
+                    isCore: false,
+                    isPublic: true,
                     status: ModuleStatus::ACTIVE,
+                    menu: new MenuItem(
+                        code: 'BKM',
+                        title: 'Bookmarks',
+                        routes: [
+                            'web' => 'bookmarks.marker.show',
+                            'api' => 'api.v1.bookmarks.marker.show',
+                        ],
+                        icon: 'tag',
+                    ),
                 )
             );
         });
@@ -56,8 +67,7 @@ final class BookmarksServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../Configs/config.php', 'markers');
         $this->mergeConfigFrom(__DIR__.'/../Configs/typesense.php', 'scout.typesense.model-settings');
 
-        Route::middleware('web')
-            ->group(__DIR__.'/../Routes/web.php');
+        Route::middleware('web')->group(__DIR__.'/../Routes/web.php');
 
         $this->loadRoutesFrom(__DIR__.'/../Routes/api/v1.php');
     }

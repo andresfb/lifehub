@@ -6,7 +6,9 @@ namespace App\Models;
 
 use App\Enums\ModuleKey;
 use App\Enums\ModuleStatus;
+use App\Observers\ModuleObserver;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -25,6 +27,7 @@ use Override;
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  */
+#[ObservedBy([ModuleObserver::class])]
 final class Module extends Model
 {
     use HasFactory;

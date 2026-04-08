@@ -95,7 +95,7 @@ final class CreateAdminCommand extends Command
 
     private function downloadHomepage(): void
     {
-        $seeder = __DIR__.'/../../../app/Domain/Core/Database/Seeders/AdminHomepageSeeder.php';
+        $seeder = __DIR__.'/../../../app/Domain/Dashboard/Database/Seeders/AdminHomepageSeeder.php';
         if (file_exists($seeder)) {
             return;
         }
@@ -117,7 +117,7 @@ final class CreateAdminCommand extends Command
 
     private function downloadSearch(): void
     {
-        $seeder = __DIR__.'/../../../app/Domain/Core/Database/Seeders/AdminSearchProviders.php';
+        $seeder = __DIR__.'/../../../app/Domain/Dashboard/Database/Seeders/AdminSearchProviders.php';
         if (file_exists($seeder)) {
             return;
         }
