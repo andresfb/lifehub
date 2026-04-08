@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Bookmarks\Observers;
 
 use App\Domain\Bookmarks\Jobs\MarkerMutatorAIJob;
-use App\Domain\Bookmarks\Jobs\SearchDocumentDeletedJob;
-use App\Domain\Bookmarks\Jobs\SearchDocumentUpdatedJob;
+use App\Domain\Bookmarks\Jobs\MarkerDeletedJob;
+use App\Domain\Bookmarks\Jobs\MarkerUpdatedJob;
 use App\Domain\Bookmarks\Models\Marker;
 use Illuminate\Support\Facades\Cache;
 
@@ -26,16 +26,16 @@ final readonly class MarkerObserver
 
     public function updated(Marker $marker): void
     {
-        SearchDocumentUpdatedJob::dispatch($marker->id);
+        MarkerUpdatedJob::dispatch($marker->id);
     }
 
-    public function saved(Marker $marker): void
+    public function saved(): void
     {
         Cache::tags('markers')->flush();
     }
 
     public function deleted(Marker $marker): void
     {
-        SearchDocumentDeletedJob::dispatch($marker->id);
+        MarkerDeletedJob::dispatch($marker->id);
     }
 }

@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
+namespace App\Domain\Core\Jobs;
 
-namespace App\Domain\Bookmarks\Jobs;
-
-use App\Domain\Bookmarks\Models\Marker;
+use App\Domain\Core\Models\HomepageItem;
 use App\Services\Search\SearchDocumentProjector;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -14,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-final class SearchDocumentDeletedJob implements ShouldQueue
+class HomepageItemDeletedJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -22,7 +20,7 @@ final class SearchDocumentDeletedJob implements ShouldQueue
     use SerializesModels;
 
     public function __construct(
-        private readonly int $markerId,
+        private readonly int $itemId,
     ) {
         $this->delay = now()->addSeconds(5);
     }
@@ -30,11 +28,11 @@ final class SearchDocumentDeletedJob implements ShouldQueue
     public function handle(SearchDocumentProjector $projector): void
     {
         try {
-            $marker = Marker::query()
-                ->where('id', $this->markerId)
+            $item = HomepageItem::query()
+                ->where('id', $this->itemId)
                 ->firstOrFail();
 
-            $projector->remove($marker->getIdentifier());
+            $projector->remove($item->getIdentifier());
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }

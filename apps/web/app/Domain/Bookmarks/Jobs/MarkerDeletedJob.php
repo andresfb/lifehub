@@ -14,7 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-final class SearchDocumentUpdatedJob implements ShouldQueue
+final class MarkerDeletedJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -24,7 +24,7 @@ final class SearchDocumentUpdatedJob implements ShouldQueue
     public function __construct(
         private readonly int $markerId,
     ) {
-        $this->delay = now()->addSeconds(10);
+        $this->delay = now()->addSeconds(5);
     }
 
     public function handle(SearchDocumentProjector $projector): void
@@ -34,12 +34,7 @@ final class SearchDocumentUpdatedJob implements ShouldQueue
                 ->where('id', $this->markerId)
                 ->firstOrFail();
 
-            $projector->upsert(
-                $marker->buildGlobalSearch(),
-                $marker->user_id,
-            );
-
-            $marker->searchable();
+            $projector->remove($marker->getIdentifier());
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }

@@ -9,6 +9,7 @@ use App\Dtos\Modules\ModuleRecordItem;
 use App\Dtos\Modules\MorphTypesItems;
 use App\Enums\ModuleStatus;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 final class CoreServiceProvider extends ServiceProvider
@@ -20,7 +21,13 @@ final class CoreServiceProvider extends ServiceProvider
                 new MorphTypesItems(
                     MorphTypes::CORE_REMINDER->name,
                     MorphTypes::CORE_REMINDER->value,
-                )
+                ),
+            );
+            $types->add(
+                new MorphTypesItems(
+                    MorphTypes::CORE_HOMEPAGE_ITEM->name,
+                    MorphTypes::CORE_HOMEPAGE_ITEM->value,
+                ),
             );
         });
 
@@ -40,6 +47,11 @@ final class CoreServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        //
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+
+        Route::middleware('web')
+            ->group(__DIR__.'/../Routes/web.php');
+
+        $this->loadRoutesFrom(__DIR__.'/../Routes/api/v1.php');
     }
 }

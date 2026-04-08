@@ -11,6 +11,7 @@ use App\Dtos\Modules\MorphTypesItems;
 use App\Enums\ModuleStatus;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 final class BookmarksServiceProvider extends ServiceProvider
@@ -52,9 +53,12 @@ final class BookmarksServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
-        $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
-        $this->loadRoutesFrom(__DIR__.'/../Routes/api/v1.php');
         $this->mergeConfigFrom(__DIR__.'/../Configs/config.php', 'markers');
         $this->mergeConfigFrom(__DIR__.'/../Configs/typesense.php', 'scout.typesense.model-settings');
+
+        Route::middleware('web')
+            ->group(__DIR__.'/../Routes/web.php');
+
+        $this->loadRoutesFrom(__DIR__.'/../Routes/api/v1.php');
     }
 }

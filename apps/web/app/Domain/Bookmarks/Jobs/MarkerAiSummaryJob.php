@@ -43,7 +43,7 @@ final class MarkerAiSummaryJob implements ShouldQueue
         } catch (Exception $e) {
             Log::error($e->getMessage());
         } finally {
-            SearchDocumentUpdatedJob::dispatch($this->markerId);
+            MarkerUpdatedJob::dispatch($this->markerId);
         }
     }
 }

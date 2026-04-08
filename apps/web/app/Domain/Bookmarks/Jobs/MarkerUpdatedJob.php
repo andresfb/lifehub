@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace App\Domain\Bookmarks\Jobs;
 
 use App\Domain\Bookmarks\Models\Marker;
-use App\Domain\Bookmarks\Services\MarkerMutatorService;
+use App\Services\Search\SearchDocumentProjector;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-final class MarkerMutatorJob implements ShouldQueue
+final class MarkerUpdatedJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -24,24 +23,25 @@ final class MarkerMutatorJob implements ShouldQueue
 
     public function __construct(
         private readonly int $markerId,
-    ) {}
+    ) {
+        $this->delay = now()->addSeconds(10);
+    }
 
-    public function handle(MarkerMutatorService $service): void
+    public function handle(SearchDocumentProjector $projector): void
     {
         try {
             $marker = Marker::query()
-                ->withoutGlobalScopes()
-                ->with('user')
                 ->where('id', $this->markerId)
                 ->firstOrFail();
 
-            Auth::setUser($marker->user);
+            $projector->upsert(
+                $marker->buildGlobalSearch(),
+                $marker->user_id,
+            );
 
-            $service->execute($marker);
+            $marker->searchable();
         } catch (Exception $e) {
             Log::error($e->getMessage());
-        } finally {
-            MarkerUpdatedJob::dispatch($this->markerId);
         }
     }
 }

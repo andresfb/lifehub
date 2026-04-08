@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Bookmarks\Models;
+namespace App\Domain\Core\Models;
 
 use App\Contracts\UserModelInterface;
-use App\Domain\Bookmarks\Observers\CategoryObserver;
-use App\Domain\Bookmarks\Policies\CategoryPolicy;
+use App\Domain\Core\Observers\HomepageSectionObserver;
+use App\Domain\Core\Policies\HomepageSectionPolicy;
 use App\Enums\ModuleKey;
 use App\Models\User;
 use App\Traits\BelongsToUser;
@@ -14,11 +14,12 @@ use App\Traits\SlugOptionable;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Cache;
 use Override;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -26,18 +27,19 @@ use Spatie\Sluggable\SlugOptions;
 /**
  * @property-read int $id
  * @property-read int $user_id
- * @property-read string $slug
- * @property string $title
+ * @property string $slug
+ * @property string $name
  * @property bool $active
  * @property int $order
  * @property CarbonImmutable|null $deleted_at
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
+ * @property-read Collection<HomepageItem> $items
  */
-#[ObservedBy([CategoryObserver::class])]
-#[UsePolicy(CategoryPolicy::class)]
-final class Category extends Model implements UserModelInterface
+#[ObservedBy(HomepageSectionObserver::class)]
+#[UsePolicy(HomepageSectionPolicy::class)]
+final class HomepageSection extends Model implements UserModelInterface
 {
     use BelongsToUser;
     use HasFactory;
@@ -45,23 +47,9 @@ final class Category extends Model implements UserModelInterface
     use SlugOptionable;
     use SoftDeletes;
 
-    protected $table = 'bookmarks_categories';
+    protected $guarded = ['id'];
 
-    public static function getSelectableList(): array
-    {
-        return Cache::tags('categories')
-            ->remember(
-                'selectable:list',
-                now()->addHours(5),
-                function (): array {
-                    return self::query()
-                        ->where('active', true)
-                        ->orderBy('order')
-                        ->pluck('title', 'id')
-                        ->toArray();
-                }
-            );
-    }
+    protected $table = 'core_homepage_sections';
 
     /**
      * @return BelongsTo<User, $this>
@@ -71,9 +59,19 @@ final class Category extends Model implements UserModelInterface
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return HasMany<HomepageItem, $this>
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(HomepageItem::class, 'homepage_section_id')
+            ->where('active', true)
+            ->orderBy('order');
+    }
+
     public function getSlugOptions(): SlugOptions
     {
-        return $this->loadSlugOptions('title', ModuleKey::BOOKMARKS->value);
+        return $this->loadSlugOptions('name', ModuleKey::CORE->value);
     }
 
     public function getRouteKeyName(): string

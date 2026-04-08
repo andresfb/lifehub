@@ -9,6 +9,7 @@ use App\Dtos\Profile\NewUserItem;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Process;
 use RuntimeException;
 use Throwable;
 
@@ -30,6 +31,8 @@ final class CreateAdminCommand extends Command
         try {
             clear();
             intro('Create a new Admin user');
+
+            $this->runAdminSeeders();
 
             $results = form()
                 ->text(
@@ -80,6 +83,20 @@ final class CreateAdminCommand extends Command
         } finally {
             $this->newLine();
             outro('Done');
+        }
+    }
+
+    private function runAdminSeeders(): void
+    {
+        $seeder = __DIR__ . '/../../../database/seeders/AdminHomepageSeeder.php';
+        if (! file_exists($seeder)) {
+            Process::run(
+                sprintf("op read \"op//LifeHub/Seeders/HomepageSeeder\" --out-file \"%s\"", $seeder),
+            );
+        }
+
+        if (! file_exists($seeder)) {
+            throw new RuntimeException('Seeder file could not be created');
         }
     }
 }

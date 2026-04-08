@@ -18,6 +18,7 @@ final class DatabaseSeeder extends Seeder
         $this->call([
             CoreSeeder::class,
             BookmarksSeeder::class,
+            '\App\Database\Seeders\AdminHomepageSeeder',
         ]);
     }
 }

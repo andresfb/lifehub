@@ -6,5 +6,6 @@ namespace App\Enums;
 
 enum ModuleKey: string
 {
+    case CORE = 'core';
     case BOOKMARKS = 'bookmarks';
 }

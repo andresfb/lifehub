@@ -6,14 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'Welcome')->name('home');
 
-// CORE
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'Dashboard')->name('dashboard');
-
-    // TODO: Change this to a Inertia component
-    Route::get('/reminders/{reminder}', static function () {
-        echo 'TODO: Change this to a Inertia component';
-    })->name('reminder.show');
 
     // TODO: Module access example 👇
     //    Route::prefix('journal')

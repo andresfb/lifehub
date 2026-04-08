@@ -20,9 +20,4 @@ Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function ()
         return $request->user();
     });
 
-    // TODO: Change this to a API Controller
-    Route::get('/reminder/{reminder}', static function (Request $request) {
-        echo 'TODO: Change this to a API Controller';
-    })->name('api.v1.reminder.show');
-
 });

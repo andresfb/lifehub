@@ -1,3 +1,7 @@
+import '@fontsource/geist/400.css';
+import '@fontsource/geist/600.css';
+import '@fontsource/geist-mono/400.css';
+
 import { createInertiaApp } from '@inertiajs/vue3';
 import { initializeTheme } from '@/composables/useAppearance';
 import AppLayout from '@/layouts/AppLayout.vue';

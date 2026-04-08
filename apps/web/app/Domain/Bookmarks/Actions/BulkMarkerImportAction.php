@@ -7,7 +7,7 @@ namespace App\Domain\Bookmarks\Actions;
 use App\Domain\Bookmarks\Dtos\BulkMarkerImportItem;
 use App\Domain\Bookmarks\Jobs\BulkMarkerImportJob;
 
-final  class BulkMarkerImportAction
+final class BulkMarkerImportAction
 {
     public function handle(array $markers): void
     {
