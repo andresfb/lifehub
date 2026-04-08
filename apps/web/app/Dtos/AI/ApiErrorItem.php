@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dtos\AI;
 
 use Spatie\LaravelData\Data;
 
-class ApiErrorItem extends Data
+final class ApiErrorItem extends Data
 {
     public function __construct(
         public readonly int $user_id,

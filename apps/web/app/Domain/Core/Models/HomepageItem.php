@@ -47,7 +47,7 @@ use Spatie\Tags\HasTags;
  */
 #[ObservedBy([HomepageItemObserver::class])]
 #[UsePolicy(HomepageItemPolicy::class)]
-final class HomepageItem extends Model implements HasMedia, UserModelInterface, GlobalSearchInterface
+final class HomepageItem extends Model implements GlobalSearchInterface, HasMedia, UserModelInterface
 {
     use BelongsToUser;
     use HasFactory;

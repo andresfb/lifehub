@@ -113,7 +113,7 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Ha
             ->acceptsMimeTypes([
                 'image/png',
                 'image/jpeg',
-                'image/webp'
+                'image/webp',
             ])
             ->withResponsiveImages();
     }

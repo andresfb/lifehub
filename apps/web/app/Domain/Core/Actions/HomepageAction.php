@@ -21,7 +21,7 @@ final class HomepageAction
         /** @var array<int, array<string, mixed>> $cached */
         $cached = Cache::tags('homepage')
             ->remember(
-                md5("HOMEPAGE:$userId"),
+                md5("HOMEPAGE:{$userId}"),
                 now()->addWeek(),
                 function () use ($userId): array {
                     return HomepageSection::query()

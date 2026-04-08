@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Core\Models;
 
 use Carbon\CarbonImmutable;
@@ -17,7 +19,7 @@ use Override;
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  */
-class SearchProvider extends Model
+final class SearchProvider extends Model
 {
     use HasFactory;
     use SoftDeletes;

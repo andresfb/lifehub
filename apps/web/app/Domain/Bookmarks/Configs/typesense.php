@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Domain\Bookmarks\Models\Marker;
 
 return [
@@ -17,7 +19,7 @@ return [
                 ['name' => 'description', 'type' => 'string', 'optional' => true],
                 ['name' => 'summary', 'type' => 'string', 'optional' => true],
                 ['name' => 'notes', 'type' => 'string', 'optional' => true],
-                ['name' => '__soft_deleted', 'type' => 'int32', 'optional' => true,],
+                ['name' => '__soft_deleted', 'type' => 'int32', 'optional' => true],
                 ['name' => 'created_at', 'type' => 'int64', 'sort' => true, 'optional' => true],
                 ['name' => 'updated_at', 'type' => 'int64', 'sort' => true],
                 ['name' => 'tags', 'type' => 'string[]', 'facet' => true],

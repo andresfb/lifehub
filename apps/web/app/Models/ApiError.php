@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +18,7 @@ use Override;
  * @property array $data
  * @property-read User $user
  */
-class ApiError extends Model
+final class ApiError extends Model
 {
     use HasFactory;
 

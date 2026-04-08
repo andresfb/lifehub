@@ -8,8 +8,11 @@ use App\Domain\Core\Models\HomepageItem;
 use App\Domain\Core\Models\HomepageSection;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 
+/**
+ * @extends Factory<HomepageItem>
+ */
 final class HomepageItemFactory extends Factory
 {
     protected $model = HomepageItem::class;
@@ -21,8 +24,8 @@ final class HomepageItemFactory extends Factory
             'title' => $this->faker->word(),
             'url' => $this->faker->url(),
             'active' => $this->faker->boolean(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => Date::now(),
+            'updated_at' => Date::now(),
 
             'user_id' => User::factory(),
             'homepage_section_id' => HomepageSection::factory(),

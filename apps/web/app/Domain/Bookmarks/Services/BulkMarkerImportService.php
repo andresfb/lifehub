@@ -61,6 +61,7 @@ final readonly class BulkMarkerImportService
                     $marker->saveQuietly();
 
                     $marker = $marker->fresh();
+
                     $markerId = $marker->id;
 
                     if (filled($item->tags)) {

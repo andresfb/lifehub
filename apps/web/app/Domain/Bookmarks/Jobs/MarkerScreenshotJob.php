@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Bookmarks\Jobs;
 
 use App\Domain\Bookmarks\Models\Marker;
@@ -15,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
-class MarkerScreenshotJob implements ShouldQueue
+final class MarkerScreenshotJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -48,7 +50,7 @@ class MarkerScreenshotJob implements ShouldQueue
             $service->execute($this->item, $marker);
         } catch (Exception $e) {
             Log::error(sprintf(
-                "Screenshot capture failed for Model: %s, %s: %s",
+                'Screenshot capture failed for Model: %s, %s: %s',
                 $this->item->modelId,
                 $this->item->url,
                 $e->getMessage())

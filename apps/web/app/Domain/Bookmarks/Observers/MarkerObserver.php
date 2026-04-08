@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Bookmarks\Observers;
 
-use App\Domain\Bookmarks\Jobs\MarkerMutatorAIJob;
 use App\Domain\Bookmarks\Jobs\MarkerDeletedJob;
+use App\Domain\Bookmarks\Jobs\MarkerMutatorAIJob;
 use App\Domain\Bookmarks\Jobs\MarkerUpdatedJob;
 use App\Domain\Bookmarks\Models\Marker;
 use Illuminate\Support\Facades\Cache;

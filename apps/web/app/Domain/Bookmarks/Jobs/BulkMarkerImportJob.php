@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Bookmarks\Jobs;
 
 use App\Domain\Bookmarks\Dtos\BulkMarkerImportItem;
@@ -15,7 +17,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class BulkMarkerImportJob implements ShouldQueue
+final class BulkMarkerImportJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -23,7 +25,7 @@ class BulkMarkerImportJob implements ShouldQueue
     use SerializesModels;
 
     /**
-     * @param Collection<BulkMarkerImportItem> $markers
+     * @param  Collection<BulkMarkerImportItem>  $markers
      */
     public function __construct(private readonly Collection $markers)
     {

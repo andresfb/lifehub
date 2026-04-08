@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Core\Jobs;
 
 use App\Domain\Core\Models\HomepageItem;
@@ -13,7 +15,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class HomepageItemSavedJob implements ShouldQueue
+final class HomepageItemSavedJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;

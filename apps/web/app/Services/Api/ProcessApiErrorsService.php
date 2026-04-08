@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Api;
 
 use App\Dtos\AI\ApiErrorItem;
 use App\Models\ApiError;
 use Illuminate\Support\Collection;
 
-class ProcessApiErrorsService
+final class ProcessApiErrorsService
 {
     public function execute(Collection|ApiErrorItem $errors): void
     {
@@ -15,7 +17,7 @@ class ProcessApiErrorsService
         }
 
         $errors->each(function (ApiErrorItem $error) {
-            ApiError::create($error->toArray());
+            ApiError::query()->create($error->toArray());
         });
     }
 }

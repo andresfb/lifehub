@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\ApiError;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 
-class ApiErrorFactory extends Factory
+/**
+ * @extends Factory<ApiError>
+ */
+final class ApiErrorFactory extends Factory
 {
     protected $model = ApiError::class;
 
@@ -18,8 +23,8 @@ class ApiErrorFactory extends Factory
             'type' => $this->faker->word(),
             'error' => $this->faker->word(),
             'data' => $this->faker->words(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => Date::now(),
+            'updated_at' => Date::now(),
 
             'user_id' => User::factory(),
         ];

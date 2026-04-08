@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Traits\Api\ApiResponse;
 
-class ApiController extends Controller
+final class ApiController extends Controller
 {
     use ApiResponse;
 }

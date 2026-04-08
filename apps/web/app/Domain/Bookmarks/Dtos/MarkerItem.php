@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Bookmarks\Dtos;
 
 use Override;
 use Spatie\LaravelData\Data;
 
-class MarkerItem extends Data
+final class MarkerItem extends Data
 {
     public function __construct(
         public readonly int $category_id,

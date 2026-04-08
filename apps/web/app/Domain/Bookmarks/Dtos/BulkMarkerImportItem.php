@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Bookmarks\Dtos;
 
 use Spatie\LaravelData\Data;
 
-class BulkMarkerImportItem extends Data
+final class BulkMarkerImportItem extends Data
 {
     public function __construct(
         public readonly int $id,

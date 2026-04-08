@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Core\Http\Controllers\HomepageController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware([
     'auth',

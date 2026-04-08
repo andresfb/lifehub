@@ -95,12 +95,12 @@ final class CreateAdminCommand extends Command
 
     private function downloadHomepage(): void
     {
-        $seeder = __DIR__ . '/../../../app/Domain/Core/Database/Seeders/AdminHomepageSeeder.php';
+        $seeder = __DIR__.'/../../../app/Domain/Core/Database/Seeders/AdminHomepageSeeder.php';
         if (file_exists($seeder)) {
             return;
         }
 
-        $cmd = sprintf("op read \"op://LifeHub/Homepage/Seeder\" --out-file \"%s\"", $seeder);
+        $cmd = sprintf('op read "op://LifeHub/Homepage/Seeder" --out-file "%s"', $seeder);
         $proc = Process::run($cmd);
 
         if ($proc->successful() && file_exists($seeder)) {
@@ -109,7 +109,7 @@ final class CreateAdminCommand extends Command
 
         throw new RuntimeException(
             sprintf(
-                "Seeder file could not be created: %s", $proc->errorOutput()
+                'Seeder file could not be created: %s', $proc->errorOutput()
             ),
             $proc->exitCode()
         );
@@ -117,12 +117,12 @@ final class CreateAdminCommand extends Command
 
     private function downloadSearch(): void
     {
-        $seeder = __DIR__ . '/../../../app/Domain/Core/Database/Seeders/AdminSearchProviders.php';
+        $seeder = __DIR__.'/../../../app/Domain/Core/Database/Seeders/AdminSearchProviders.php';
         if (file_exists($seeder)) {
             return;
         }
 
-        $cmd = sprintf("op read \"op://LifeHub/Search/Seeder\" --out-file \"%s\"", $seeder);
+        $cmd = sprintf('op read "op://LifeHub/Search/Seeder" --out-file "%s"', $seeder);
         $proc = Process::run($cmd);
 
         if ($proc->successful() && file_exists($seeder)) {
@@ -131,7 +131,7 @@ final class CreateAdminCommand extends Command
 
         throw new RuntimeException(
             sprintf(
-                "Seeder file could not be created: %s", $proc->errorOutput()
+                'Seeder file could not be created: %s', $proc->errorOutput()
             ),
             $proc->exitCode()
         );

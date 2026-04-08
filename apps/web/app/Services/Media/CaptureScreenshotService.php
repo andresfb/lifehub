@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Media;
 
 use App\Domain\Bookmarks\Libraries\MediaNamesLibrary;
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\File;
 use Spatie\Browsershot\Browsershot;
 use Spatie\MediaLibrary\HasMedia;
 
-class CaptureScreenshotService
+final class CaptureScreenshotService
 {
     /**
      * @throws Exception

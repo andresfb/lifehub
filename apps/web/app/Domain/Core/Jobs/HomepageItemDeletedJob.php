@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Core\Jobs;
 
 use App\Domain\Core\Models\HomepageItem;
@@ -12,7 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class HomepageItemDeletedJob implements ShouldQueue
+final class HomepageItemDeletedJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;

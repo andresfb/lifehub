@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Dtos\AI\ApiErrorItem;
@@ -13,7 +15,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
-class ProcessApiErrorsJob implements ShouldQueue
+final class ProcessApiErrorsJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
