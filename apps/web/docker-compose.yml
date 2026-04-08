@@ -29,7 +29,7 @@ services:
       - project_network
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin:latest
     container_name: phpmyadmin
     restart: unless-stopped
     depends_on:

@@ -32,7 +32,7 @@ final class CreateAdminCommand extends Command
             clear();
             intro('Create a new Admin user');
 
-            $this->runAdminSeeders();
+            $this->downloadAdminSeeders();
 
             $results = form()
                 ->text(
@@ -86,17 +86,54 @@ final class CreateAdminCommand extends Command
         }
     }
 
-    private function runAdminSeeders(): void
+    private function downloadAdminSeeders(): void
     {
-        $seeder = __DIR__ . '/../../../database/seeders/AdminHomepageSeeder.php';
-        if (! file_exists($seeder)) {
-            Process::run(
-                sprintf("op read \"op//LifeHub/Seeders/HomepageSeeder\" --out-file \"%s\"", $seeder),
-            );
+        $this->downloadHomepage();
+
+        $this->downloadSearch();
+    }
+
+    private function downloadHomepage(): void
+    {
+        $seeder = __DIR__ . '/../../../app/Domain/Core/Database/Seeders/AdminHomepageSeeder.php';
+        if (file_exists($seeder)) {
+            return;
         }
 
-        if (! file_exists($seeder)) {
-            throw new RuntimeException('Seeder file could not be created');
+        $cmd = sprintf("op read \"op://LifeHub/Homepage/Seeder\" --out-file \"%s\"", $seeder);
+        $proc = Process::run($cmd);
+
+        if ($proc->successful() && file_exists($seeder)) {
+            return;
         }
+
+        throw new RuntimeException(
+            sprintf(
+                "Seeder file could not be created: %s", $proc->errorOutput()
+            ),
+            $proc->exitCode()
+        );
+    }
+
+    private function downloadSearch(): void
+    {
+        $seeder = __DIR__ . '/../../../app/Domain/Core/Database/Seeders/AdminSearchProviders.php';
+        if (file_exists($seeder)) {
+            return;
+        }
+
+        $cmd = sprintf("op read \"op://LifeHub/Search/Seeder\" --out-file \"%s\"", $seeder);
+        $proc = Process::run($cmd);
+
+        if ($proc->successful() && file_exists($seeder)) {
+            return;
+        }
+
+        throw new RuntimeException(
+            sprintf(
+                "Seeder file could not be created: %s", $proc->errorOutput()
+            ),
+            $proc->exitCode()
+        );
     }
 }

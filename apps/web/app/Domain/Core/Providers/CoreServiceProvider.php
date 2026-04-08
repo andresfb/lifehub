@@ -12,6 +12,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
+// TODO: move the Homepage and Search Providers to a separate Module
+
 final class CoreServiceProvider extends ServiceProvider
 {
     public function register(): void

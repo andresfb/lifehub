@@ -15,10 +15,12 @@ final class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        /** @noinspection ClassConstantCanBeUsedInspection */
         $this->call([
             CoreSeeder::class,
             BookmarksSeeder::class,
-            '\App\Database\Seeders\AdminHomepageSeeder',
+            '\App\Domain\Core\Database\Seeders\AdminHomepageSeeder',
+            '\App\Domain\Core\Database\Seeders\AdminSearchProviders',
         ]);
     }
 }

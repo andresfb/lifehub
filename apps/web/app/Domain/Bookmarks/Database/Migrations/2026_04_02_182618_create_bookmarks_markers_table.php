@@ -6,7 +6,7 @@ use App\Domain\Bookmarks\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('hash')->unique();
             $table->string('status', 10)->default('active');
             $table->string('title')->nullable();
-            $table->text('url')->index();
+            $table->text('url');
             $table->string('domain')->nullable();
             $table->text('description')->nullable();
             $table->text('summary')->nullable();
@@ -34,6 +34,8 @@ return new class extends Migration
 
             $table->index(['user_id', 'status'], 'user_status');
         });
+
+        DB::statement('ALTER TABLE `bookmarks_markers` ADD INDEX (`url`(750));');
     }
 
     public function down(): void
