@@ -1,0 +1,22 @@
+{
+    "agents": [
+        "claude_code",
+        "codex"
+    ],
+    "guidelines": true,
+    "mcp": true,
+    "nightwatch_mcp": false,
+    "packages": [
+        "spatie/laravel-medialibrary",
+        "spatie/laravel-query-builder"
+    ],
+    "sail": false,
+    "skills": [
+        "laravel-best-practices",
+        "configuring-horizon",
+        "scout-development",
+        "pest-testing",
+        "medialibrary-development",
+        "laravel-query-builder"
+    ]
+}
