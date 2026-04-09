@@ -7,7 +7,6 @@ namespace App\Dtos\Modules;
 use App\Enums\ModuleKey;
 use App\Enums\ModuleStatus;
 use Illuminate\Support\Collection;
-use Override;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
@@ -27,10 +26,9 @@ final class ModuleRecordItem extends Data
         public readonly ?Collection $subMenus = null,
     ) {}
 
-    #[Override]
-    public function toArray(): array
+    public function cleanArray(): array
     {
-        $data = parent::toArray();
+        $data = $this->toArray();
 
         unset(
             $data['show_menu'],

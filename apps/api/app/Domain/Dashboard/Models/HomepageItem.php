@@ -153,8 +153,7 @@ final class HomepageItem extends Model implements GlobalSearchInterface, HasMedi
                 'icon' => 'link',
             ],
             'urls' => [
-                'web_route' => 'homepage.item.show',
-                'api_route' => 'api.v1.homepage.item.show',
+                'api_route' => 'api.v1.bookmarks.show',
             ],
             'is_private' => false,
             'is_archived' => ! $this->active,

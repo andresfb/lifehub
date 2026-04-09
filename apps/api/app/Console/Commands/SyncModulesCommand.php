@@ -37,7 +37,7 @@ final class SyncModulesCommand extends Command
                 throw new RuntimeException('Modules Records not found');
             }
 
-            $modules->each(fn (ModuleRecordItem $item) => $registry->syncToDatabase($item->toArray()));
+            $modules->each(fn (ModuleRecordItem $item) => $registry->syncToDatabase($item->cleanArray()));
             $registry->assign();
 
             info('Modules synced successfully.');

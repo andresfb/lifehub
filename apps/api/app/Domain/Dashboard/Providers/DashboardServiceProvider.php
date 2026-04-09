@@ -42,7 +42,6 @@ final class DashboardServiceProvider extends ServiceProvider
                         code: 'DSB',
                         title: 'Dashboard',
                         routes: [
-                            'web' => 'dashboard',
                             'api' => 'api.v1.dashboard',
                         ],
                         icon: 'home',

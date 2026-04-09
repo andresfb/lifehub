@@ -48,7 +48,6 @@ final class BookmarksServiceProvider extends ServiceProvider
                         code: 'BKM',
                         title: 'Bookmarks',
                         routes: [
-                            'web' => 'bookmarks.marker.show',
                             'api' => 'api.v1.bookmarks.marker.show',
                         ],
                         icon: 'tag',

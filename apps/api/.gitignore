@@ -28,3 +28,6 @@ Thumbs.db
 
 # SQLite databases
 database/*.sqlite
+
+# Custom
+fortify.md

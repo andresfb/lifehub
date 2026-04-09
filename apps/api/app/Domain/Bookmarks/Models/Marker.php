@@ -182,7 +182,6 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Ha
                 'icon' => 'link',
             ],
             'urls' => [
-                'web_route' => 'bookmarks.marker.show',
                 'api_route' => 'api.v1.bookmarks.marker.show',
             ],
             'is_private' => false,
