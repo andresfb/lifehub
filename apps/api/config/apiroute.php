@@ -5,11 +5,38 @@ declare(strict_types=1);
 return [
     /*
     |--------------------------------------------------------------------------
+    | Detection Strategy
+    |--------------------------------------------------------------------------
+    |
+    | How the API version should be detected from incoming requests.
+    | Supported: "uri", "header", "query", "accept"
+    |
+    */
+    'strategy' => env('API_VERSION_STRATEGY', 'uri'),
+
+    /*
+    |--------------------------------------------------------------------------
     | API Versions
     |--------------------------------------------------------------------------
     |
-    | Define your API versions here. Each version has its own route file,
-    | middleware, and lifecycle status.
+    | Define your API versions here. Each version should have a route file
+    | and optionally middleware, status, and lifecycle dates.
+    |
+    | This configuration-based approach ensures versions are properly
+    | registered on every application boot, including between tests.
+    |
+    | Example:
+    | 'versions' => [
+    |     'v1' => [
+    |         'routes' => base_path('routes/api/v1.php'),
+    |         'middleware' => ['auth:sanctum'],
+    |         'name' => 'api.v1.',  // Route name prefix
+    |         'status' => 'active',  // 'active', 'beta', 'deprecated', 'sunset'
+    |         'deprecated_at' => null,
+    |         'sunset_at' => null,
+    |         'successor' => null,
+    |     ],
+    | ],
     |
     */
     'versions' => [
@@ -27,24 +54,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Detection Strategy
-    |--------------------------------------------------------------------------
-    |
-    | How the API version should be detected from incoming requests.
-    | Supported: "uri", "header", "query", "accept"
-    |
-    */
-    'strategy' => env('API_VERSION_STRATEGY', 'uri'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Strategy Configuration
     |--------------------------------------------------------------------------
     */
     'strategies' => [
         'uri' => [
-            'prefix' => 'api',           // API prefix for versioned routes
+            'prefix' => 'api',           // /api/v1/users (use '' for no prefix)
             'pattern' => 'v{version}',   // v1, v2, etc.
+            'domain' => null,            // null, 'api.example.com', or ['api.main.com', 'api.backup.com']
         ],
         'header' => [
             'name' => 'X-API-Version',   // X-API-Version: 1

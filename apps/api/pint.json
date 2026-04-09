@@ -2,19 +2,18 @@
     "preset": "laravel",
     "notPath": [
         "tests/TestCase.php",
-        "tmp",
         "config/database.php"
     ],
     "rules": {
         "array_push": true,
         "backtick_to_shell_exec": true,
-        "date_time_immutable": true,
+        "date_time_immutable": false,
         "declare_strict_types": true,
         "lowercase_keywords": true,
         "lowercase_static_reference": true,
         "final_class": true,
         "final_internal_class": true,
-        "final_public_method_for_abstract_class": true,
+        "final_public_method_for_abstract_class": false,
         "fully_qualified_strict_types": true,
         "global_namespace_import": {
             "import_classes": true,
@@ -54,7 +53,7 @@
         },
         "ordered_interfaces": true,
         "ordered_traits": true,
-        "protected_to_private": true,
+        "protected_to_private": false,
         "self_accessor": true,
         "self_static_accessor": true,
         "strict_comparison": true,

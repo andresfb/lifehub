@@ -7,11 +7,13 @@
     "mcp": true,
     "nightwatch_mcp": false,
     "packages": [
-        "spatie/laravel-medialibrary",
-        "spatie/laravel-query-builder"
+        "spatie/laravel-query-builder",
+        "spatie/laravel-medialibrary"
     ],
     "sail": false,
     "skills": [
+        "ai-sdk-development",
+        "fortify-development",
         "laravel-best-practices",
         "configuring-horizon",
         "scout-development",
