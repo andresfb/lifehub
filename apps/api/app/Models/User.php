@@ -46,10 +46,7 @@ final class User extends Authenticatable implements MustVerifyEmail
 {
     use AdminHashable;
     use HasApiTokens;
-
-    /** @use HasFactory<UserFactory> */
     use HasFactory;
-
     use Notifiable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
