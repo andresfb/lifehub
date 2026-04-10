@@ -9,4 +9,5 @@ enum ModuleKey: string
     case CORE = 'core';
     case BOOKMARKS = 'bookmarks';
     case DASHBOARD = 'dashboard';
+    case CORE = 'core';
 }
