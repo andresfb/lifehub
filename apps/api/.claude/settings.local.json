@@ -17,7 +17,10 @@
       "mcp__jcodemunch-mcp__search_symbols",
       "mcp__jcodemunch-mcp__get_symbol_source",
       "mcp__jcodemunch-mcp__get_file_tree",
-      "mcp__jcodemunch-mcp__get_file_content"
+      "mcp__jcodemunch-mcp__get_file_content",
+      "mcp__jcodemunch__resolve_repo",
+      "mcp__jcodemunch__get_symbol_source",
+      "mcp__jcodemunch__get_file_outline"
     ]
   },
   "enableAllProjectMcpServers": true,

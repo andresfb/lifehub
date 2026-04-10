@@ -1,5 +1,5 @@
 {
-    "name": "nwidart/core",
+    "name": "nwidart/dashboard",
     "description": "",
     "authors": [
         {
@@ -17,14 +17,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\Core\\": "app/",
-            "Modules\\Core\\Database\\Factories\\": "database/factories/",
-            "Modules\\Core\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\Dashboard\\": "app/",
+            "Modules\\Dashboard\\Database\\Factories\\": "database/factories/",
+            "Modules\\Dashboard\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Modules\\Core\\Tests\\": "tests/"
+            "Modules\\Dashboard\\Tests\\": "tests/"
         }
     }
 }

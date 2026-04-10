@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Dashboard\Observers;
+
+use Modules\Dashboard\Models\SearchProvider;
+use Illuminate\Support\Facades\Cache;
+
+final class SearchProviderObserver
+{
+    public function creating(SearchProvider $provider): void
+    {
+        if (filled($provider->order)) {
+            return;
+        }
+
+        $provider->order = SearchProvider::query()->max('order') + 1;
+    }
+
+    public function saved(SearchProvider $provider): void
+    {
+        Cache::tags("SearchProviders:{$provider->user_id}")->flush();
+    }
+}

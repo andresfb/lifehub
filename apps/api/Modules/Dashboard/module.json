@@ -1,0 +1,14 @@
+{
+    "name": "Dashboard",
+    "alias": "dashboard",
+    "description": "",
+    "keywords": [],
+    "access": {
+        "is_public": true
+    },
+    "priority": 0,
+    "providers": [
+        "Modules\\Dashboard\\Providers\\DashboardServiceProvider"
+    ],
+    "files": []
+}
