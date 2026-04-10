@@ -16,12 +16,7 @@ class MenuResource extends JsonResource
         return [
             'id' => $this->code,
             'type' => 'menu',
-            'attributes' => [
-                'title' => $this->title,
-                'routes' => $this->routes,
-                'icon' => $this->icon ?? '',
-                'short_cut' => $this->shortCut ?? '',
-            ],
+            'attributes' => $this->except('code'),
         ];
     }
 }

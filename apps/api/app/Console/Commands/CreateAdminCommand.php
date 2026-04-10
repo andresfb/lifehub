@@ -69,11 +69,12 @@ final class CreateAdminCommand extends Command
                 throw new RuntimeException('Password does not match');
             }
 
-            $token = $action->handle(
+            $user = $action->handle(
                 NewUserItem::from($results)
             );
 
-            warning("API Token: {$token}");
+            info('User created');
+            warning("User ID: {$user->id}");
 
             return self::SUCCESS;
         } catch (Throwable $e) {

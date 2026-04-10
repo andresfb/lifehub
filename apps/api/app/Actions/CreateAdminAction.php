@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
 
-use function Laravel\Prompts\warning;
-
 final class CreateAdminAction
 {
     use AdminHashable;
@@ -22,9 +20,9 @@ final class CreateAdminAction
     /**
      * @throws Throwable
      */
-    public function handle(NewUserItem $input): string
+    public function handle(NewUserItem $input): User
     {
-        return DB::transaction(function () use ($input): string {
+        return DB::transaction(function () use ($input): User {
             $user = User::query()
                 ->create([
                     'name' => $input->name,
@@ -38,10 +36,7 @@ final class CreateAdminAction
             $user->admin_hash = $this->hash($user->id);
             $user->save();
 
-            info('User created');
-            warning("User ID: {$user->id}");
-
-            return $user->createToken('auth-token')->plainTextToken;
+            return $user;
         });
     }
 }

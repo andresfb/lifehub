@@ -8,6 +8,7 @@ use App\Console\Commands\Base\BaseUserCommand;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Facades\Route;
 use function Laravel\Prompts\clear;
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\intro;
@@ -28,6 +29,19 @@ final class TestAppCommand extends BaseUserCommand
             Log::notice('Running tests');
 
             $user = $this->loadUser();
+
+            $routes = Route::getRoutes();
+
+            // TODO: app manifest
+            foreach ($routes as $route) {
+                dump([
+                    'uri' => $route->uri(),
+                    'methods' => $route->methods(),
+                    'action' => $route->getActionName(),
+                    'name' => $route->getName(),
+                ]);
+            }
+
 
             return self::SUCCESS;
         } catch (Exception $e) {

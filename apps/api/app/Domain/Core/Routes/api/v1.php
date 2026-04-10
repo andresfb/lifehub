@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Request;
+use App\Domain\Core\Http\Controllers\Api\V1\ReminderController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([
@@ -13,9 +13,7 @@ Route::middleware([
     ->prefix('api/v1')
     ->group(function (): void {
 
-        // TODO: Change this to a API Controller
-        Route::get('/reminder/{reminder}', static function (Request $request) {
-            echo 'TODO: Change this to a API Controller';
-        })->name('api.v1.reminder.show');
+        Route::get('/reminder/{reminder}', ReminderController::class)
+            ->name('api.v1.reminder.show');
 
     });

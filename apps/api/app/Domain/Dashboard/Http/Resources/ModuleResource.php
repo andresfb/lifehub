@@ -25,8 +25,13 @@ class ModuleResource extends JsonResource
                 'show_menu' => $this->showMenu,
             ],
             'relationships' => [
-                'menu' => MenuResource::make($this->whenLoaded('menu')),
-                'sub_enus' => MenuResource::collection($this->whenLoaded('showMenu')),
+                'menu' => $this->whenNotNull(
+                    $this->menu,
+                    MenuResource::make($this->menu),
+                ),
+                'sub_menus' => MenuResource::collection(
+                    $this->whenNotNull($this->subMenus)
+                ),
             ]
         ];
     }

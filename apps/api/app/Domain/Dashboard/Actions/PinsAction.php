@@ -11,7 +11,7 @@ use App\Domain\Dashboard\Models\HomepageSection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
-final class BookmarksAction
+final class PinsAction
 {
     /**
      * @return Collection<HomepageSectionItem>

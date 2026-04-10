@@ -22,9 +22,7 @@ final class MarkerItem extends Data
     #[Override]
     public function toArray(): array
     {
-        $data = parent::toArray();
-        unset($data['tags']);
-
-        return $data;
+        return $this->except('tags')
+            ->toArray();
     }
 }

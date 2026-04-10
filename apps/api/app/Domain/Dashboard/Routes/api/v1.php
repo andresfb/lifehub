@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Dashboard\Http\Controllers\Api\V1\BookmarksController;
+use App\Domain\Dashboard\Http\Controllers\Api\V1\PinController;
 use App\Domain\Dashboard\Http\Controllers\Api\V1\DashboardController;
 use App\Domain\Dashboard\Http\Controllers\Api\V1\MenuController;
 use App\Domain\Dashboard\Http\Controllers\Api\V1\SearchProviderController;
@@ -22,13 +22,13 @@ Route::middleware([
         Route::get('/menu', MenuController::class)
             ->name('api.v1.dashboard.menu');
 
-        Route::apiResource('/bookmarks', BookmarksController::class)
+        Route::apiResource('/pins', PinController::class)
             ->names([
-                'index' => 'api.v1.dashboard.bookmarks.index',
-                'store' => 'api.v1.dashboard.bookmarks.store',
-                'show' => 'api.v1.dashboard.bookmarks.show',
-                'update' => 'api.v1.dashboard.bookmarks.update',
-                'destroy' => 'api.v1.dashboard.bookmarks.destroy',
+                'index' => 'api.v1.dashboard.pins.index',
+                'store' => 'api.v1.dashboard.pins.store',
+                'show' => 'api.v1.dashboard.pins.show',
+                'update' => 'api.v1.dashboard.pins.update',
+                'destroy' => 'api.v1.dashboard.pins.destroy',
             ]);
 
         Route::apiResource('/search/providers', SearchProviderController::class)

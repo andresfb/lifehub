@@ -28,15 +28,11 @@ final class ModuleRecordItem extends Data
 
     public function cleanArray(): array
     {
-        $data = $this->toArray();
-
-        unset(
-            $data['show_menu'],
-            $data['menu'],
-            $data['sub_menus'],
-        );
-
-        return $data;
+        return $this->except(
+            'show_menu',
+            'menu',
+            'sub_menus'
+        )->toArray();
     }
 
     public function withMenu(?MenuItem $menu): self
