@@ -10,6 +10,7 @@ use App\Http\Middleware\LogApiRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Square1\LaravelIdempotency\Http\Middleware\IdempotencyMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'verified' => EnsureEmailVerified::class,
             'module.access' => EnsureModuleEnabledMiddleware::class,
             'private.access' => EnsurePrivateAccessMiddleware::class,
+            'idempotency' => IdempotencyMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

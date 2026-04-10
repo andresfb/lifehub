@@ -106,8 +106,11 @@ final class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        Relation::morphMap(
-            $relations->pluck('class', 'key')->toArray()
-        );
+        $morphMap = $relations->pluck('class', 'key')
+            ->toArray();
+
+        $morphMap['USER'] = User::class;
+
+        Relation::morphMap($morphMap);
     }
 }
