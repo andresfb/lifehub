@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Core\Models;
+namespace Modules\Core\Models;
 
 use App\Contracts\GlobalSearchInterface;
 use App\Contracts\UserModelInterface;
-use App\Domain\Core\Enums\MorphTypes;
-use App\Domain\Core\Observers\ReminderObserver;
 use App\Models\Tag;
 use App\Models\User;
 use App\Traits\BelongsToUser;
@@ -17,10 +15,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Core\Enums\MorphTypes;
+use Modules\Core\Observers\ReminderObserver;
 use Override;
-use OwenIt\Auditing\Auditable as AuditableTrait;
-use OwenIt\Auditing\Contracts\Auditable;
-use OwenIt\Auditing\Models\Audit;
 use Spatie\Tags\HasTags;
 
 /**
@@ -37,22 +34,16 @@ use Spatie\Tags\HasTags;
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
  * @property-read Collection<Tag> $tags
- * @property-read Collection<Audit> $audits
  */
 #[ObservedBy([ReminderObserver::class])]
-final class Reminder extends Model implements Auditable, GlobalSearchInterface, UserModelInterface
+final class Reminder extends Model implements GlobalSearchInterface, UserModelInterface
 {
-    use AuditableTrait;
     use BelongsToUser;
     use HasFactory;
     use HasTags;
     use SoftDeletes;
 
     protected $table = 'core_reminders';
-
-    protected array $auditExclude = [
-        'tags', 'audits',
-    ];
 
     public function getIdentifier(): string
     {

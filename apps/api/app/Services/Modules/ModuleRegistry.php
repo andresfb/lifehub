@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Services\Modules;
 
 use App\Models\Module;
-use App\Models\User;
-use App\Traits\ModulesAssignable;
 use Illuminate\Support\Facades\Cache;
 
-final class ModuleRegistry
+final readonly class ModuleRegistry
 {
-    use ModulesAssignable;
+    public function __construct(
+        private ModuleAccessService $moduleAccess
+    ) {}
 
     public function syncToDatabase(array $records): void
     {
@@ -32,20 +32,11 @@ final class ModuleRegistry
     public function syncAndAssign(array $records): void
     {
         $this->syncToDatabase($records);
-        $this->assign();
+        $this->syncPermissions();
     }
 
-    public function assign(): void
+    public function syncPermissions(): void
     {
-        $this->assignModulesToUsers();
-        $this->assignModulesToAdmin($this->getAdmin());
-    }
-
-    private function assignModulesToUsers(): void
-    {
-        User::query()
-            ->each(function (User $user) {
-                $this->assignDefaultModules($user);
-            });
+        $this->moduleAccess->syncPermissions();
     }
 }

@@ -17,10 +17,8 @@ final class DatabaseSeeder extends Seeder
         $this->call([
             '\App\Domain\Dashboard\Database\Seeders\AdminHomepageSeeder',
             '\App\Domain\Dashboard\Database\Seeders\AdminSearchProviders',
-            '\App\Domain\Core\Database\Seeders\CoreSeeder',
             '\App\Domain\Bookmarks\Database\Seeders\BookmarksSeeder',
             '\App\Domain\Dashboard\Database\Seeders\DashboardSeeder',
-            App\Domain\Core\Database\Seeders\CoreSeeder::class,
-]);
+        ]);
     }
 }

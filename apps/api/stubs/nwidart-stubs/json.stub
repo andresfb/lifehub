@@ -4,7 +4,6 @@
     "description": "",
     "keywords": [],
     "access": {
-        "is_core": false,
         "is_public": false
     },
     "show_menu": false,

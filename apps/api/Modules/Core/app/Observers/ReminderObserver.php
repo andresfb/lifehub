@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Core\Observers;
+namespace Modules\Core\Observers;
 
-use App\Domain\Core\Models\Reminder;
 use App\Services\Search\SearchDocumentProjector;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Modules\Core\Models\Reminder;
 
 final class ReminderObserver implements ShouldQueue
 {

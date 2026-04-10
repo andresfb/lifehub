@@ -8,9 +8,8 @@ use App\Enums\ModuleAccessLevel;
 use App\Enums\ModuleStatus;
 use App\Enums\ModuleVisibility;
 use App\Observers\UserObserver;
-use App\Traits\AdminHashable;
+use App\Services\Modules\ModuleAccessService;
 use Carbon\CarbonImmutable;
-use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -21,11 +20,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Override;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property-read int $id
@@ -34,19 +33,18 @@ use Override;
  * @property CarbonImmutable|null $email_verified_at
  * @property string $password
  * @property string $remember_token
- * @property string|null $admin_hash
  * @property-read CarbonImmutable|null $deleted_at
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  */
 #[ObservedBy([UserObserver::class])]
 #[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token', 'admin_hash'])]
+#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 final class User extends Authenticatable implements MustVerifyEmail
 {
-    use AdminHashable;
     use HasApiTokens;
     use HasFactory;
+    use HasRoles;
     use Notifiable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
@@ -85,14 +83,7 @@ final class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdmin(): bool
     {
-        return Cache::tags('users')
-            ->remember(
-                md5("USER:ADMIN_HASH:{$this->id}"),
-                now()->addMonth(),
-                function (): bool {
-                    return $this->isHashValid($this->id, $this->admin_hash);
-                }
-            );
+        return $this->hasRole(ModuleAccessService::SUPER_ADMIN_ROLE);
     }
 
     /**

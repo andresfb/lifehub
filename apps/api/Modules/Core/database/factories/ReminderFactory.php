@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Core\Database\Factories;
+namespace Modules\Core\Database\Factories;
 
-use App\Domain\Core\Models\Reminder;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Date;
+use Modules\Core\Models\Reminder;
 
 /**
  * @extends Factory<Reminder>

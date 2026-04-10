@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+final class RegisterRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -13,7 +15,7 @@ class RegisterRequest extends FormRequest
     }
 
     /**
-     * @return array<string, ValidationRule|array<string, array<string>|string>
+     * @return array<string, ValidationRule|array<int, string>|string>
      */
     public function rules(): array
     {
@@ -21,6 +23,7 @@ class RegisterRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password_confirmation' => ['required', 'string'],
             'invitation' => ['required', 'string'],
         ];
     }

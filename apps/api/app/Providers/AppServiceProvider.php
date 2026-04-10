@@ -6,9 +6,8 @@ namespace App\Providers;
 
 use App\Dtos\Modules\MorphTypesItems;
 use App\Models\User;
+use App\Services\Modules\ModuleAccessService;
 use Carbon\CarbonImmutable;
-use Dedoc\Scramble\Scramble;
-use Dedoc\Scramble\Support\Generator\OpenApi;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -40,6 +39,10 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
         $this->configureDefaults();
         $this->loadMorphRelations();
+
+        Gate::before(static function (User $user): ?bool {
+            return $user->hasRole(ModuleAccessService::SUPER_ADMIN_ROLE) ? true : null;
+        });
 
         Gate::define('viewApiDocs', static function (?User $user): bool {
             if (blank($user)) {

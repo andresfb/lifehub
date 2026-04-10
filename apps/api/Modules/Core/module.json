@@ -4,7 +4,6 @@
     "description": "The base Module where all starts",
     "keywords": [],
     "access": {
-        "is_core": true,
         "is_public": true
     },
     "show_menu": false,

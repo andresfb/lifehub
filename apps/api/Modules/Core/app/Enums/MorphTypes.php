@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Core\Enums;
+namespace Modules\Core\Enums;
 
-use App\Domain\Core\Models\Reminder;
+use Modules\Core\Models\Reminder;
 
 enum MorphTypes: string
 {

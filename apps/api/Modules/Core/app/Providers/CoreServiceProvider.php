@@ -2,8 +2,12 @@
 
 namespace Modules\Core\Providers;
 
+use App\Dtos\Modules\MorphTypesItems;
+use Illuminate\Support\Collection;
+use Modules\Core\Enums\MorphTypes;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
+use Override;
 
 class CoreServiceProvider extends ModuleServiceProvider
 {
@@ -36,11 +40,26 @@ class CoreServiceProvider extends ModuleServiceProvider
 
     /**
      * Define module schedules.
-     * 
+     *
      * @param $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {
     //     $schedule->command('inspire')->hourly();
     // }
+
+    #[Override]
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->resolving('morph_types', function (Collection $types): void {
+            $types->add(
+                new MorphTypesItems(
+                    MorphTypes::CORE_REMINDER->name,
+                    MorphTypes::CORE_REMINDER->value,
+                ),
+            );
+        });
+    }
 }

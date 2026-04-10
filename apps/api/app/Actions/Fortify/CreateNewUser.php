@@ -1,20 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Fortify;
 
 use App\Models\Invitation;
 use App\Models\User;
-use App\Traits\ModulesAssignable;
+use App\Services\Modules\ModuleAccessService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Throwable;
 
-class CreateNewUser implements CreatesNewUsers
+final class CreateNewUser implements CreatesNewUsers
 {
-    use ModulesAssignable;
     use PasswordValidationRules;
+
+    public function __construct(
+        private readonly ModuleAccessService $moduleAccess
+    ) {}
 
     /**
      * Validate and create a newly registered user.
@@ -53,7 +58,7 @@ class CreateNewUser implements CreatesNewUsers
                     'password' => $input['password'],
                 ]);
 
-            $this->assignDefaultModules($user);
+            $this->moduleAccess->grantPublicWriters($user);
 
             $invitation->update(['accepted_at' => now()]);
 
