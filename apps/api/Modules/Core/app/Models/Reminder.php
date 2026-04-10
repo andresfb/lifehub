@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -36,14 +37,13 @@ use Spatie\Tags\HasTags;
  * @property-read Collection<Tag> $tags
  */
 #[ObservedBy([ReminderObserver::class])]
+#[Table(name: 'core_reminders')]
 final class Reminder extends Model implements GlobalSearchInterface, UserModelInterface
 {
     use BelongsToUser;
     use HasFactory;
     use HasTags;
     use SoftDeletes;
-
-    protected $table = 'core_reminders';
 
     public function getIdentifier(): string
     {

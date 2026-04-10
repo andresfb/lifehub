@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Observers;
 
-use Modules\Dashboard\Models\HomepageSection;
 use Illuminate\Support\Facades\Cache;
+use Modules\Dashboard\Models\HomepageSection;
 
 final class HomepageSectionObserver
 {

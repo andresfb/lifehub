@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection PhpUnhandledExceptionInspection */
 
 declare(strict_types=1);
@@ -7,8 +8,9 @@ use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\Config\RectorConfig;
-//use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
-//use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
+use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
@@ -55,18 +57,21 @@ return RectorConfig::configure()
     ->withSkip([
         AddOverrideAttributeToOverriddenMethodsRector::class,
         DisallowedEmptyRuleFixerRector::class,
-//        ClosureToArrowFunctionRector::class,
+        //        ClosureToArrowFunctionRector::class,
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
         AddFunctionVoidReturnTypeWhereNoReturnRector::class,
-//        NullToStrictStringFuncCallArgRector::class,
+        NullToStrictStringFuncCallArgRector::class,
         CatchExceptionNameMatchingTypeRector::class,
         EncapsedStringsToSprintfRector::class,
         ThrowIfRector::class,
         ThrowIfAndThrowUnlessExceptionsToUseClassStringRector::class,
         DispatchToHelperFunctionsRector::class,
+        StringClassNameToClassConstantRector::class,
         __DIR__.'/config/database.php',
         __DIR__.'/config/media-library.php',
         __DIR__.'/config/tags.php',
+        __DIR__.'/config/premission.php',
+        __DIR__.'/config/responsecache.php',
     ])
     ->withPreparedSets(
         deadCode: true,

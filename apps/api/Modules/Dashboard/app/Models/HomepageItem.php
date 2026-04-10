@@ -6,22 +6,24 @@ namespace Modules\Dashboard\Models;
 
 use App\Contracts\GlobalSearchInterface;
 use App\Contracts\UserModelInterface;
-use Modules\Dashboard\Enums\MorphTypes;
-use Modules\Dashboard\Libraries\MediaNamesLibrary;
-use Modules\Dashboard\Observers\HomepageItemObserver;
-use Modules\Dashboard\Policies\HomepageItemPolicy;
 use App\Enums\ModuleKey;
 use App\Models\User;
 use App\Traits\BelongsToUser;
 use App\Traits\SlugOptionable;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Dashboard\Enums\MorphTypes;
+use Modules\Dashboard\Libraries\MediaNamesLibrary;
+use Modules\Dashboard\Observers\HomepageItemObserver;
+use Modules\Dashboard\Policies\HomepageItemPolicy;
 use Override;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -47,6 +49,8 @@ use Spatie\Tags\HasTags;
  */
 #[ObservedBy([HomepageItemObserver::class])]
 #[UsePolicy(HomepageItemPolicy::class)]
+#[Guarded(['id'])]
+#[Table(name: 'dashboard_homepage_items')]
 final class HomepageItem extends Model implements GlobalSearchInterface, HasMedia, UserModelInterface
 {
     use BelongsToUser;
@@ -56,10 +60,6 @@ final class HomepageItem extends Model implements GlobalSearchInterface, HasMedi
     use InteractsWithMedia;
     use SlugOptionable;
     use SoftDeletes;
-
-    protected $guarded = ['id'];
-
-    protected $table = 'dashboard_homepage_items';
 
     /**
      * @return BelongsTo<User, $this>
@@ -82,6 +82,7 @@ final class HomepageItem extends Model implements GlobalSearchInterface, HasMedi
         return $this->loadSlugOptions('title', ModuleKey::DASHBOARD->value);
     }
 
+    #[Override]
     public function getRouteKeyName(): string
     {
         return 'slug';
@@ -161,6 +162,7 @@ final class HomepageItem extends Model implements GlobalSearchInterface, HasMedi
         ];
     }
 
+    #[Override]
     protected static function booted(): void
     {
         self::addGlobalScope(static function (Builder $builder) {

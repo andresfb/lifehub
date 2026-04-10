@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class RegisterResponse implements RegisterResponseContract
 {
-    public function toResponse($request): Response
+    public function toResponse($request): JsonResponse
     {
         return new JsonResponse([
             'success' => true,

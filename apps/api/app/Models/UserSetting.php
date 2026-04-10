@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Contracts\UserModelInterface;
@@ -19,15 +21,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read CarbonImmutable|null $updated_at
  * @property-read User $user
  */
-class UserSetting extends Model implements UserModelInterface
+final class UserSetting extends Model implements UserModelInterface
 {
     use BelongsToUser;
     use HasFactory;
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public static function getMenuShortcut(int $userId, ?string $code): ?string
     {
@@ -45,5 +42,10 @@ class UserSetting extends Model implements UserModelInterface
             ->where('code', $code)
             ->where('key', $key)
             ->first()?->value;
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

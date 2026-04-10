@@ -11,9 +11,7 @@ final class BulkMarkerImportAction
 {
     public function handle(array $markers): void
     {
-        $list = collect($markers)->map(function (array $marker): BulkMarkerImportItem {
-            return BulkMarkerImportItem::from($marker);
-        });
+        $list = collect($markers)->map(fn (array $marker): BulkMarkerImportItem => BulkMarkerImportItem::from($marker));
 
         BulkMarkerImportJob::dispatch($list);
     }

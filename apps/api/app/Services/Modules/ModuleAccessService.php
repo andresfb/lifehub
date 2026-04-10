@@ -7,6 +7,7 @@ namespace App\Services\Modules;
 use App\Enums\ModuleAccessLevel;
 use App\Enums\ModuleKey;
 use App\Models\User;
+use App\Services\Manifest\ManifestService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Nwidart\Modules\Facades\Module;
@@ -46,7 +47,9 @@ final class ModuleAccessService
 
         Role::findOrCreate(self::SUPER_ADMIN_ROLE, $this->guardName());
 
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        resolve(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        ManifestService::invalidateCache();
     }
 
     public function grantReader(User $user, string $moduleKey): void
@@ -160,6 +163,17 @@ final class ModuleAccessService
             ->values();
     }
 
+    public function isPublic(NwidartModule $module): bool
+    {
+        $access = $module->get('access', []);
+
+        if (blank($access)) {
+            return false;
+        }
+
+        return ($access['is_public'] ?? false) === true;
+    }
+
     private function assignReader(User $user, string $moduleKey): User
     {
         $user->removeRole($this->writerRoleName($moduleKey));
@@ -172,17 +186,6 @@ final class ModuleAccessService
         $user->removeRole($this->readerRoleName($moduleKey));
 
         return $user->assignRole($this->writerRoleName($moduleKey));
-    }
-
-    private function isPublic(NwidartModule $module): bool
-    {
-        $access = $module->get('access', []);
-
-        if (blank($access)) {
-            return false;
-        }
-
-        return ($access['is_public'] ?? false) === true;
     }
 
     private function moduleKey(NwidartModule $module): string

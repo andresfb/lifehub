@@ -25,9 +25,11 @@ use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use Laravel\Fortify\Contracts\TwoFactorLoginResponse as TwoFactorLoginResponseContract;
 use Laravel\Fortify\Contracts\VerifyEmailResponse as VerifyEmailResponseContract;
 use Laravel\Fortify\Fortify;
+use Override;
 
 final class FortifyServiceProvider extends ServiceProvider
 {
+    #[Override]
     public function register(): void
     {
         $this->app->bind(LoginResponseContract::class, LoginResponse::class);
@@ -45,7 +47,7 @@ final class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         ResetPassword::createUrlUsing(static function (mixed $notifiable, string $token): string {
-            $email = urlencode($notifiable->getEmailForPasswordReset());
+            $email = urlencode((string) $notifiable->getEmailForPasswordReset());
 
             return config('app.frontend_url')."/reset-password/{$token}?email={$email}";
         });
@@ -56,8 +58,6 @@ final class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($throttleKey);
         });
 
-        RateLimiter::for('two-factor', static function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
-        });
+        RateLimiter::for('two-factor', static fn (Request $request) => Limit::perMinute(5)->by($request->session()->get('login.id')));
     }
 }

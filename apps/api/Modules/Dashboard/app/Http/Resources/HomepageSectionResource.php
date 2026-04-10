@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Dashboard\Http\Resources;
 
-use Modules\Dashboard\Dtos\HomepageSectionItem;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Dashboard\Dtos\HomepageSectionItem;
+use Override;
 
 /**
  * @mixin HomepageSectionItem
  */
-class HomepageSectionResource extends JsonResource
+final class HomepageSectionResource extends JsonResource
 {
+    #[Override]
     public function toArray(Request $request): array
     {
         return [
@@ -28,7 +32,7 @@ class HomepageSectionResource extends JsonResource
                     $this->whenLoaded('items')
                 ),
                 'user' => UserResource::make($this->whenLoaded('user')),
-            ]
+            ],
         ];
     }
 }

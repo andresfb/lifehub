@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Dashboard\Http\Resources;
 
-use Modules\Dashboard\Dtos\SearchProviderItem;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Dashboard\Dtos\SearchProviderItem;
+use Override;
 
 /**
  * @mixin SearchProviderItem
  */
-class SearchProviderResource extends JsonResource
+final class SearchProviderResource extends JsonResource
 {
+    #[Override]
     public function toArray(Request $request): array
     {
         return [
@@ -24,7 +28,7 @@ class SearchProviderResource extends JsonResource
             ],
             'relationships' => [
                 'user' => UserResource::make($this->whenLoaded('user')),
-            ]
+            ],
         ];
     }
 }

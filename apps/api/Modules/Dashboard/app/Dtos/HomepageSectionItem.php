@@ -16,11 +16,11 @@ final class HomepageSectionItem extends Data
      * @param  Collection<HomepageItemDto>|null  $items
      */
     public function __construct(
-        public readonly int         $id,
-        public readonly int         $userId,
-        public readonly string      $slug,
-        public readonly string      $name,
-        public readonly ?string     $bgColor = null,
+        public readonly int $id,
+        public readonly int $userId,
+        public readonly string $slug,
+        public readonly string $name,
+        public readonly ?string $bgColor = null,
         public readonly ?Collection $items = null,
     ) {}
 }

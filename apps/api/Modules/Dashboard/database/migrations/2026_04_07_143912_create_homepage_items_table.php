@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Modules\Dashboard\Models\HomepageSection;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Modules\Dashboard\Models\HomepageSection;
 
 return new class extends Migration
 {

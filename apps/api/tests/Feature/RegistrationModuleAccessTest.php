@@ -14,7 +14,7 @@ uses(LazilyRefreshDatabase::class);
 test('newly registered users receive core writer access', function (): void {
     Notification::fake();
 
-    app(ModuleAccessService::class)->syncPermissions();
+    resolve(ModuleAccessService::class)->syncPermissions();
 
     $invitation = Invitation::factory()->create([
         'email' => 'new-user@example.com',
@@ -32,7 +32,7 @@ test('newly registered users receive core writer access', function (): void {
         ->where('email', 'new-user@example.com')
         ->firstOrFail();
 
-    $moduleAccess = app(ModuleAccessService::class);
+    $moduleAccess = resolve(ModuleAccessService::class);
 
     expect($moduleAccess->canRead($user, 'core'))->toBeTrue()
         ->and($moduleAccess->canWrite($user, 'core'))->toBeTrue()

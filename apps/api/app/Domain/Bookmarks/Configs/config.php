@@ -11,6 +11,6 @@ return [
 
     'hidden_key' => 'MARKER:HIDDEN:SHOW:%s',
 
-    'mutator_banded_domains' => explode(',', env('BOOKMARKS_MUTATOR_BANDED_DOMAINS', 'imdb.com')),
+    'mutator_banded_domains' => explode(',', (string) env('BOOKMARKS_MUTATOR_BANDED_DOMAINS', 'imdb.com')),
 
 ];

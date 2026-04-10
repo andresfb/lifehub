@@ -12,10 +12,10 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 final class ApiErrorItem extends Data
 {
     public function __construct(
-        public readonly int    $userId,
+        public readonly int $userId,
         public readonly string $sourceId,
         public readonly string $type,
         public readonly string $error,
-        public readonly array  $data = [],
+        public readonly array $data = [],
     ) {}
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Observers;
 
-use Modules\Dashboard\Models\SearchProvider;
 use Illuminate\Support\Facades\Cache;
+use Modules\Dashboard\Models\SearchProvider;
 
 final class SearchProviderObserver
 {

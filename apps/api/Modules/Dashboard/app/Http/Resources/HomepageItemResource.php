@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Dashboard\Http\Resources;
 
-use Modules\Dashboard\Dtos\HomepageItemDto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Dashboard\Dtos\HomepageItemDto;
+use Override;
 
 /**
  * @mixin HomepageItemDto
  */
-class HomepageItemResource extends JsonResource
+final class HomepageItemResource extends JsonResource
 {
+    #[Override]
     public function toArray(Request $request): array
     {
         return [

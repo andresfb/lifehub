@@ -20,7 +20,8 @@
       "mcp__jcodemunch-mcp__get_file_content",
       "mcp__jcodemunch__resolve_repo",
       "mcp__jcodemunch__get_symbol_source",
-      "mcp__jcodemunch__get_file_outline"
+      "mcp__jcodemunch__get_file_outline",
+      "Bash(git stash:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

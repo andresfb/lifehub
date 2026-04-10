@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Dashboard\Providers;
 
 use App\Dtos\Modules\MorphTypesItems;
+use App\Services\Manifest\ManifestService;
 use Illuminate\Support\Collection;
 use Modules\Dashboard\Enums\MorphTypes;
+use Modules\Dashboard\Manifest\DashboardManifestProvider;
 use Nwidart\Modules\Support\ModuleServiceProvider;
-use Illuminate\Console\Scheduling\Schedule;
 use Override;
 
-class DashboardServiceProvider extends ModuleServiceProvider
+final class DashboardServiceProvider extends ModuleServiceProvider
 {
     /**
      * The name of the module.
@@ -41,7 +44,7 @@ class DashboardServiceProvider extends ModuleServiceProvider
     /**
      * Define module schedules.
      *
-     * @param $schedule
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {
@@ -60,6 +63,11 @@ class DashboardServiceProvider extends ModuleServiceProvider
                     MorphTypes::DASHBOARD_HOMEPAGE_ITEM->value,
                 ),
             );
+        });
+
+        $this->app->booted(function (): void {
+            $this->app->make(ManifestService::class)
+                ->register(resolve(DashboardManifestProvider::class));
         });
     }
 }

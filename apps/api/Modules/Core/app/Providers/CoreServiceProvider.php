@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Core\Providers;
 
 use App\Dtos\Modules\MorphTypesItems;
 use Illuminate\Support\Collection;
 use Modules\Core\Enums\MorphTypes;
 use Nwidart\Modules\Support\ModuleServiceProvider;
-use Illuminate\Console\Scheduling\Schedule;
 use Override;
 
-class CoreServiceProvider extends ModuleServiceProvider
+final class CoreServiceProvider extends ModuleServiceProvider
 {
     /**
      * The name of the module.
@@ -41,7 +42,7 @@ class CoreServiceProvider extends ModuleServiceProvider
     /**
      * Define module schedules.
      *
-     * @param $schedule
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {

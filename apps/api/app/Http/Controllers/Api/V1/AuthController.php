@@ -7,8 +7,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Actions\Fortify\CreateNewUser;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Api\V1\ForgotPasswordRequest;
-use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V1\LoginRequest;
+use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V1\ResendVerificationRequest;
 use App\Http\Requests\Api\V1\ResetPasswordRequest;
 use App\Http\Requests\Api\V1\VerifyEmailRequest;
@@ -168,7 +168,7 @@ final class AuthController extends ApiController
 
     private function validateTwoFactorCode(User $user, string $code): bool
     {
-        $provider = app(TwoFactorAuthenticationProvider::class);
+        $provider = resolve(TwoFactorAuthenticationProvider::class);
         $secret = Fortify::currentEncrypter()->decrypt($user->two_factor_secret);
 
         if ($provider->verify($secret, $code)) {

@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Config;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Override;
@@ -52,7 +51,7 @@ final class User extends Authenticatable implements MustVerifyEmail
     public static function getAdmin(): self
     {
         return self::query()
-            ->where('email', Config::string('constants.admin_email'))
+            ->role(ModuleAccessService::SUPER_ADMIN_ROLE)
             ->firstOrFail();
     }
 

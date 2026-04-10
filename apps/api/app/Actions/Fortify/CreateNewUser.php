@@ -13,12 +13,12 @@ use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Throwable;
 
-final class CreateNewUser implements CreatesNewUsers
+final readonly class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
 
     public function __construct(
-        private readonly ModuleAccessService $moduleAccess
+        private ModuleAccessService $moduleAccess
     ) {}
 
     /**

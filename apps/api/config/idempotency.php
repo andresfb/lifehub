@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'cache_duration' => 86400, // 1 day in seconds
 

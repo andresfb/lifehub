@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Jobs;
 
-use Modules\Dashboard\Models\HomepageItem;
 use App\Services\Search\SearchDocumentProjector;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -13,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Modules\Dashboard\Models\HomepageItem;
 
 final class HomepageItemDeletedJob implements ShouldQueue
 {

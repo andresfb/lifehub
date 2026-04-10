@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Database\Factories;
 
-use Modules\Dashboard\Models\HomepageSection;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Date;
+use Modules\Dashboard\Models\HomepageSection;
 
 /**
  * @extends Factory<HomepageSection>

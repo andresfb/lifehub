@@ -15,8 +15,8 @@ final readonly class MarkerObserver
 {
     public function creating(Marker $marker): void
     {
-        $marker->title = trim($marker->title);
-        $marker->url = trim($marker->url);
+        $marker->title = mb_trim((string) $marker->title);
+        $marker->url = mb_trim($marker->url);
         $marker->hash = Marker::getHash($marker->url, $marker->user_id ?? Auth::id());
     }
 

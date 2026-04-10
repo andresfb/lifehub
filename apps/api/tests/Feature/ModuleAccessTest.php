@@ -16,7 +16,7 @@ use function Pest\Laravel\actingAs;
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function (): void {
-    app(ModuleAccessService::class)->syncPermissions();
+    resolve(ModuleAccessService::class)->syncPermissions();
 });
 
 test('guests cannot access core module routes', function (): void {
@@ -34,7 +34,7 @@ test('users without a core role cannot access core module routes', function (): 
 test('core readers can read core routes', function (): void {
     $user = User::factory()->create();
 
-    app(ModuleAccessService::class)->grantReader($user, 'core');
+    resolve(ModuleAccessService::class)->grantReader($user, 'core');
 
     actingAs($user, 'sanctum')
         ->getJson('/api/v1/cores')
@@ -48,7 +48,7 @@ test('core readers can read core routes', function (): void {
 test('core readers cannot write core routes', function (string $method, string $uri): void {
     $user = User::factory()->create();
 
-    app(ModuleAccessService::class)->grantReader($user, 'core');
+    resolve(ModuleAccessService::class)->grantReader($user, 'core');
 
     actingAs($user, 'sanctum')
         ->json($method, $uri)
@@ -63,7 +63,7 @@ test('core readers cannot write core routes', function (string $method, string $
 test('core writers can read and write core routes', function (string $method, string $uri): void {
     $user = User::factory()->create();
 
-    app(ModuleAccessService::class)->grantWriter($user, 'core');
+    resolve(ModuleAccessService::class)->grantWriter($user, 'core');
 
     actingAs($user, 'sanctum')
         ->json($method, $uri)
@@ -80,7 +80,7 @@ test('core writers can read and write core routes', function (string $method, st
 test('super admins can access every core route', function (string $method, string $uri): void {
     $user = User::factory()->create();
 
-    app(ModuleAccessService::class)->grantSuperAdmin($user);
+    resolve(ModuleAccessService::class)->grantSuperAdmin($user);
 
     actingAs($user, 'sanctum')
         ->json($method, $uri)
@@ -101,7 +101,7 @@ test('public modules grant default writer access and private modules do not', fu
     ]);
 
     $user = User::factory()->create();
-    $moduleAccess = app(ModuleAccessService::class);
+    $moduleAccess = resolve(ModuleAccessService::class);
 
     $moduleAccess->grantPublicWriters($user);
 
@@ -120,7 +120,7 @@ test('super admins receive writer roles for all enabled modules', function (): v
     ]);
 
     $user = User::factory()->create();
-    $moduleAccess = app(ModuleAccessService::class);
+    $moduleAccess = resolve(ModuleAccessService::class);
 
     $moduleAccess->grantSuperAdmin($user);
 
@@ -140,14 +140,14 @@ test('sync modules command grants all enabled module writers to existing super a
 
     $this->artisan('sync:modules')->assertSuccessful();
 
-    $moduleAccess = app(ModuleAccessService::class);
+    $moduleAccess = resolve(ModuleAccessService::class);
 
     expect($superAdmin->fresh()->hasRole($moduleAccess->writerRoleName('public-module')))->toBeTrue()
         ->and($superAdmin->fresh()->hasRole($moduleAccess->writerRoleName('private-module')))->toBeTrue();
 });
 
 test('create admin action assigns the super admin role', function (): void {
-    $user = app(CreateAdminAction::class)->handle(new NewUserItem(
+    $user = resolve(CreateAdminAction::class)->handle(new NewUserItem(
         name: 'Admin User',
         email: 'admin@example.com',
         password: 'password',
@@ -158,7 +158,7 @@ test('create admin action assigns the super admin role', function (): void {
 });
 
 test('module permission sync is idempotent', function (): void {
-    $moduleAccess = app(ModuleAccessService::class);
+    $moduleAccess = resolve(ModuleAccessService::class);
 
     $moduleAccess->syncPermissions();
     $moduleAccess->syncPermissions();

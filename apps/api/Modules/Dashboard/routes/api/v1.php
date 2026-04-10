@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Route;
 use Modules\Dashboard\Http\Controllers\Api\V1\DashboardController;
-use Modules\Dashboard\Http\Controllers\Api\V1\MenuController;
 use Modules\Dashboard\Http\Controllers\Api\V1\PinController;
 use Modules\Dashboard\Http\Controllers\Api\V1\SearchProviderController;
+use Spatie\ResponseCache\Middlewares\CacheResponse;
+
+use function Illuminate\Support\hours;
 
 Route::middleware([
     'auth:sanctum',
@@ -17,12 +21,15 @@ Route::middleware([
         Route::get('/', DashboardController::class)
             ->name('v1.dashboard');
 
-        Route::get('/menu', MenuController::class)
-            ->name('v1.dashboard.menu')
-            ->middleware('idempotency');
-
         Route::apiResource('/pins', PinController::class)
-            ->middlewareFor('index', 'idempotency')
+            ->withoutMiddlewareFor(['index', 'show'], 'idempotency')
+            ->middlewareFor(
+                ['index', 'show'],
+                CacheResponse::for(
+                    lifetime: hours(8),
+                    tags: ['dashboard']
+                )
+            )
             ->names([
                 'index' => 'v1.dashboard.pins.index',
                 'store' => 'v1.dashboard.pins.store',
@@ -32,7 +39,14 @@ Route::middleware([
             ]);
 
         Route::apiResource('/search/providers', SearchProviderController::class)
-            ->middlewareFor('index', 'idempotency')
+            ->withoutMiddlewareFor(['index', 'show'], 'idempotency')
+            ->middlewareFor(
+                ['index', 'show'],
+                CacheResponse::for(
+                    lifetime: hours(8),
+                    tags: ['dashboard']
+                )
+            )
             ->names([
                 'index' => 'v1.dashboard.search.providers.index',
                 'store' => 'v1.dashboard.search.providers.store',

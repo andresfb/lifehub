@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Modules\Dashboard\Models;
 
 use App\Contracts\UserModelInterface;
-use Modules\Dashboard\Observers\SearchProviderObserver;
-use Modules\Dashboard\Policies\SearchProviderPolicy;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Dashboard\Observers\SearchProviderObserver;
+use Modules\Dashboard\Policies\SearchProviderPolicy;
 use Override;
 
 /**
@@ -28,13 +29,12 @@ use Override;
  */
 #[ObservedBy([SearchProviderObserver::class])]
 #[UsePolicy(SearchProviderPolicy::class)]
+#[Table(name: 'dashboard_search_providers')]
 final class SearchProvider extends Model implements UserModelInterface
 {
     use BelongsToUser;
     use HasFactory;
     use SoftDeletes;
-
-    protected $table = 'dashboard_search_providers';
 
     #[Override]
     protected function casts(): array

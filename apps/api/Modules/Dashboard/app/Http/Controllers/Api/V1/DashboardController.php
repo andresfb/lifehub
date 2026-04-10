@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Dashboard\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+final class DashboardController extends Controller
 {
-    public function __invoke(Request $request)
-    {
-
-    }
+    public function __invoke(Request $request) {}
 }

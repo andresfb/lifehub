@@ -158,7 +158,7 @@ final class MarkerMutatorService
     {
         $crawler = new Crawler($html);
         $title = $crawler->filter('title')->count() !== 0
-            ? trim($crawler->filter('title')->text())
+            ? mb_trim((string) $crawler->filter('title')->text())
             : null;
 
         // Prefer OG description, fallback to meta description
