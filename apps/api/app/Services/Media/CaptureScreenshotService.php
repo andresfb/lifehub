@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services\Media;
 
-use App\Domain\Bookmarks\Libraries\MediaNamesLibrary;
 use App\Dtos\Media\PageScreenshotItem;
 use Exception;
 use Illuminate\Support\Facades\Config;
@@ -42,6 +41,6 @@ final class CaptureScreenshotService
             ->save($tempPath);
 
         $model->addMedia($tempPath)
-            ->toMediaCollection(MediaNamesLibrary::screenshot());
+            ->toMediaCollection($item->collection);
     }
 }

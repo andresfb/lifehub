@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace App\Domain\Core\Database\Factories;
 
 use App\Domain\Core\Models\Reminder;
 use App\Models\User;
