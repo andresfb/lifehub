@@ -8,7 +8,8 @@
     "nightwatch_mcp": false,
     "packages": [
         "spatie/laravel-query-builder",
-        "spatie/laravel-medialibrary"
+        "spatie/laravel-medialibrary",
+        "spatie/laravel-permission"
     ],
     "sail": false,
     "skills": [
@@ -19,6 +20,7 @@
         "scout-development",
         "pest-testing",
         "medialibrary-development",
+        "laravel-permission-development",
         "laravel-query-builder"
     ]
 }

@@ -1,0 +1,6 @@
+{
+    "name": "PublicModule",
+    "alias": "public-module",
+    "description": "Public test module",
+    "access": { "is_public": true }
+}

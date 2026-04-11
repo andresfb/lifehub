@@ -1,0 +1,6 @@
+{
+    "name": "PrivateModule",
+    "alias": "private-module",
+    "description": "Private test module",
+    "access": { "is_public": false }
+}

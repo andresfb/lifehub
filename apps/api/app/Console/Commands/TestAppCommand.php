@@ -7,8 +7,8 @@ namespace App\Console\Commands;
 use App\Console\Commands\Base\BaseUserCommand;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Nwidart\Modules\Facades\Module;
 
-use Illuminate\Support\Facades\Route;
 use function Laravel\Prompts\clear;
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\intro;
@@ -30,18 +30,9 @@ final class TestAppCommand extends BaseUserCommand
 
             $user = $this->loadUser();
 
-            $routes = Route::getRoutes();
+            $module = Module::find('core');
 
-            // TODO: app manifest
-            foreach ($routes as $route) {
-                dump([
-                    'uri' => $route->uri(),
-                    'methods' => $route->methods(),
-                    'action' => $route->getActionName(),
-                    'name' => $route->getName(),
-                ]);
-            }
-
+            dump($module->get('access'));
 
             return self::SUCCESS;
         } catch (Exception $e) {

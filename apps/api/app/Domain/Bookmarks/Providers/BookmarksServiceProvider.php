@@ -13,8 +13,8 @@ use App\Enums\ModuleKey;
 use App\Enums\ModuleStatus;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Override;
 
 final class BookmarksServiceProvider extends ServiceProvider
 {
@@ -22,6 +22,7 @@ final class BookmarksServiceProvider extends ServiceProvider
         CreateMarkerCommand::class,
     ];
 
+    #[Override]
     public function register(): void
     {
         $this->commands($this->commands);

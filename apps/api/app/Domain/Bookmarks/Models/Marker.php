@@ -18,6 +18,7 @@ use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -58,6 +59,7 @@ use Spatie\Tags\HasTags;
  */
 #[ObservedBy([MarkerObserver::class])]
 #[UsePolicy(MarkerPolicy::class)]
+#[Table(name: 'bookmarks_markers')]
 final class Marker extends Model implements Auditable, GlobalSearchInterface, HasMedia, UserModelInterface
 {
     use AuditableTrait;
@@ -68,13 +70,11 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Ha
     use Searchable;
     use SoftDeletes;
 
-    protected $table = 'bookmarks_markers';
-
     public static function getHash(string $url, int $userId): string
     {
         return md5(sprintf(
             '%s:%s',
-            trim($url),
+            mb_trim($url),
             $userId,
         ));
     }
@@ -87,11 +87,9 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Ha
             ->remember(
                 $urlHash,
                 now()->addMonth(),
-                function () use ($urlHash): bool {
-                    return self::query()
-                        ->where('hash', $urlHash)
-                        ->exists();
-                }
+                fn (): bool => self::query()
+                    ->where('hash', $urlHash)
+                    ->exists()
             );
     }
 
@@ -190,6 +188,7 @@ final class Marker extends Model implements Auditable, GlobalSearchInterface, Ha
         ];
     }
 
+    #[Override]
     protected static function booted(): void
     {
         self::addGlobalScope(static function (Builder $builder) {

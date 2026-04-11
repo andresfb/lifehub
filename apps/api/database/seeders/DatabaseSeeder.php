@@ -5,21 +5,17 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Dashboard\Database\Seeders\DashboardDatabaseSeeder;
 
 final class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
-     * @noinspection ClassConstantCanBeUsedInspection
      */
     public function run(): void
     {
         $this->call([
-            '\App\Domain\Dashboard\Database\Seeders\AdminHomepageSeeder',
-            '\App\Domain\Dashboard\Database\Seeders\AdminSearchProviders',
-            '\App\Domain\Core\Database\Seeders\CoreSeeder',
-            '\App\Domain\Bookmarks\Database\Seeders\BookmarksSeeder',
-            '\App\Domain\Dashboard\Database\Seeders\DashboardSeeder',
+            DashboardDatabaseSeeder::class,
         ]);
     }
 }

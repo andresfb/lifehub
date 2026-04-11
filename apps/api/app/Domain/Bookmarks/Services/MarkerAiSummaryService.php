@@ -29,12 +29,10 @@ final readonly class MarkerAiSummaryService
         }
 
         $tags = collect($tags)
-            ->map(function (string $tag) {
-                return str($tag)
-                    ->trim()
-                    ->lower()
-                    ->toString();
-            });
+            ->map(fn (string $tag) => str($tag)
+                ->trim()
+                ->lower()
+                ->toString());
 
         $marker->fresh()->attachTags($tags);
     }

@@ -49,14 +49,14 @@ final readonly class BulkMarkerImportService
                         return;
                     }
 
-                    $url = trim($item->url);
+                    $url = mb_trim($item->url);
 
                     $marker = new Marker;
                     $marker->user_id = $userId;
                     $marker->category_id = $this->getCategory($item->category);
                     $marker->hash = Marker::getHash($url, $userId);
                     $marker->url = $url;
-                    $marker->title = trim($item->title);
+                    $marker->title = mb_trim($item->title);
                     $marker->status = MarkerStatus::from($item->status);
                     $marker->domain = $item->domain;
                     $marker->notes = $item->notes;

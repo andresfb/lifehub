@@ -94,14 +94,14 @@ final class CreateMarkerCommand extends BaseUserCommand
                 validate: 'string',
                 hint: 'Title Titlest',
                 name: 'title',
-                transform: fn (string $value): string => trim($value),
+                transform: fn (string $value): string => mb_trim($value),
             )
             ->text(
                 label: 'Enter the URL',
                 required: true,
                 validate: 'string|url|active_url',
                 name: 'url',
-                transform: fn (string $value): string => trim($value),
+                transform: fn (string $value): string => mb_trim($value),
             )
             ->text(
                 label: 'Tags',

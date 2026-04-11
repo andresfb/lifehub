@@ -6,9 +6,8 @@ namespace App\Providers;
 
 use App\Dtos\Modules\MorphTypesItems;
 use App\Models\User;
+use App\Services\Manifest\ManifestService;
 use Carbon\CarbonImmutable;
-use Dedoc\Scramble\Scramble;
-use Dedoc\Scramble\Support\Generator\OpenApi;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -18,18 +17,21 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Override;
 
 final class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
+    #[Override]
     public function register(): void
     {
+        $this->app->scoped(ManifestService::class);
         $this->app->bind('morph_types', fn ($app): Collection => collect());
-        $this->app->bind('module_records', fn ($app): Collection => collect());
     }
 
     /**
@@ -37,9 +39,17 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if ($this->app->isProduction()) {
+            URL::forceScheme('https');
+        } else {
+            URL::forceScheme('http');
+        }
+
         $this->configureRateLimiting();
         $this->configureDefaults();
         $this->loadMorphRelations();
+
+        Gate::before(static fn (User $user): ?bool => $user->isAdmin() ? true : null);
 
         Gate::define('viewApiDocs', static function (?User $user): bool {
             if (blank($user)) {
@@ -103,8 +113,11 @@ final class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        Relation::morphMap(
-            $relations->pluck('class', 'key')->toArray()
-        );
+        $morphMap = $relations->pluck('class', 'key')
+            ->toArray();
+
+        $morphMap['USER'] = User::class;
+
+        Relation::morphMap($morphMap);
     }
 }

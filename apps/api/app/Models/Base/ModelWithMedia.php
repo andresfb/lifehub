@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Base;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -11,6 +12,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 // TODO: remove this Model
 abstract class ModelWithMedia extends Model implements HasMedia
 {
+    use HasFactory;
     use InteractsWithMedia;
 
     //    public function registerMediaCollections(): void

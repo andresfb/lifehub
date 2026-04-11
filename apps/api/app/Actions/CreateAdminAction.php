@@ -6,16 +6,16 @@ namespace App\Actions;
 
 use App\Dtos\Profile\NewUserItem;
 use App\Models\User;
-use App\Traits\AdminHashable;
-use App\Traits\ModulesAssignable;
+use App\Services\Modules\ModuleAccessService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
 
-final class CreateAdminAction
+final readonly class CreateAdminAction
 {
-    use AdminHashable;
-    use ModulesAssignable;
+    public function __construct(
+        private ModuleAccessService $moduleAccess
+    ) {}
 
     /**
      * @throws Throwable
@@ -30,11 +30,10 @@ final class CreateAdminAction
                     'password' => Hash::make($input->password),
                 ]);
 
-            $this->assignModulesToAdmin($user);
-
             $user->email_verified_at = now();
-            $user->admin_hash = $this->hash($user->id);
             $user->save();
+
+            $this->moduleAccess->grantSuperAdmin($user);
 
             return $user;
         });

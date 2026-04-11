@@ -1,0 +1,15 @@
+{
+    "name": "Core",
+    "alias": "core",
+    "description": "The base Module where all starts",
+    "keywords": [],
+    "access": {
+        "is_public": true
+    },
+    "show_menu": false,
+    "priority": 0,
+    "providers": [
+        "Modules\\Core\\Providers\\CoreServiceProvider"
+    ],
+    "files": []
+}

@@ -11,12 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class RegisterResponse implements RegisterResponseContract
 {
-    public function toResponse($request): Response
+    public function toResponse($request): JsonResponse
     {
+        $userResource = new UserResource($request->user());
+
         return new JsonResponse([
             'success' => true,
             'message' => 'Registration successful',
-            'data' => new UserResource($request->user()),
+            'data' => $userResource->resolveResourceData($request),
         ], Response::HTTP_CREATED);
     }
 }

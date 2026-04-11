@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Dashboard\Jobs;
+
+use App\Services\Search\SearchDocumentProjector;
+use Exception;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use Modules\Dashboard\Models\HomepageItem;
+
+final class HomepageItemDeletedJob implements ShouldQueue
+{
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+
+    public function __construct(
+        private readonly int $itemId,
+    ) {
+        $this->delay = now()->addSeconds(5);
+    }
+
+    public function handle(SearchDocumentProjector $projector): void
+    {
+        try {
+            $item = HomepageItem::query()
+                ->where('id', $this->itemId)
+                ->firstOrFail();
+
+            $projector->remove($item->getIdentifier());
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+        }
+    }
+}

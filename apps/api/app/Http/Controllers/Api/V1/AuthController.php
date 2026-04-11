@@ -7,8 +7,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Actions\Fortify\CreateNewUser;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Api\V1\ForgotPasswordRequest;
-use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V1\LoginRequest;
+use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V1\ResendVerificationRequest;
 use App\Http\Requests\Api\V1\ResetPasswordRequest;
 use App\Http\Requests\Api\V1\VerifyEmailRequest;
@@ -54,9 +54,10 @@ final class AuthController extends ApiController
         }
 
         $token = $user->createToken($request->string('device_name')->toString())->plainTextToken;
+        $userResource = new UserResource($user);
 
         return $this->created([
-            'user' => new UserResource($user),
+            'user' => $userResource->resolveResourceData($request),
             'token' => $token,
         ], 'Token created successfully');
     }
@@ -71,7 +72,9 @@ final class AuthController extends ApiController
 
     public function me(Request $request): JsonResponse
     {
-        return $this->success(new UserResource($request->user()));
+        $userResource = new UserResource($request->user());
+
+        return $this->success($userResource->resolveResourceData($request));
     }
 
     /**
@@ -84,9 +87,10 @@ final class AuthController extends ApiController
         $user->sendEmailVerificationNotification();
 
         $token = $user->createToken('auth-token')->plainTextToken;
+        $userResource = new UserResource($user);
 
         return $this->created([
-            'user' => new UserResource($user),
+            'user' => $userResource->resolveResourceData($request),
             'token' => $token,
         ], 'User registered successfully. Please check your email to verify your account.');
     }
@@ -168,7 +172,7 @@ final class AuthController extends ApiController
 
     private function validateTwoFactorCode(User $user, string $code): bool
     {
-        $provider = app(TwoFactorAuthenticationProvider::class);
+        $provider = resolve(TwoFactorAuthenticationProvider::class);
         $secret = Fortify::currentEncrypter()->decrypt($user->two_factor_secret);
 
         if ($provider->verify($secret, $code)) {

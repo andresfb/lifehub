@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Console\Commands\Base\BaseUserCommand;
@@ -12,9 +14,9 @@ use function Laravel\Prompts\outro;
 use function Laravel\Prompts\text;
 use function Laravel\Prompts\warning;
 
-class CreateApiTokenCommand extends BaseUserCommand
+final class CreateApiTokenCommand extends BaseUserCommand
 {
-    protected $signature = 'create:api-token {--user=}';
+    protected $signature = 'create:token {--user=}';
 
     protected $description = 'Creates a User API token';
 
@@ -31,7 +33,7 @@ class CreateApiTokenCommand extends BaseUserCommand
                 default: 'bruno',
                 required: true,
                 validate: 'string|max:50',
-                transform: fn (string $value) => trim($value),
+                transform: fn (string $value): string => mb_trim($value),
             );
 
             $user->tokens()

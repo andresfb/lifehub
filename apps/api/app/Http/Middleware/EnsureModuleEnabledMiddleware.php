@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Enums\ModuleAccessLevel;
-use App\Enums\ModuleKey;
 use App\Services\Modules\ModuleAccessService;
 use Closure;
 use Illuminate\Http\Request;
@@ -27,13 +25,15 @@ final readonly class EnsureModuleEnabledMiddleware
 
         abort_unless($user, 403);
 
-        $levelEnum = ModuleAccessLevel::tryFrom($requiredLevel);
-        abort_if(blank($levelEnum), 500, "Invalid module access level: {$requiredLevel}");
+        $canAccess = match ($requiredLevel) {
+            'read' => $this->moduleAccess->canRead($user, $moduleKey),
+            'write' => $this->moduleAccess->canWrite($user, $moduleKey),
+            default => null,
+        };
 
-        $keyEnum = ModuleKey::tryFrom($moduleKey);
-        abort_if(blank($keyEnum), 500, "Invalid module key: {$moduleKey}");
+        abort_if(is_null($canAccess), 500, "Invalid module access level: {$requiredLevel}");
 
-        if ($this->moduleAccess->canUse($user, $keyEnum, $levelEnum)) {
+        if ($canAccess) {
             return $next($request);
         }
 

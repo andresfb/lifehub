@@ -237,7 +237,7 @@ task('supervisor:restart', function () {
 
     $checkSupervisor = run('systemctl is-active supervisor.service || true');
 
-    if (trim($checkSupervisor) === 'active') {
+    if (mb_trim($checkSupervisor) === 'active') {
         writeln('🔄 Supervisor is running, restarting programs...');
         run('sudo systemctl restart supervisor.service');
     } else {

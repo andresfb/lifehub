@@ -13,6 +13,7 @@ use App\Traits\BelongsToUser;
 use App\Traits\SlugOptionable;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -37,6 +38,7 @@ use Spatie\Sluggable\SlugOptions;
  */
 #[ObservedBy([CategoryObserver::class])]
 #[UsePolicy(CategoryPolicy::class)]
+#[Table(name: 'bookmarks_categories')]
 final class Category extends Model implements UserModelInterface
 {
     use BelongsToUser;
@@ -45,22 +47,18 @@ final class Category extends Model implements UserModelInterface
     use SlugOptionable;
     use SoftDeletes;
 
-    protected $table = 'bookmarks_categories';
-
     public static function getSelectableList(int $userId): array
     {
         return Cache::tags("categories:{$userId}")
             ->remember(
                 "selectable:list:{$userId}",
                 now()->addHours(5),
-                function () use ($userId): array {
-                    return self::query()
-                        ->where('user_id', $userId)
-                        ->where('active', true)
-                        ->orderBy('order')
-                        ->pluck('title', 'id')
-                        ->toArray();
-                }
+                fn (): array => self::query()
+                    ->where('user_id', $userId)
+                    ->where('active', true)
+                    ->orderBy('order')
+                    ->pluck('title', 'id')
+                    ->toArray()
             );
     }
 
@@ -77,6 +75,7 @@ final class Category extends Model implements UserModelInterface
         return $this->loadSlugOptions('title', ModuleKey::BOOKMARKS->value);
     }
 
+    #[Override]
     public function getRouteKeyName(): string
     {
         return 'slug';

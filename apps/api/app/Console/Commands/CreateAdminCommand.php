@@ -32,7 +32,7 @@ final class CreateAdminCommand extends Command
             clear();
             intro('Create a new Admin user');
 
-            $this->downloadAdminSeeders();
+            $this->downloadFiles();
 
             $results = form()
                 ->text(
@@ -85,6 +85,46 @@ final class CreateAdminCommand extends Command
             $this->newLine();
             outro('Done');
         }
+    }
+
+    private function downloadFiles(): void
+    {
+        $this->downloadDataFiles();
+
+        $this->downloadAdminSeeders();
+    }
+
+    private function downloadDataFiles(): void
+    {
+        $dataFile = storage_path('app/private/heimdall.json');
+        if (! file_exists($dataFile)) {
+            return;
+        }
+
+        if (! $this->hasOpCommand()) {
+            throw new RuntimeException(
+                'Seeder files missing and `op` command is not available. Cannot download data files.'
+            );
+        }
+
+        $cmd = sprintf('op read "op://LifeHub/Heimdall/heimdall.json" --out-file "%s"', $dataFile);
+        $proc = Process::run($cmd);
+
+        if ($proc->successful() && file_exists($dataFile)) {
+            return;
+        }
+
+        throw new RuntimeException(
+            sprintf(
+                'Seeder file could not be created: %s', $proc->errorOutput()
+            ),
+            $proc->exitCode()
+        );
+    }
+
+    private function hasOpCommand(): bool
+    {
+        return Process::run('command -v op')->successful();
     }
 
     private function downloadAdminSeeders(): void
