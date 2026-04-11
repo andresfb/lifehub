@@ -20,7 +20,7 @@ final class HomepageSectionItem extends Data
         public readonly int $userId,
         public readonly string $slug,
         public readonly string $name,
-        public readonly ?string $bgColor = null,
+        public readonly int $order,
         public readonly ?Collection $items = null,
     ) {}
 }

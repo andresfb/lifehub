@@ -6,31 +6,33 @@ namespace App\Http\Resources;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\JsonApi\JsonApiResource;
 use Override;
 
 /**
  * @mixin User
  */
-final class UserResource extends JsonResource
+final class UserResource extends JsonApiResource
 {
+    #[Override]
+    public function toType(Request $request): string
+    {
+        return 'user';
+    }
+
     /**
      * @return array<string, mixed>
      */
     #[Override]
-    public function toArray(Request $request): array
+    public function toAttributes(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'type' => 'user',
-            'attributes' => [
-                'name' => $this->name,
-                'email' => $this->email,
-                'email_verified_at' => $this->email_verified_at?->toIso8601String(),
-                'two_factor_enabled' => ! is_null($this->two_factor_confirmed_at),
-                'created_at' => $this->created_at?->toIso8601String(),
-                'updated_at' => $this->updated_at?->toIso8601String(),
-            ],
+            'name' => $this->name,
+            'email' => $this->email,
+            'email_verified_at' => $this->email_verified_at?->toIso8601String(),
+            'two_factor_enabled' => ! is_null($this->two_factor_confirmed_at),
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }

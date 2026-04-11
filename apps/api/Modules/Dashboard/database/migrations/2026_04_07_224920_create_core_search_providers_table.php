@@ -18,14 +18,13 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->string('name');
             $table->text('url');
-            $table->boolean('active')
-                ->default(true)
-                ->index();
+            $table->boolean('active')->default(true);
+            $table->boolean('default')->default(false);
             $table->smallInteger('order')->default(0);
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index(['user_id', 'active']);
+            $table->index(['user_id', 'active', 'default']);
         });
     }
 

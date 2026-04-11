@@ -10,9 +10,11 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Dashboard\Database\Factories\SearchProviderFactory;
 use Modules\Dashboard\Observers\SearchProviderObserver;
 use Modules\Dashboard\Policies\SearchProviderPolicy;
 use Override;
@@ -23,6 +25,7 @@ use Override;
  * @property string $name
  * @property string $url
  * @property bool $active
+ * @property bool $default
  * @property int $order
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
@@ -36,11 +39,17 @@ final class SearchProvider extends Model implements UserModelInterface
     use HasFactory;
     use SoftDeletes;
 
+    protected static function newFactory(): Factory
+    {
+        return SearchProviderFactory::new();
+    }
+
     #[Override]
     protected function casts(): array
     {
         return [
             'active' => 'boolean',
+            'default' => 'boolean',
         ];
     }
 }

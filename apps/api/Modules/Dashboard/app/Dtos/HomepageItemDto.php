@@ -16,6 +16,9 @@ final class HomepageItemDto extends Data
         public readonly string $slug,
         public readonly string $title,
         public readonly string $url,
+        public readonly int $order,
+        public readonly ?string $description,
+        public readonly ?string $color = null,
         public readonly ?string $image = null,
         public readonly ?array $tags = null,
     ) {}

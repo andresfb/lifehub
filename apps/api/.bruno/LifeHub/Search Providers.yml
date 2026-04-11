@@ -1,0 +1,15 @@
+info:
+  name: Search Providers
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{process.env.API_URL}}/dashboard/search/providers"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

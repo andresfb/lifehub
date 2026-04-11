@@ -38,6 +38,7 @@ use Spatie\Tags\HasTags;
  * @property string $slug
  * @property string $title
  * @property string $url
+ * @property string $description
  * @property string $bg_color
  * @property bool $active
  * @property int $order

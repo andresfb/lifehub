@@ -12,10 +12,11 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 final class SearchProviderItem extends Data
 {
     public function __construct(
-        public readonly int $id = 0,
-        public readonly int $userId = 0,
-        public readonly string $name = '',
-        public readonly string $url = '',
+        public readonly int $id,
+        public readonly int $userId,
+        public readonly string $name,
+        public readonly string $url,
+        public readonly bool $default,
         public readonly int $order = 0,
     ) {}
 }

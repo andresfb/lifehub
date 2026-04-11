@@ -35,12 +35,15 @@ final class PinsAction
                         'user_id' => $section->user_id,
                         'slug' => $section->slug,
                         'name' => $section->name,
+                        'order' => $section->order,
                         'items' => $section->items->map(fn (HomepageItem $item): array => [
                             'id' => $item->id,
                             'slug' => $item->slug,
                             'title' => $item->title,
                             'url' => $item->url,
-                            'bg_color' => $item->bg_color ?? '',
+                            'order' => $item->order,
+                            'description' => $item->description ?? '',
+                            'color' => $item->bg_color ?? '',
                             'image' => $item->getIcon(),
                             'tags' => $item->getTags(),
                         ])->all(),
@@ -53,6 +56,7 @@ final class PinsAction
             userId: $section['user_id'],
             slug: $section['slug'],
             name: $section['name'],
+            order: $section['order'],
             items: collect($section['items'])->map(fn (array $item): HomepageItemDto => HomepageItemDto::from($item)),
         ));
     }

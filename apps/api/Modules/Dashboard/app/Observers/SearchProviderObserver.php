@@ -20,6 +20,15 @@ final class SearchProviderObserver
 
     public function saved(SearchProvider $provider): void
     {
+        if ($provider->default) {
+            SearchProvider::query()
+                ->where('user_id', $provider->user_id)
+                ->where('id', '!=', $provider->id)
+                ->where('default', true)
+                ->toBase()
+                ->update(['default' => false]);
+        }
+
         Cache::tags("SearchProviders:{$provider->user_id}")->flush();
     }
 }

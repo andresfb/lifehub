@@ -54,9 +54,10 @@ final class AuthController extends ApiController
         }
 
         $token = $user->createToken($request->string('device_name')->toString())->plainTextToken;
+        $userResource = new UserResource($user);
 
         return $this->created([
-            'user' => new UserResource($user),
+            'user' => $userResource->resolveResourceData($request),
             'token' => $token,
         ], 'Token created successfully');
     }
@@ -71,7 +72,9 @@ final class AuthController extends ApiController
 
     public function me(Request $request): JsonResponse
     {
-        return $this->success(new UserResource($request->user()));
+        $userResource = new UserResource($request->user());
+
+        return $this->success($userResource->resolveResourceData($request));
     }
 
     /**
@@ -84,9 +87,10 @@ final class AuthController extends ApiController
         $user->sendEmailVerificationNotification();
 
         $token = $user->createToken('auth-token')->plainTextToken;
+        $userResource = new UserResource($user);
 
         return $this->created([
-            'user' => new UserResource($user),
+            'user' => $userResource->resolveResourceData($request),
             'token' => $token,
         ], 'User registered successfully. Please check your email to verify your account.');
     }

@@ -7,6 +7,7 @@ namespace Modules\Dashboard\Observers;
 use Modules\Dashboard\Jobs\HomepageItemDeletedJob;
 use Modules\Dashboard\Jobs\HomepageItemSavedJob;
 use Modules\Dashboard\Models\HomepageItem;
+use Spatie\ResponseCache\Facades\ResponseCache;
 
 final class HomepageItemObserver
 {
@@ -22,10 +23,14 @@ final class HomepageItemObserver
     public function saved(HomepageItem $item): void
     {
         HomepageItemSavedJob::dispatch($item->id);
+
+        ResponseCache::clear(['dashboard']);
     }
 
     public function deleted(HomepageItem $item): void
     {
         HomepageItemDeletedJob::dispatch($item->id);
+
+        ResponseCache::clear(['dashboard']);
     }
 }

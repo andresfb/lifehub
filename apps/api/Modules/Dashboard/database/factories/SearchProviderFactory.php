@@ -28,4 +28,9 @@ final class SearchProviderFactory extends Factory
             'user_id' => User::factory(),
         ];
     }
+
+    public function default(): static
+    {
+        return $this->state(['default' => true]);
+    }
 }

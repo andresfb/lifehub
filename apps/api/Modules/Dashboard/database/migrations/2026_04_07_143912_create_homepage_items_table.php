@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('title');
             $table->text('url');
+            $table->text('description')->nullable();
             $table->string('bg_color')->nullable();
             $table->boolean('active')->default(true);
             $table->smallInteger('order')->default(0);

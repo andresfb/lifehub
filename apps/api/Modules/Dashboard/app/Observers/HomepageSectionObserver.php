@@ -6,6 +6,7 @@ namespace Modules\Dashboard\Observers;
 
 use Illuminate\Support\Facades\Cache;
 use Modules\Dashboard\Models\HomepageSection;
+use Spatie\ResponseCache\Facades\ResponseCache;
 
 final class HomepageSectionObserver
 {
@@ -21,5 +22,7 @@ final class HomepageSectionObserver
     public function saved(HomepageSection $section): void
     {
         Cache::tags("homepage:{$section->user_id}")->flush();
+
+        ResponseCache::clear(['dashboard']);
     }
 }

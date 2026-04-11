@@ -23,9 +23,10 @@ final class SearchProvidersAction
                 fn () => SearchProvider::query()
                     ->where('user_id', $userId)
                     ->where('active', true)
+                    ->orderBy('default')
                     ->orderBy('order')
                     ->get()
-                    ->map(fn (SearchProvider $provider): array => $provider->only('id', 'user_id', 'name', 'url', 'order'))->all()
+                    ->map(fn (SearchProvider $provider): array => $provider->except('active', 'created_at', 'updated_at'))->all()
             );
 
         return collect($cached)->map(fn (array $item): SearchProviderItem => SearchProviderItem::from($item));
