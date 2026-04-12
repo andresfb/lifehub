@@ -5,7 +5,11 @@ info:
 
 http:
   method: GET
-  url: "{{process.env.API_URL}}/dashboard/pins"
+  url: "{{process.env.API_URL}}/dashboard/pins?include=items,user"
+  params:
+    - name: include
+      value: items,user
+      type: query
   auth: inherit
 
 settings:

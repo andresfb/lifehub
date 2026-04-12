@@ -14,12 +14,6 @@ use Override;
  */
 final class UserResource extends JsonApiResource
 {
-    #[Override]
-    public function toType(Request $request): string
-    {
-        return 'user';
-    }
-
     /**
      * @return array<string, mixed>
      */

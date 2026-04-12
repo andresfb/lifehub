@@ -6,58 +6,60 @@ namespace Modules\Dashboard\Actions;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Modules\Dashboard\Dtos\HomepageItemDto;
-use Modules\Dashboard\Dtos\HomepageSectionItem;
-use Modules\Dashboard\Models\HomepageItem;
+use Modules\Dashboard\Http\Resources\HomepageSectionResource;
 use Modules\Dashboard\Models\HomepageSection;
+use Throwable;
 
 final class PinsAction
 {
     /**
-     * @return Collection<HomepageSectionItem>
+     * @return Collection<HomepageSection>
+     *
+     * @throws Throwable
      */
     public function handle(int $userId): Collection
     {
-        /** @var array<int, array<string, mixed>> $cached */
-        $cached = Cache::tags("homepage:{$userId}")
-            ->remember(
-                md5("HOMEPAGE:{$userId}"),
-                now()->addWeek(),
-                fn (): array => HomepageSection::query()
-                    ->where('user_id', $userId)
-                    ->where('active', true)
-                    ->with('items.tags')
-                    ->with('items.media')
-                    ->orderBy('order')
-                    ->get()
-                    ->map(fn (HomepageSection $section): array => [
-                        'id' => $section->id,
-                        'user_id' => $section->user_id,
-                        'slug' => $section->slug,
-                        'name' => $section->name,
-                        'order' => $section->order,
-                        'items' => $section->items->map(fn (HomepageItem $item): array => [
-                            'id' => $item->id,
-                            'slug' => $item->slug,
-                            'title' => $item->title,
-                            'url' => $item->url,
-                            'order' => $item->order,
-                            'description' => $item->description ?? '',
-                            'color' => $item->bg_color ?? '',
-                            'image' => $item->getIcon(),
-                            'tags' => $item->getTags(),
-                        ])->all(),
-                    ])
-                    ->all()
-            );
+        return HomepageSection::query()
+            ->where('user_id', $userId)
+            ->where('active', true)
+            ->with('items.tags')
+            ->with('items.media')
+            ->orderBy('order')
+            ->get();
+    }
 
-        return collect($cached)->map(fn (array $section): HomepageSectionItem => new HomepageSectionItem(
-            id: $section['id'],
-            userId: $section['user_id'],
-            slug: $section['slug'],
-            name: $section['name'],
-            order: $section['order'],
-            items: collect($section['items'])->map(fn (array $item): HomepageItemDto => HomepageItemDto::from($item)),
-        ));
+    /**
+     * @throws Throwable
+     */
+    public function getJsonPayload(int $userId, string $routeName, array $validated): string
+    {
+        $key = str(sprintf(
+            'ROUTE:%s|USER:%s|OPTIONS:%s',
+            $routeName,
+            $userId,
+            collect($validated)->implode(':')
+        ))
+            ->upper()
+            ->toString();
+
+        $payload = Cache::get($key);
+        if (filled($payload)) {
+            return $payload;
+        }
+
+        $data = $this->handle($userId);
+        if ($data->isEmpty()) {
+            return json_encode([
+                'data' => [],
+            ], JSON_THROW_ON_ERROR);
+        }
+
+        $payload = HomepageSectionResource::collection($data)
+            ->response()
+            ->getContent();
+
+        Cache::put($key, $payload, now()->addWeek());
+
+        return $payload;
     }
 }

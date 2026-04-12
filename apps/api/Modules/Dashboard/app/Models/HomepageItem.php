@@ -17,6 +17,7 @@ use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Modules\Dashboard\Enums\MorphTypes;
+use Modules\Dashboard\Http\Resources\HomepageItemResource;
 use Modules\Dashboard\Libraries\MediaNamesLibrary;
 use Modules\Dashboard\Observers\HomepageItemObserver;
 use Modules\Dashboard\Policies\HomepageItemPolicy;
@@ -53,9 +55,10 @@ use Spatie\Tags\HasTags;
  * @property-read Collection<Tag> $tags
  * @property-read Collection<Media> $media
  */
+#[Table(name: 'dashboard_homepage_items')]
 #[ObservedBy([HomepageItemObserver::class])]
 #[UsePolicy(HomepageItemPolicy::class)]
-#[Table(name: 'dashboard_homepage_items')]
+#[UseResource(HomepageItemResource::class)]
 final class HomepageItem extends Model implements GlobalSearchInterface, HasMedia, UserModelInterface
 {
     use BelongsToUser;

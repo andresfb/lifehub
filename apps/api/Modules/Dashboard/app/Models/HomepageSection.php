@@ -11,16 +11,17 @@ use App\Traits\BelongsToUser;
 use App\Traits\SlugOptionable;
 use Carbon\CarbonImmutable;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
-use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Dashboard\Http\Resources\HomepageSectionResource;
 use Modules\Dashboard\Observers\HomepageSectionObserver;
 use Modules\Dashboard\Policies\HomepageSectionPolicy;
 use Override;
@@ -40,10 +41,10 @@ use Spatie\Sluggable\SlugOptions;
  * @property-read User $user
  * @property-read Collection<HomepageItem> $items
  */
+#[Table(name: 'dashboard_homepage_sections')]
 #[ObservedBy(HomepageSectionObserver::class)]
 #[UsePolicy(HomepageSectionPolicy::class)]
-#[Guarded(['id'])]
-#[Table(name: 'dashboard_homepage_sections')]
+#[UseResource(HomepageSectionResource::class)]
 final class HomepageSection extends Model implements UserModelInterface
 {
     use BelongsToUser;
