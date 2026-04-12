@@ -6,26 +6,14 @@ namespace Modules\Dashboard\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\JsonApi\JsonApiResource;
-use Modules\Dashboard\Dtos\HomepageItemDto;
+use Modules\Dashboard\Models\HomepageItem;
 use Override;
 
 /**
- * @mixin HomepageItemDto
+ * @mixin HomepageItem
  */
 final class HomepageItemResource extends JsonApiResource
 {
-    #[Override]
-    public function toId(Request $request): string
-    {
-        return (string) $this->id;
-    }
-
-    #[Override]
-    public function toType(Request $request): string
-    {
-        return 'homepage-items';
-    }
-
     /**
      * @return array<string, mixed>
      */
@@ -36,10 +24,10 @@ final class HomepageItemResource extends JsonApiResource
             'slug' => $this->slug,
             'title' => $this->title,
             'url' => $this->url,
-            'color' => $this->color,
+            'bg_color' => $this->bg_color,
             'description' => $this->description ?? '',
-            'image' => $this->image ?? '',
-            'tags' => $this->tags ?? [],
+            'image' => $this->getIcon(),
+            'tags' => $this->getTags(),
         ];
     }
 }

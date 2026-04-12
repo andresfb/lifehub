@@ -7,18 +7,28 @@ namespace Modules\Dashboard\Http\Controllers\Api\V1;
 use _PHPStan_5a70c2d68\Nette\NotImplementedException;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Modules\Dashboard\Actions\PinsAction;
-use Modules\Dashboard\Http\Resources\HomepageSectionResource;
+use Modules\Dashboard\Http\Requests\HomeSectionRequest;
 use Modules\Dashboard\Models\HomepageItem;
+use Throwable;
 
 final class PinController extends ApiController
 {
-    public function index(PinsAction $homeAction): AnonymousResourceCollection
+    /**
+     * @throws Throwable
+     */
+    public function index(HomeSectionRequest $request, PinsAction $homeAction): Response
     {
-        return HomepageSectionResource::collection(
-            $homeAction->handle(Auth::id())
+        return response(
+            content: $homeAction->getJsonPayload(
+                Auth::id(),
+                $request->route()->getName(),
+                $request->validated()
+            ),
+            status: 200,
+            headers: ['Content-Type' => 'application/json']
         );
     }
 
