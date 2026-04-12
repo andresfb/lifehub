@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Carbon\CarbonImmutable;
 use Database\Factories\InvitationFactory;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,11 +23,10 @@ use Override;
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  */
+#[UseFactory(InvitationFactory::class)]
 final class Invitation extends Model
 {
-    /** @use HasFactory<InvitationFactory> */
     use HasFactory;
-
     use SoftDeletes;
 
     /** @param Builder<self> $query */

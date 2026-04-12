@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Traits\BelongsToUser;
 use App\Traits\SlugOptionable;
 use Carbon\CarbonImmutable;
+use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -46,10 +47,13 @@ use Spatie\Sluggable\SlugOptions;
 final class HomepageSection extends Model implements UserModelInterface
 {
     use BelongsToUser;
+    use CascadeSoftDeletes;
     use HasFactory;
     use HasSlug;
     use SlugOptionable;
     use SoftDeletes;
+
+    protected array $cascadeDeletes = ['items'];
 
     /**
      * @return BelongsTo<User, $this>

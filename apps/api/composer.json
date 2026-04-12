@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.4",
         "dedoc/scramble": "^0.12|^0.13",
+        "dyrynda/laravel-cascade-soft-deletes": "^4.6",
         "grazulex/laravel-apiroute": "^2.0",
         "laravel/ai": "^0.4.5",
         "laravel/fortify": "^1.36",

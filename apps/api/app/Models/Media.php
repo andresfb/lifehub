@@ -8,6 +8,7 @@ use App\Contracts\UserModelInterface;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Database\Factories\MediaFactory;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Override;
@@ -37,13 +38,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
  * @property-read CarbonImmutable|null $updated_at
  * @property-read User $user
  */
+#[UseFactory(MediaFactory::class)]
 final class Media extends SpatieMedia implements UserModelInterface
 {
     use BelongsToUser;
-
-    /** @use HasFactory<MediaFactory> */
     use HasFactory;
-
     use SoftDeletes;
 
     public function isEncrypted(): bool

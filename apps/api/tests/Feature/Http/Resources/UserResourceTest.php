@@ -18,7 +18,7 @@ test('user resource returns a json api response', function (): void {
         'two_factor_confirmed_at' => now(),
     ]);
 
-    $response = (new UserResource($user))
+    $response = new UserResource($user)
         ->toResponse(Request::create('/api/v1/me', 'GET'));
 
     $payload = $response->getData(true);
@@ -42,7 +42,7 @@ test('user resource can be embedded without an extra data wrapper', function ():
         'email' => 'taylor@example.com',
     ]);
 
-    $payload = (new UserResource($user))
+    $payload = new UserResource($user)
         ->resolveResourceData(JsonApiRequest::createFromBase(
             Request::create('/api/v1/login', 'POST')
         ));

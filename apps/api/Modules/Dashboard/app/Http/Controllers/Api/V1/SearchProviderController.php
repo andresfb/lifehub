@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Http\Controllers\Api\V1;
 
+use _PHPStan_5a70c2d68\Nette\NotImplementedException;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -21,11 +22,23 @@ final class SearchProviderController extends ApiController
         );
     }
 
-    public function store(Request $request) {}
+    public function store(Request $request): never
+    {
+        throw new NotImplementedException('store action not implemented');
+    }
 
-    public function show(SearchProvider $provider) {}
+    public function show(SearchProvider $provider): never
+    {
+        throw new NotImplementedException('show action not implemented');
+    }
 
-    public function update(Request $request, SearchProvider $provider) {}
+    public function update(Request $request, SearchProvider $provider): never
+    {
+        throw new NotImplementedException('update action not implemented');
+    }
 
-    public function destroy(SearchProvider $provider) {}
+    public function destroy(SearchProvider $provider): never
+    {
+        throw new NotImplementedException('destroy action not implemented');
+    }
 }

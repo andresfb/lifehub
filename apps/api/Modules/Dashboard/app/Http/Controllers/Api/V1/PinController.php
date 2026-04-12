@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Http\Controllers\Api\V1;
 
+use _PHPStan_5a70c2d68\Nette\NotImplementedException;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -21,11 +22,23 @@ final class PinController extends ApiController
         );
     }
 
-    public function store(Request $request) {}
+    public function store(Request $request): never
+    {
+        throw new NotImplementedException('store action not implemented');
+    }
 
-    public function show(HomepageItem $bookmark) {}
+    public function show(HomepageItem $bookmark): never
+    {
+        throw new NotImplementedException('show action not implemented');
+    }
 
-    public function update(Request $request, HomepageItem $bookmark) {}
+    public function update(Request $request, HomepageItem $bookmark): never
+    {
+        throw new NotImplementedException('update action not implemented');
+    }
 
-    public function destroy(HomepageItem $bookmark) {}
+    public function destroy(HomepageItem $bookmark): never
+    {
+        throw new NotImplementedException('destroy action not implemented');
+    }
 }

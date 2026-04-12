@@ -9,5 +9,5 @@ use Illuminate\Http\Request;
 
 final class DashboardController extends Controller
 {
-    public function __invoke(Request $request) {}
+    public function __invoke(Request $request): void {}
 }

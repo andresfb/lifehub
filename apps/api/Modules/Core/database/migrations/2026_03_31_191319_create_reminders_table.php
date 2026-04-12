@@ -25,8 +25,8 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index(['user_id', 'due_at']);
-            $table->index(['remindable_id', 'remindable_type']);
+            $table->index(['user_id', 'due_at', 'deleted_at']);
+            $table->index(['remindable_id', 'remindable_type', 'deleted_at']);
         });
     }
 

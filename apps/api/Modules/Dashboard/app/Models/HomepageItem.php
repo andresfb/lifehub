@@ -7,11 +7,13 @@ namespace Modules\Dashboard\Models;
 use App\Contracts\GlobalSearchInterface;
 use App\Contracts\UserModelInterface;
 use App\Enums\ModuleKey;
+use App\Models\Media;
+use App\Models\Tag;
 use App\Models\User;
 use App\Traits\BelongsToUser;
 use App\Traits\SlugOptionable;
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Attributes\Guarded;
+use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
@@ -20,6 +22,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Modules\Dashboard\Enums\MorphTypes;
 use Modules\Dashboard\Libraries\MediaNamesLibrary;
 use Modules\Dashboard\Observers\HomepageItemObserver;
@@ -47,20 +50,24 @@ use Spatie\Tags\HasTags;
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
  * @property-read HomepageSection $section
+ * @property-read Collection<Tag> $tags
+ * @property-read Collection<Media> $media
  */
 #[ObservedBy([HomepageItemObserver::class])]
 #[UsePolicy(HomepageItemPolicy::class)]
-#[Guarded(['id'])]
 #[Table(name: 'dashboard_homepage_items')]
 final class HomepageItem extends Model implements GlobalSearchInterface, HasMedia, UserModelInterface
 {
     use BelongsToUser;
+    use CascadeSoftDeletes;
     use HasFactory;
     use HasSlug;
     use HasTags;
     use InteractsWithMedia;
     use SlugOptionable;
     use SoftDeletes;
+
+    protected array $cascadeDeletes = ['tags', 'media'];
 
     /**
      * @return BelongsTo<User, $this>
@@ -169,7 +176,8 @@ final class HomepageItem extends Model implements GlobalSearchInterface, HasMedi
         self::addGlobalScope(static function (Builder $builder) {
             $builder->with('section')
                 ->with('user')
-                ->with('tags');
+                ->with('tags')
+                ->with('media');
         });
     }
 
