@@ -10,7 +10,7 @@ use Override;
 
 final class RouteServiceProvider extends ServiceProvider
 {
-    protected string $name = 'Dashboard';
+    private string $name = 'Dashboard';
 
     /**
      * Called before routes are registered.
@@ -36,7 +36,7 @@ final class RouteServiceProvider extends ServiceProvider
      *
      * These routes are typically stateless.
      */
-    protected function mapApiRoutes(): void
+    private function mapApiRoutes(): void
     {
         Route::middleware('api')->prefix('api')->name('api.')
             ->group(module_path($this->name, '/routes/api/v1.php'));

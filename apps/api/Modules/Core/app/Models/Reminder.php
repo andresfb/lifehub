@@ -10,6 +10,7 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
+use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
@@ -41,9 +42,12 @@ use Spatie\Tags\HasTags;
 final class Reminder extends Model implements GlobalSearchInterface, UserModelInterface
 {
     use BelongsToUser;
+    use CascadeSoftDeletes;
     use HasFactory;
     use HasTags;
     use SoftDeletes;
+
+    protected array $cascadeDeletes = ['tags'];
 
     public function getIdentifier(): string
     {

@@ -57,7 +57,7 @@ return RectorConfig::configure()
     ->withSkip([
         AddOverrideAttributeToOverriddenMethodsRector::class,
         DisallowedEmptyRuleFixerRector::class,
-        //        ClosureToArrowFunctionRector::class,
+        ClosureToArrowFunctionRector::class,
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
         AddFunctionVoidReturnTypeWhereNoReturnRector::class,
         NullToStrictStringFuncCallArgRector::class,
@@ -67,11 +67,7 @@ return RectorConfig::configure()
         ThrowIfAndThrowUnlessExceptionsToUseClassStringRector::class,
         DispatchToHelperFunctionsRector::class,
         StringClassNameToClassConstantRector::class,
-        __DIR__.'/config/database.php',
-        __DIR__.'/config/media-library.php',
-        __DIR__.'/config/tags.php',
-        __DIR__.'/config/premission.php',
-        __DIR__.'/config/responsecache.php',
+        __DIR__.'/app/Domain',
     ])
     ->withPreparedSets(
         deadCode: true,

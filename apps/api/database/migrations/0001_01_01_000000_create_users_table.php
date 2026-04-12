@@ -23,6 +23,9 @@ return new class extends Migration
             $table->text('admin_hash')->nullable();
             $table->softDeletes();
             $table->timestamps();
+
+            $table->index(['id', 'deleted_at']);
+            $table->index(['email', 'deleted_at']);
         });
 
         Schema::create('password_reset_tokens', static function (Blueprint $table) {
