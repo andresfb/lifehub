@@ -30,12 +30,16 @@ final class AuthController extends ApiController
     public function login(LoginRequest $request): JsonResponse
     {
         $user = User::query()
+            ->with('roles')
             ->where('email', $request->string('email')->lower()->toString())
             ->first();
 
         if (! $user || ! Hash::check($request->string('password')->toString(), $user->password)) {
             return $this->unauthorized('Invalid credentials');
         }
+
+        // TODO: if the TFA is enabled, don't send back the token yet. Send a "ask for code" response and a temporary (10 minutes) code. This code is the cache key to find the user info.
+        // TODO: add a route and controller to verify the TFA code. Send the Code TTL so the UI can show it.
 
         if ($user->hasEnabledTwoFactorAuthentication()) {
             $code = $request->string('two_factor_code')->toString();
@@ -45,7 +49,7 @@ final class AuthController extends ApiController
                     'success' => false,
                     'message' => 'Two-factor authentication required',
                     'two_factor' => true,
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                ], Response::HTTP_NON_AUTHORITATIVE_INFORMATION);
             }
 
             if (! $this->validateTwoFactorCode($user, $code)) {

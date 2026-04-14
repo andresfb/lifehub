@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\User;
-use App\UserRole;
+use App\Repository\Auth\Dtos\User;
+use App\Repository\Common\Libraries\AuthSession;
+use App\Repository\Common\Services\ApiAuth;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -26,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
 
         Date::use(CarbonImmutable::class);
 
-        Password::defaults(fn (): ?Password => app()->isProduction()
+        Password::defaults(static fn (): ?Password => app()->isProduction()
             ? Password::min(12)
                 ->mixedCase()
                 ->letters()
@@ -38,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
 
         RedirectResponse::macro('announce', function ($text, $type = 'ghost') {
             $this->session->push('announcements', [
-                'id' => uniqid(),
+                'id' => uniqid(Config::string('app.name'), true),
                 'type' => $type,
                 'content' => $text,
             ]);
@@ -46,12 +49,28 @@ class AppServiceProvider extends ServiceProvider
             return $this;
         });
 
-        Gate::define('admin', function (User $user) {
-            return $user->role === UserRole::ADMIN;
+        Gate::define('admin', static function (User $user) {
+            return $user->isAdmin();
         });
 
-        Gate::define('impersonate', function (User $user, User $model) {
-            return $user->isNot($model) && $model->cannot('admin');
+        Auth::viaRequest('backend-session', static function(): ?User {
+            $token = AuthSession::get('api_token');
+
+            if (blank($token)) {
+                return null;
+            }
+
+            /** @var ApiAuth $backend */
+            $backend = resolve(ApiAuth::class);
+            $user = $backend->me($token);
+
+            if (blank($user)) {
+                AuthSession::forget(['api_token', 'auth_user']);
+
+                return null;
+            }
+
+            return $user;
         });
     }
 }

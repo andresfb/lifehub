@@ -21,7 +21,7 @@
         "nunomaduro/essentials": "^1.2",
         "nwidart/laravel-modules": "^13.0",
         "spatie/browsershot": "^5.2",
-        "spatie/laravel-data": "*",
+        "spatie/laravel-data": "^4.21",
         "spatie/laravel-medialibrary": "*",
         "spatie/laravel-permission": "*",
         "spatie/laravel-query-builder": "*",
