@@ -2,6 +2,7 @@
 
 namespace App\Repository\Common\Libraries;
 
+use App\Repository\Auth\Libraries\AuthSession;
 use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Config;

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Repository\Common\Services;
+namespace App\Repository\Auth\Services;
 
 use App\Repository\Auth\Dtos\User;
 use App\Repository\Auth\Enums\LoginStatus;
+use App\Repository\Auth\Libraries\AuthSession;
 use App\Repository\Common\Libraries\ApiClient;
-use App\Repository\Common\Libraries\AuthSession;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
-readonly class ApiAuth
+readonly class ApiAuthService
 {
     public function __construct(
         private ApiClient $apiClient
@@ -33,6 +33,7 @@ readonly class ApiAuth
 
         if ($this->needsTwoFactor($payload)) {
             session()->flash('Two Factor Authentication Required');
+            AuthSession::put('login.id', $payload['user']['id']);
 
             return LoginStatus::TWO_FACTOR;
         }

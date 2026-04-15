@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository\Common\Libraries;
+namespace App\Repository\Auth\Libraries;
 
 use DateInterval;
 use DateTimeInterface;

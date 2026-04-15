@@ -3,16 +3,20 @@
 namespace App\Providers;
 
 use App\Repository\Auth\Dtos\User;
-use App\Repository\Common\Libraries\AuthSession;
-use App\Repository\Common\Services\ApiAuth;
+use App\Repository\Auth\Libraries\AuthSession;
+use App\Repository\Auth\Services\ApiAuthService;
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->configureRateLimiting();
+
         Model::unguard();
         Model::shouldBeStrict();
 
@@ -60,8 +66,8 @@ class AppServiceProvider extends ServiceProvider
                 return null;
             }
 
-            /** @var ApiAuth $backend */
-            $backend = resolve(ApiAuth::class);
+            /** @var ApiAuthService $backend */
+            $backend = resolve(ApiAuthService::class);
             $user = $backend->me($token);
 
             if (blank($user)) {
@@ -71,6 +77,19 @@ class AppServiceProvider extends ServiceProvider
             }
 
             return $user;
+        });
+    }
+
+    private function configureRateLimiting(): void
+    {
+        RateLimiter::for('login', static function (Request $request) {
+            $throttleKey = Str::transliterate(Str::lower($request->input('email')).'|'.$request->ip());
+
+            return Limit::perMinute(5)->by($throttleKey);
+        });
+
+        RateLimiter::for('two-factor', static function (Request $request) {
+            return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
     }
 }

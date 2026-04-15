@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\ResentInvitationController;
@@ -10,7 +12,41 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserAvatarController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'home')->name('home');
+Route::get('/', static function () {
+    return redirect()->route('dashboard');
+})->name('home');
+
+Route::middleware(['throttle:login'])->group(function () {
+
+    Route::controller(LoginController::class)->group(function () {
+        Route::get('/loginer', 'create')
+            ->name('login.create');
+
+        Route::post('/loginer', 'store')
+            ->name('login.store');
+    });
+
+});
+
+Route::middleware(['throttle:two-factor'])->group(function () {
+
+    Route::controller(TwoFactorController::class)->group(function () {
+        Route::get('/two-factorer', 'create')
+            ->name('login.two-factor.create');
+
+        Route::post('/two-factorer', 'store')
+            ->name('login.two-factor.store');
+    });
+
+});
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/dashboard', static function () {
+        echo 'dashboard';
+    })->name('dashboard');
+
+});
 
 Route::get('avatars/{user}', [UserAvatarController::class, 'show'])->name('avatars.show');
 
