@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Observers\Policies;
+namespace App\Policies;
 
 use App\Contracts\UserModelInterface;
 use App\Enums\ModuleAccessLevel;
