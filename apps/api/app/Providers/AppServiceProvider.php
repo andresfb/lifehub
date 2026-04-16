@@ -8,6 +8,7 @@ use App\Dtos\Modules\MorphTypesItems;
 use App\Models\User;
 use App\Services\Manifest\ManifestService;
 use Carbon\CarbonImmutable;
+use Exception;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -35,7 +36,7 @@ final class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * @throws Exception
      */
     public function boot(): void
     {
@@ -58,6 +59,10 @@ final class AppServiceProvider extends ServiceProvider
 
             return $user->isAdmin();
         });
+
+        // TODO: Add a BaseManifestProvider to load all the AI routes
+//        $this->app->make(ManifestService::class)
+//            ->register(resolve(BaseManifestProvider::class));
     }
 
     /**

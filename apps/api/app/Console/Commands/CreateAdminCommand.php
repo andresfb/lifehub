@@ -87,6 +87,11 @@ final class CreateAdminCommand extends Command
         }
     }
 
+    private function hasOpCommand(): bool
+    {
+        return Process::run('command -v op')->successful();
+    }
+
     private function downloadFiles(): void
     {
         $this->downloadDataFiles();
@@ -96,18 +101,25 @@ final class CreateAdminCommand extends Command
 
     private function downloadDataFiles(): void
     {
+        $this->getHeimdallFile();
+
+        $this->getApiProvidersFile();
+    }
+
+    private function getHeimdallFile(): void
+    {
         $dataFile = storage_path('app/private/heimdall.json');
-        if (! file_exists($dataFile)) {
+        if (file_exists($dataFile)) {
             return;
         }
 
         if (! $this->hasOpCommand()) {
             throw new RuntimeException(
-                'Seeder files missing and `op` command is not available. Cannot download data files.'
+                'Heimdall file missing and `op` command is not available. Cannot download data files.'
             );
         }
 
-        $cmd = sprintf('op read "op://LifeHub/Heimdall/heimdall.json" --out-file "%s"', $dataFile);
+        $cmd = sprintf('op read "op://LifeHub/HeimdallData/heimdall.json" --out-file "%s"', $dataFile);
         $proc = Process::run($cmd);
 
         if ($proc->successful() && file_exists($dataFile)) {
@@ -116,32 +128,57 @@ final class CreateAdminCommand extends Command
 
         throw new RuntimeException(
             sprintf(
-                'Seeder file could not be created: %s', $proc->errorOutput()
+                'Heimdall file could not be created: %s', $proc->errorOutput()
             ),
             $proc->exitCode()
         );
     }
 
-    private function hasOpCommand(): bool
+    private function getApiProvidersFile(): void
     {
-        return Process::run('command -v op')->successful();
+        $dataFile = storage_path('app/private/ai-providers.json');
+        if (file_exists($dataFile)) {
+            return;
+        }
+
+        if (! $this->hasOpCommand()) {
+            throw new RuntimeException(
+                'AI Providers file missing and `op` command is not available. Cannot download data files.'
+            );
+        }
+
+        $cmd = sprintf('op read "op://LifeHub/AiProvidersData/ai-providers.json" --out-file "%s"', $dataFile);
+        $proc = Process::run($cmd);
+
+        if ($proc->successful() && file_exists($dataFile)) {
+            return;
+        }
+
+        throw new RuntimeException(
+            sprintf(
+                'AI Providers file could not be created: %s', $proc->errorOutput()
+            ),
+            $proc->exitCode()
+        );
     }
 
     private function downloadAdminSeeders(): void
     {
-        $this->downloadHomepage();
+        $this->downloadHomepageSeeder();
 
-        $this->downloadSearch();
+        $this->downloadSearchSeeder();
+
+        $this->downloadAiProvidersSeeder();
     }
 
-    private function downloadHomepage(): void
+    private function downloadHomepageSeeder(): void
     {
-        $seeder = __DIR__.'/../../../app/Domain/Dashboard/Database/Seeders/AdminHomepageSeeder.php';
+        $seeder = __DIR__.'/../../../Modules/Dashboard/database/seeders/AdminHomepageSeeder.php';
         if (file_exists($seeder)) {
             return;
         }
 
-        $cmd = sprintf('op read "op://LifeHub/Homepage/Seeder" --out-file "%s"', $seeder);
+        $cmd = sprintf('op read "op://LifeHub/HomepageSeeder/Seeder.php" --out-file "%s"', $seeder);
         $proc = Process::run($cmd);
 
         if ($proc->successful() && file_exists($seeder)) {
@@ -156,14 +193,36 @@ final class CreateAdminCommand extends Command
         );
     }
 
-    private function downloadSearch(): void
+    private function downloadSearchSeeder(): void
     {
-        $seeder = __DIR__.'/../../../app/Domain/Dashboard/Database/Seeders/AdminSearchProviders.php';
+        $seeder = __DIR__.'/../../../Modules/Dashboard/database/seeders/AdminSearchProviders.php';
         if (file_exists($seeder)) {
             return;
         }
 
-        $cmd = sprintf('op read "op://LifeHub/Search/Seeder" --out-file "%s"', $seeder);
+        $cmd = sprintf('op read "op://LifeHub/SearchSeeder/Seeder.php" --out-file "%s"', $seeder);
+        $proc = Process::run($cmd);
+
+        if ($proc->successful() && file_exists($seeder)) {
+            return;
+        }
+
+        throw new RuntimeException(
+            sprintf(
+                'Seeder file could not be created: %s', $proc->errorOutput()
+            ),
+            $proc->exitCode()
+        );
+    }
+
+    private function downloadAiProvidersSeeder(): void
+    {
+        $seeder = __DIR__.'/../../../Database/Seeders/AiProvidersSeeder.php';
+        if (file_exists($seeder)) {
+            return;
+        }
+
+        $cmd = sprintf('op read "op://LifeHub/AiProvidersSeeder/Seeder.php" --out-file "%s"', $seeder);
         $proc = Process::run($cmd);
 
         if ($proc->successful() && file_exists($seeder)) {

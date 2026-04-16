@@ -42,7 +42,7 @@ return [
     'versions' => [
         'v1' => [
             'routes' => base_path('routes/api/v1.php'),
-            'middleware' => [],
+            'middleware' => ['force.json'],
             'status' => 'active',
             'deprecated_at' => null,
             'sunset_at' => null,
