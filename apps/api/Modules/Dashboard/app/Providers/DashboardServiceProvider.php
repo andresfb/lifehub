@@ -6,6 +6,8 @@ namespace Modules\Dashboard\Providers;
 
 use App\Dtos\Modules\MorphTypesItems;
 use App\Services\Manifest\ManifestService;
+use Exception;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
 use Modules\Dashboard\Enums\MorphTypes;
 use Modules\Dashboard\Manifest\DashboardManifestProvider;
@@ -64,10 +66,17 @@ final class DashboardServiceProvider extends ModuleServiceProvider
                 ),
             );
         });
+    }
 
-        $this->app->booted(function (): void {
-            $this->app->make(ManifestService::class)
-                ->register(resolve(DashboardManifestProvider::class));
-        });
+    /**
+     * @throws Exception
+     */
+    #[Override]
+    public function boot(): void
+    {
+        parent::boot();
+
+        $this->app->make(ManifestService::class)
+            ->register(resolve(DashboardManifestProvider::class));
     }
 }

@@ -12,7 +12,7 @@ final class ProviderFactory
 {
     public static function getProvider(string $code): ProviderItem
     {
-        $providers = Config::collection('constants.providers');
+        $providers = Config::collection('settings.providers');
         $provider = $providers->where('enabled', true)
             ->where('code', $code)
             ->firstOrFail();
@@ -27,7 +27,7 @@ final class ProviderFactory
 
     public static function getRandom(): ProviderItem
     {
-        $providers = Config::collection('constants.providers');
+        $providers = Config::collection('settings.providers');
         $provider = $providers->where('enabled', true)->random();
         $lab = Lab::from($provider['code']);
 
@@ -39,7 +39,7 @@ final class ProviderFactory
 
     public static function getWebRandom(): ProviderItem
     {
-        $providers = Config::collection('constants.providers');
+        $providers = Config::collection('settings.providers');
         $provider = $providers->where('enabled', true)
             ->where('can_web', true)
             ->random();
@@ -54,7 +54,7 @@ final class ProviderFactory
 
     public static function getList(): array
     {
-        $providers = Config::collection('constants.providers');
+        $providers = Config::collection('settings.providers');
 
         return $providers->where('enabled', true)
             ->sortBy('name')
