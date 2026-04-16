@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\GlobalSearchController;
 use App\Http\Controllers\Api\V1\ManifestController;
 use App\Http\Controllers\Api\V1\UserAiModelController;
 use App\Http\Controllers\Api\V1\UserAiProviderController;
@@ -48,6 +49,9 @@ Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function ()
                 tags: ['manifest']
             )
         );
+
+    Route::get('search', GlobalSearchController::class)
+        ->name('api.v1.search');
 
     Route::get('me/ai/providers', [UserAiProviderController::class, 'index'])
         ->name('api.v1.me.ai.providers.index');

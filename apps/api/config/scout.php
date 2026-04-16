@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Models\GlobalSearch;
-
 return [
 
     /*
@@ -146,40 +144,7 @@ return [
     'meilisearch' => [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY'),
-        'index-settings' => [
-            GlobalSearch::class => [
-                'filterableAttributes' => [
-                    'id',
-                    'creator_id',
-                    'user_id',
-                    'entity_type',
-                    'entity_id',
-                    'module',
-                    'title',
-                    'body',
-                    'tags',
-                    'keywords',
-                    'urls',
-                    'is_private',
-                    'is_archived',
-                    'created_at',
-                    'updated_at',
-                    'source_updated_at',
-                ],
-                'sortableAttributes' => ['source_updated_at'],
-                'stopWords' => ['the', 'of', 'to', 'a'],
-                'rankingRules' => [
-                    'words',
-                    'typo',
-                    'proximity',
-                    'attributeRank',
-                    'sort',
-                    'wordPosition',
-                    'exactness',
-                ],
-                'facetSearch' => true,
-            ],
-        ],
+        'index-settings' => [],
     ],
 
     /*
