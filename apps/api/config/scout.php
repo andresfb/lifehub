@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Modules\Dashboard\Models\HomepageItem;
+
 return [
 
     /*
@@ -144,7 +146,33 @@ return [
     'meilisearch' => [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY'),
-        'index-settings' => [],
+        'index-settings' => [
+            HomepageItem::class => [
+                'filterableAttributes'=> ['id', 'user_id', 'section_id', 'section', 'url', 'created_at'],
+                'sortableAttributes' => ['created_at'],
+                "rankingRules" => [
+                    "words",
+                    "typo",
+                    "proximity",
+                    "attributeRank",
+                    "sort",
+                    "wordPosition",
+                    "exactness"
+                ],
+                "stopWords" => [
+                    "the",
+                    "a"
+                ],
+                "typoTolerance" => [
+                    "enabled" => true,
+                    "minWordSizeForTypos" => [
+                      "oneTypo" => 5,
+                      "twoTypos" => 9,
+                    ]
+                ],
+                "facetSearch" => true,
+            ],
+        ],
     ],
 
     /*
