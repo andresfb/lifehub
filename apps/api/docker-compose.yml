@@ -11,17 +11,33 @@ services:
     volumes:
       - cache:/data
 
-  typesense:
-    image: typesense/typesense:30.1
-    container_name: typesense
-    restart: unless-stopped
-    command: '--data-dir /data --api-key=xyz'
-    ports:
-      - "8108:8108"
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: meilisearch
+    environment:
+      - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
+      - MEILI_ENV=production
+      - MEILI_NO_ANALYTICS=true
     volumes:
-      - search:/data
+      - search:/meili_data
+    ports:
+      - "7700:7700"
     networks:
       - project_network
+    restart: unless-stopped
+
+  dashboard:
+    image: riccoxie/meilisearch-ui:latest
+    container_name: dashboard
+    environment:
+      - MEILI_HOST=http://meilisearch:7700
+    ports:
+      - "24900:24900"
+    depends_on:
+      - meilisearch
+    networks:
+      - project_network
+    restart: unless-stopped
 
   database:
     image: pgvector/pgvector:pg17
