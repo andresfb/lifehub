@@ -113,6 +113,12 @@ return [
             'url' => env('OPENAI_URL', 'https://api.openai.com/v1'),
         ],
 
+        'firepass' => [
+            'driver' => 'openai',
+            'key' => env('FIREPASS_API_KEY'),
+            'url' => env('FIREPASS_URL', 'https://api.fireworks.ai/inference/v1'),
+        ],
+
         'openrouter' => [
             'driver' => 'openrouter',
             'key' => env('OPENROUTER_API_KEY'),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Observers\UserObserver;
+use App\Services\AI\UserAiSettingsService;
 use App\Services\Modules\ModuleAccessService;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
@@ -14,9 +15,12 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Override;
@@ -32,6 +36,9 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read CarbonImmutable|null $deleted_at
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
+ * @property-read UserSetting $aiSettings
+ * @property-read Collection<AiProvider> $aiProviders
+ * @property-read Collection<AiModel> $aiModels
  */
 #[ObservedBy([UserObserver::class])]
 #[UseFactory(UserFactory::class)]
@@ -56,6 +63,36 @@ final class User extends Authenticatable implements MustVerifyEmail
     public function isAdmin(): bool
     {
         return $this->hasRole(ModuleAccessService::SUPER_ADMIN_ROLE);
+    }
+
+    /**
+     * @return HasOne<UserSetting, $this>
+     */
+    public function aiSettings(): HasOne
+    {
+        return $this->hasOne(UserSetting::class)
+            ->where('key', UserSetting::AI_KEY);
+    }
+
+    /**
+     * @return HasMany<AiProvider, $this>
+     */
+    public function aiProviders(): HasMany
+    {
+        return $this->hasMany(AiProvider::class);
+    }
+
+    /**
+     * @return HasMany<AiModel, $this>
+     */
+    public function aiModels(): HasMany
+    {
+        return $this->hasMany(AiModel::class);
+    }
+
+    public function ensureAiSettings(): UserSetting
+    {
+        return resolve(UserAiSettingsService::class)->ensureRootSetting($this);
     }
 
     /**

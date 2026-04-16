@@ -11,11 +11,13 @@ final class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
+     * @noinspection ClassConstantCanBeUsedInspection
      */
     public function run(): void
     {
         $this->call([
             DashboardDatabaseSeeder::class,
+            '\Database\Seeders\AiProvidersSeeder',
         ]);
     }
 }
