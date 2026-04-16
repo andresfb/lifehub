@@ -20,7 +20,7 @@ return [
     |
     */
 
-    'driver' => env('SCOUT_DRIVER', 'typesense'),
+    'driver' => env('SCOUT_DRIVER', 'meilisearch'),
 
     /*
     |--------------------------------------------------------------------------
@@ -147,9 +147,38 @@ return [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
-            // 'users' => [
-            //     'filterableAttributes'=> ['id', 'name', 'email'],
-            // ],
+            GlobalSearch::class => [
+                'filterableAttributes' => [
+                    'id',
+                    'creator_id',
+                    'user_id',
+                    'entity_type',
+                    'entity_id',
+                    'module',
+                    'title',
+                    'body',
+                    'tags',
+                    'keywords',
+                    'urls',
+                    'is_private',
+                    'is_archived',
+                    'created_at',
+                    'updated_at',
+                    'source_updated_at',
+                ],
+                'sortableAttributes' => ['source_updated_at'],
+                'stopWords' => ['the', 'of', 'to', 'a'],
+                "rankingRules" => [
+                    "words",
+                    "typo",
+                    "proximity",
+                    "attributeRank",
+                    "sort",
+                    "wordPosition",
+                    "exactness"
+                ],
+                "facetSearch" => true,
+            ],
         ],
     ],
 
@@ -187,36 +216,7 @@ return [
             'retry_interval_seconds' => env('TYPESENSE_RETRY_INTERVAL_SECONDS', 1),
         ],
         // 'max_total_results' => env('TYPESENSE_MAX_TOTAL_RESULTS', 1000),
-        'model-settings' => [
-            GlobalSearch::class => [
-                'collection-schema' => [
-                    'name' => 'global_search_index',
-                    'fields' => [
-                        ['name' => 'id', 'type' => 'string'],
-                        ['name' => 'creator_id', 'type' => 'string'],
-                        ['name' => 'user_id', 'type' => 'string', 'facet' => true],
-                        ['name' => 'entity_type', 'type' => 'string', 'facet' => true],
-                        ['name' => 'entity_id', 'type' => 'string'],
-                        ['name' => 'module', 'type' => 'string', 'facet' => true],
-                        ['name' => 'title', 'type' => 'string'],
-                        ['name' => 'body', 'type' => 'string'],
-                        ['name' => 'tags', 'type' => 'string[]', 'facet' => true],
-                        ['name' => 'keywords', 'type' => 'string[]'],
-                        ['name' => 'urls', 'type' => 'object', 'index' => false, 'optional' => true],
-                        ['name' => 'is_private', 'type' => 'bool', 'facet' => true],
-                        ['name' => 'is_archived', 'type' => 'bool', 'facet' => true],
-                        ['name' => 'created_at', 'type' => 'int64', 'sort' => true, 'optional' => true],
-                        ['name' => 'updated_at', 'type' => 'int64', 'sort' => true],
-                        ['name' => 'source_updated_at', 'type' => 'int64', 'sort' => true, 'optional' => true],
-                    ],
-                    'default_sorting_field' => 'updated_at',
-                    'enable_nested_fields' => true,
-                ],
-                'search-parameters' => [
-                    'query_by' => 'title,body,tags,keywords',
-                ],
-            ],
-        ],
+        'model-settings' => [],
         'import_action' => env('TYPESENSE_IMPORT_ACTION', 'upsert'),
     ],
 
