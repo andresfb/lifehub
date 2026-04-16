@@ -61,8 +61,8 @@ final class AppServiceProvider extends ServiceProvider
         });
 
         // TODO: Add a BaseManifestProvider to load all the AI routes
-//        $this->app->make(ManifestService::class)
-//            ->register(resolve(BaseManifestProvider::class));
+        //        $this->app->make(ManifestService::class)
+        //            ->register(resolve(BaseManifestProvider::class));
     }
 
     /**

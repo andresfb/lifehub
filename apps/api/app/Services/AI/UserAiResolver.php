@@ -63,7 +63,7 @@ final class UserAiResolver
             'api_version' => $provider->api_version,
             'deployment' => $provider->deployment,
             'embedding_deployment' => $provider->embedding_deployment,
-        ], static fn (mixed $value): bool => filled($value)));
+        ], filled(...)));
 
         Ai::purge($runtimeProviderName);
 
