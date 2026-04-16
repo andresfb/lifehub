@@ -18,10 +18,14 @@ final class UserAiResolver
 {
     public function resolve(
         User $user,
-        AiModelFeatures $feature = AiModelFeatures::text,
+        AiModelFeatures|string $feature = AiModelFeatures::text,
         ?string $providerCode = null,
         ?string $modelName = null
     ): ResolvedUserAiProvider {
+        $feature = $feature instanceof AiModelFeatures
+            ? $feature
+            : (AiModelFeatures::tryFrom($feature) ?? constant(AiModelFeatures::class.'::'.mb_strtolower($feature)));
+
         $model = AiModel::query()
             ->with('provider')
             ->where('user_id', $user->id)
@@ -46,7 +50,7 @@ final class UserAiResolver
             ->first();
 
         if (! $model instanceof AiModel) {
-            throw new UserAiConfigurationException("No AI provider and model are available for {$feature} feature");
+            throw new UserAiConfigurationException("No AI provider and model are available for {$feature->name} feature");
         }
 
         $provider = $model->provider;

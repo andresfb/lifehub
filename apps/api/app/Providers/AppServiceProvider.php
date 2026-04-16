@@ -4,9 +4,17 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Contracts\Search\GlobalSearchEmbeddingServiceInterface;
+use App\Contracts\Search\GlobalSearchQueryServiceInterface;
+use App\Contracts\Search\MeilisearchGlobalSearchServiceInterface;
+use App\Contracts\Search\TokenTextChunkerInterface;
 use App\Dtos\Modules\MorphTypesItems;
 use App\Models\User;
 use App\Services\Manifest\ManifestService;
+use App\Services\Search\Embeddings\GlobalSearchEmbeddingService;
+use App\Services\Search\Embeddings\TokenTextChunker;
+use App\Services\Search\GlobalSearchQueryService;
+use App\Services\Search\MeilisearchGlobalSearchService;
 use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -33,6 +41,10 @@ final class AppServiceProvider extends ServiceProvider
     {
         $this->app->scoped(ManifestService::class);
         $this->app->bind('morph_types', fn ($app): Collection => collect());
+        $this->app->bind(TokenTextChunkerInterface::class, TokenTextChunker::class);
+        $this->app->bind(GlobalSearchEmbeddingServiceInterface::class, GlobalSearchEmbeddingService::class);
+        $this->app->bind(MeilisearchGlobalSearchServiceInterface::class, MeilisearchGlobalSearchService::class);
+        $this->app->bind(GlobalSearchQueryServiceInterface::class, GlobalSearchQueryService::class);
     }
 
     /**
@@ -61,8 +73,8 @@ final class AppServiceProvider extends ServiceProvider
         });
 
         // TODO: Add a BaseManifestProvider to load all the AI routes
-        //        $this->app->make(ManifestService::class)
-        //            ->register(resolve(BaseManifestProvider::class));
+        // $this->app->make(ManifestService::class)
+        //     ->register(resolve(BaseManifestProvider::class));
     }
 
     /**
