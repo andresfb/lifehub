@@ -15,7 +15,7 @@ interface GlobalSearchEmbeddingServiceInterface
      * @param  array<int, string>  $inputs
      * @return array<int, array<int, float>>
      */
-    public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null): array;
+    public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null, bool $cache = false): array;
 
     public function dimensions(): int;
 }

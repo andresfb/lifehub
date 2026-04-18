@@ -57,9 +57,9 @@ final class GlobalSearchChunk extends Model
         $payload = [
             ...$globalSearch->toSearchableArray(),
             'id' => $this->meilisearchId(),
+            'user_id' => $this->user_id,
             'global_search_chunk_id' => $this->id,
             'global_search_id' => $this->global_search_id,
-            'user_id' => $this->user_id,
             'chunk_index' => $this->chunk_index,
             'content' => $this->content,
             'content_hash' => $this->content_hash,

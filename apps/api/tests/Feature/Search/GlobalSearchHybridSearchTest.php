@@ -105,7 +105,7 @@ test('it syncs changed chunks and removes stale chunks', function (): void {
             return null;
         }
 
-        public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null): array
+        public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null, bool $cache = false): array
         {
             return [];
         }
@@ -158,15 +158,15 @@ test('it adds embeddings when the user has an embedding capable provider', funct
         public function resolve(User $user): ?ResolvedUserAiProvider
         {
             return new ResolvedUserAiProvider(
-                providerName: 'user-provider',
-                providerCode: 'openai',
+                name: 'user-provider',
+                code: 'openai',
                 lab: Lab::OpenAI,
                 model: 'text-embedding-3-small',
                 featureCapabilities: ['supports_embeddings' => true],
             );
         }
 
-        public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null): array
+        public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null, bool $cache = false): array
         {
             return [[0.1, 0.2, 0.3]];
         }

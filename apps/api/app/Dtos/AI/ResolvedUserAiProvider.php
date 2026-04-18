@@ -16,8 +16,8 @@ final class ResolvedUserAiProvider extends Data
      * @param  array<string, bool>  $featureCapabilities
      */
     public function __construct(
-        public readonly string $providerName,
-        public readonly string $providerCode,
+        public readonly string $name,
+        public readonly string $code,
         public readonly Lab $lab,
         public readonly string $model,
         public readonly array $featureCapabilities,

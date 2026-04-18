@@ -22,6 +22,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->string('code');
             $table->string('name');
+            $table->string('driver');
             $table->boolean('enabled')->default(true);
             $table->text('api_key');
             $table->text('url')->nullable();

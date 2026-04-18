@@ -30,10 +30,10 @@ test('it resolves a configured user ai provider into runtime config', function (
 
     $resolved = resolve(UserAiResolver::class)->resolve($user, 'text');
 
-    expect($resolved->providerCode)->toBe('openai')
+    expect($resolved->code)->toBe('openai')
         ->and($resolved->model)->toBe('gpt-4.1-mini')
-        ->and(config("ai.providers.{$resolved->providerName}.key"))->toBe('sk-runtime-openai')
-        ->and(config("ai.providers.{$resolved->providerName}.url"))->toBe('https://api.openai.com/v1');
+        ->and(config("ai.providers.{$resolved->name}.key"))->toBe('sk-runtime-openai')
+        ->and(config("ai.providers.{$resolved->name}.url"))->toBe('https://api.openai.com/v1');
 });
 
 test('it throws when the user has no configured model for a feature', function (): void {

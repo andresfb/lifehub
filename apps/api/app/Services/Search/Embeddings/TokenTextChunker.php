@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Search\Embeddings;
 
 use App\Contracts\Search\TokenTextChunkerInterface;
+use Illuminate\Support\Facades\Config;
 use Throwable;
 use Yethee\Tiktoken\Encoder;
 use Yethee\Tiktoken\EncoderProvider;
@@ -24,8 +25,8 @@ final readonly class TokenTextChunker implements TokenTextChunkerInterface
             return [];
         }
 
-        $targetTokens = max(64, $this->integerConfig('search.hybrid.target_tokens', 512));
-        $overlapTokens = min(max(0, $this->integerConfig('search.hybrid.overlap_tokens', 64)), $targetTokens - 1);
+        $targetTokens = max(64, Config::integer('search.hybrid.target_tokens', 512));
+        $overlapTokens = min(max(0, Config::integer('search.hybrid.overlap_tokens', 64)), $targetTokens - 1);
 
         try {
             $encoder = $this->encoderProvider->getForModel($model === '' ? 'text-embedding-3-small' : $model);
@@ -152,13 +153,6 @@ final readonly class TokenTextChunker implements TokenTextChunkerInterface
         }
 
         return $this->trimText($text);
-    }
-
-    private function integerConfig(string $key, int $default): int
-    {
-        $value = config($key, $default);
-
-        return is_numeric($value) ? (int) $value : $default;
     }
 
     private function trimText(string $value): string

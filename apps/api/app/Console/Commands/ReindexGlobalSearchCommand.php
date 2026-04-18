@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Base\BaseUserCommand;
 use App\Jobs\SyncGlobalSearchChunksJob;
 use App\Models\GlobalSearch;
-use Illuminate\Console\Command;
 
-final class ReindexGlobalSearchCommand extends Command
+final class ReindexGlobalSearchCommand extends BaseUserCommand
 {
-    protected $signature = 'search:reindex-global-search {--user_id= : Reindex records for one user only}';
+    protected $signature = 'search:reindex-global-search {--user= : Reindex records for one user only}';
 
     protected $description = 'Queue chunk and Meilisearch indexing for global search records';
 
     public function handle(): int
     {
-        $userId = $this->option('user_id');
+        $user = $this->loadUser();
         $count = 0;
 
         GlobalSearch::query()
-            ->when($userId !== null, fn ($query) => $query->where('user_id', $userId))
+            ->where('user_id', $user->id)
             ->select('id')
             ->orderBy('id')
             ->chunkById(100, function ($records) use (&$count): void {

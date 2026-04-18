@@ -27,7 +27,12 @@ final readonly class GlobalSearchQueryService implements GlobalSearchQueryServic
 
         if ($resolved !== null) {
             $this->meilisearch->ensureIndex($this->embeddingService->dimensions());
-            $embedding = $this->embeddingService->embed($user, [$query], $resolved)[0] ?? null;
+            $embedding = $this->embeddingService->embed(
+                user: $user,
+                inputs: [$query],
+                resolved: $resolved,
+                cache: true,
+            )[0] ?? null;
         }
 
         $response = $this->meilisearch->search(
@@ -80,9 +85,8 @@ final readonly class GlobalSearchQueryService implements GlobalSearchQueryServic
                     'is_private' => (bool) ($top['is_private'] ?? false),
                     'is_archived' => (bool) ($top['is_archived'] ?? false),
                     'score' => $top['_rankingScore'] ?? null,
-                    'matched_chunks' => $items
-                        ->take(3)
-                        ->filter(is_array(...))
+                    'matched_chunks' => $items->take(3)
+                        ->filter(fn ($item) => is_array($item))
                         ->map(static fn (array $hit): array => [
                             'global_search_chunk_id' => $hit['global_search_chunk_id'] ?? null,
                             'chunk_index' => $hit['chunk_index'] ?? null,
@@ -95,6 +99,7 @@ final readonly class GlobalSearchQueryService implements GlobalSearchQueryServic
                         ->all(),
                 ];
             })
+            ->sortByDesc('score')
             ->values()
             ->all();
     }

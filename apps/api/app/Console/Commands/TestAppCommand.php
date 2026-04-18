@@ -7,7 +7,6 @@ namespace App\Console\Commands;
 use App\Console\Commands\Base\BaseUserCommand;
 use Exception;
 use Illuminate\Support\Facades\Log;
-use Nwidart\Modules\Facades\Module;
 
 use function Laravel\Prompts\clear;
 use function Laravel\Prompts\error;
@@ -29,10 +28,6 @@ final class TestAppCommand extends BaseUserCommand
             Log::notice('Running tests');
 
             $user = $this->loadUser();
-
-            $module = Module::find('core');
-
-            dump($module->get('access'));
 
             return self::SUCCESS;
         } catch (Exception $e) {
