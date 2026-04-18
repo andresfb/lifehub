@@ -19,6 +19,7 @@ final class UserAiResolver
     public function resolve(
         User $user,
         AiModelFeatures|string $feature = AiModelFeatures::text,
+        bool $random = true,
         ?string $providerCode = null,
         ?string $modelName = null
     ): ResolvedUserAiProvider {
@@ -26,7 +27,7 @@ final class UserAiResolver
             ? $feature
             : (AiModelFeatures::tryFrom($feature) ?? constant(AiModelFeatures::class.'::'.mb_strtolower($feature)));
 
-        $model = AiModel::query()
+        $query = AiModel::query()
             ->with('provider')
             ->where('user_id', $user->id)
             ->where('enabled', true)
@@ -44,10 +45,13 @@ final class UserAiResolver
                     ->where('enabled', true)
             ))
             ->when($modelName !== null, fn (Builder $query): Builder => $query->where('name', $modelName))
-            ->where($feature->value, true)
-            ->orderBy('ai_provider_id')
-            ->orderBy('id')
-            ->first();
+            ->where($feature->value, true);
+
+        $model = $random
+            ? $query->inRandomOrder()->first()
+            : $query->orderBy('ai_provider_id')
+                ->orderBy('id')
+                ->first();
 
         if (! $model instanceof AiModel) {
             throw new UserAiConfigurationException("No AI provider and model are available for {$feature->name} feature");
@@ -60,8 +64,8 @@ final class UserAiResolver
             Str::slug($provider->code.'-'.$provider->id)
         );
 
-        config()->set("ai.providers.{$runtimeProviderName}", array_filter([
-            'driver' => $provider->code,
+        config()->set("ai.providers.{$provider->code}", array_filter([
+            'driver' => $provider->driver,
             'key' => $provider->api_key,
             'url' => $provider->url,
             'api_version' => $provider->api_version,
@@ -72,8 +76,8 @@ final class UserAiResolver
         Ai::purge($runtimeProviderName);
 
         return new ResolvedUserAiProvider(
-            providerName: $runtimeProviderName,
-            providerCode: $provider->code,
+            name: $runtimeProviderName,
+            code: $provider->code,
             lab: Lab::from($provider->code),
             model: $model->name,
             featureCapabilities: [

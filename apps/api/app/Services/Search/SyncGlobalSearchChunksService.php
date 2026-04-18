@@ -78,11 +78,10 @@ final readonly class SyncGlobalSearchChunksService
 
                 if (! $chunk instanceof GlobalSearchChunk || $chunk->content_hash !== $hash) {
                     $chunk = GlobalSearchChunk::query()
-                        ->updateOrCreate(
-                            [
-                                'global_search_id' => $globalSearch->id,
-                                'chunk_index' => $index,
-                            ], [
+                        ->updateOrCreate([
+                            'global_search_id' => $globalSearch->id,
+                            'chunk_index' => $index,
+                        ], [
                             'user_id' => $globalSearch->user_id,
                             'content' => $content,
                             'content_hash' => $hash,
@@ -92,7 +91,7 @@ final readonly class SyncGlobalSearchChunksService
                             'embedding_failed_reason' => null,
                             'embedding_failed_at' => null,
                         ],
-                        );
+                    );
                 }
 
                 $chunk->setRelation('globalSearch', $globalSearch);
@@ -136,7 +135,7 @@ final readonly class SyncGlobalSearchChunksService
         }
 
         if (
-            $chunk->embedded_provider_code === $resolved->providerCode
+            $chunk->embedded_provider_code === $resolved->code
             && $chunk->embedded_model === $resolved->model
             && $chunk->embedded_dimensions === $dimensions
             && $chunk->embedded_content_hash === $chunk->content_hash
@@ -152,7 +151,7 @@ final readonly class SyncGlobalSearchChunksService
             }
 
             $chunk->forceFill([
-                'embedded_provider_code' => $resolved->providerCode,
+                'embedded_provider_code' => $resolved->code,
                 'embedded_model' => $resolved->model,
                 'embedded_dimensions' => $dimensions,
                 'embedded_content_hash' => $chunk->content_hash,

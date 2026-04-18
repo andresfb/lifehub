@@ -45,11 +45,6 @@ final class GlobalSearch extends Model implements UserModelInterface
     use BelongsToUser;
     use HasFactory;
 
-    public function searchableAs(): string
-    {
-        return 'global_search_index';
-    }
-
     /**
      * @return array<string, mixed>
      */

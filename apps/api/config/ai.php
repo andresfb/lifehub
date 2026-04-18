@@ -37,6 +37,7 @@ return [
         'embeddings' => [
             'cache' => false,
             'store' => env('CACHE_STORE', 'database'),
+            'seconds' => env('AI_EMBEDDINGS_CACHE_SECONDS', 60 * 60 * 24 * 60), // Two months
         ],
     ],
 

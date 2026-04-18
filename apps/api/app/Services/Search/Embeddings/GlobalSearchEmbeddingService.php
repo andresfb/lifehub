@@ -10,6 +10,7 @@ use App\Enums\AiModelFeatures;
 use App\Exceptions\UserAiConfigurationException;
 use App\Models\User;
 use App\Services\AI\UserAiResolver;
+use Illuminate\Support\Facades\Config;
 use Laravel\Ai\Embeddings;
 use Laravel\Ai\Exceptions\FailoverableException;
 
@@ -20,7 +21,11 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
     public function resolve(User $user): ?ResolvedUserAiProvider
     {
         try {
-            return $this->resolver->resolve($user, AiModelFeatures::embeddings);
+            return $this->resolver->resolve(
+                user: $user,
+                feature: AiModelFeatures::embeddings,
+                random: false,
+            );
         } catch (UserAiConfigurationException) {
             return null;
         }
@@ -30,7 +35,7 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
      * @return array<int, array<int, float>>
      * @throws FailoverableException
      */
-    public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null): array
+    public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null, bool $cache = false): array
     {
         if ($inputs === []) {
             return [];
@@ -42,11 +47,18 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
             return [];
         }
 
-        $embeddings = Embeddings::for($inputs)
+        $embedder = Embeddings::for($inputs)
             ->dimensions($this->dimensions())
-            ->timeout($this->integerConfig('search.hybrid.timeout', 30))
-            ->generate($resolved->providerName, $resolved->model)
-            ->embeddings;
+            ->timeout(Config::integer('search.hybrid.timeout', 30));
+
+        if ($cache === true) {
+            $embedder = $embedder->cache();
+        }
+
+        $embeddings = $embedder->generate(
+            $resolved->code,
+            $resolved->model
+        )->embeddings;
 
         $normalized = [];
 
@@ -69,13 +81,6 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
 
     public function dimensions(): int
     {
-        return $this->integerConfig('search.hybrid.dimensions', 1536);
-    }
-
-    private function integerConfig(string $key, int $default): int
-    {
-        $value = config($key, $default);
-
-        return is_numeric($value) ? (int) $value : $default;
+        return Config::integer('search.hybrid.dimensions', 1536);
     }
 }

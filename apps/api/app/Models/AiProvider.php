@@ -24,6 +24,7 @@ use Override;
  * @property-read int $user_id
  * @property string $code
  * @property string $name
+ * @property string $driver
  * @property bool $enabled
  * @property string $api_key
  * @property string|null $url

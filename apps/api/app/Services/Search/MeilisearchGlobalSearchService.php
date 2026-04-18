@@ -7,6 +7,7 @@ namespace App\Services\Search;
 use App\Contracts\Search\MeilisearchGlobalSearchServiceInterface;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Config;
 use Meilisearch\Client;
 use Meilisearch\Endpoints\Indexes;
 use Meilisearch\Exceptions\ApiException;
@@ -28,8 +29,8 @@ final class MeilisearchGlobalSearchService implements MeilisearchGlobalSearchSer
     {
         return sprintf(
             "%s%s",
-            $this->stringConfig('scout.prefix', ''),
-            $this->stringConfig('search.hybrid.index', 'global_search_chunks')
+            Config::string('scout.prefix', ''),
+            Config::string('search.hybrid.index', 'global_search_chunks')
         );
     }
 
@@ -122,7 +123,7 @@ final class MeilisearchGlobalSearchService implements MeilisearchGlobalSearchSer
         if ($embedding !== null) {
             $searchParams['vector'] = $embedding;
             $searchParams['hybrid'] = [
-                'semanticRatio' => $this->floatConfig('search.hybrid.semantic_ratio', 0.7),
+                'semanticRatio' => Config::float('search.hybrid.semantic_ratio', 0.7),
                 'embedder' => $this->embedder(),
             ];
         }
@@ -163,20 +164,6 @@ final class MeilisearchGlobalSearchService implements MeilisearchGlobalSearchSer
 
     private function embedder(): string
     {
-        return $this->stringConfig('search.hybrid.embedder', 'global_search_user_provided');
-    }
-
-    private function stringConfig(string $key, string $default): string
-    {
-        $value = config($key, $default);
-
-        return is_string($value) && $value !== '' ? $value : $default;
-    }
-
-    private function floatConfig(string $key, float $default): float
-    {
-        $value = config($key, $default);
-
-        return is_numeric($value) ? (float) $value : $default;
+        return Config::string('search.hybrid.embedder', 'global_search_user_provided');
     }
 }

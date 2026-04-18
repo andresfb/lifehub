@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Models;
 
-use App\Contracts\GlobalSearchInterface;
 use App\Contracts\UserModelInterface;
 use App\Enums\ModuleKey;
 use App\Models\Media;
@@ -25,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Searchable;
-use Modules\Dashboard\Enums\MorphTypes;
 use Modules\Dashboard\Http\Resources\HomepageItemResource;
 use Modules\Dashboard\Libraries\MediaNamesLibrary;
 use Modules\Dashboard\Observers\HomepageItemObserver;
