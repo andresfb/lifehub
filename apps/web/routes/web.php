@@ -19,10 +19,10 @@ Route::get('/', static function () {
 Route::middleware(['throttle:login'])->group(function () {
 
     Route::controller(LoginController::class)->group(function () {
-        Route::get('/loginer', 'create')
+        Route::get('/login', 'create')
             ->name('login.create');
 
-        Route::post('/loginer', 'store')
+        Route::post('/login', 'store')
             ->name('login.store');
     });
 

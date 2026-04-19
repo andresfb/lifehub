@@ -5,5 +5,5 @@ use App\Providers\FortifyServiceProvider;
 
 return [
     AppServiceProvider::class,
-    FortifyServiceProvider::class,
+//    FortifyServiceProvider::class,
 ];

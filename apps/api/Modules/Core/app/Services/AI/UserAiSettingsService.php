@@ -37,6 +37,7 @@ final readonly class UserAiSettingsService
             'user_id' => $user->id,
             'code' => $code,
             'name' => (string) ($attributes['name'] ?? $this->catalog->label($code)),
+            'driver' => (string) ($attributes['driver']),
             'enabled' => (bool) ($attributes['enabled'] ?? true),
             'api_key' => (string) $attributes['api_key'],
             'url' => ($attributes['url'] ?? null) ?: null,
