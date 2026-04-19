@@ -24,7 +24,10 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index(['user_id', 'active', 'default', 'deleted_at']);
+            $table->index(
+                ['user_id', 'active', 'default', 'deleted_at'],
+                'idx_user_active',
+            );
         });
     }
 

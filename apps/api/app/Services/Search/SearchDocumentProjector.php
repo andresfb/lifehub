@@ -8,6 +8,9 @@ use App\Models\GlobalSearch;
 
 final class SearchDocumentProjector
 {
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     public function upsert(array $payload, int $userId): GlobalSearch
     {
         return GlobalSearch::query()

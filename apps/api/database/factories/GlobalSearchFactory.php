@@ -21,6 +21,7 @@ final class GlobalSearchFactory extends Factory
         return [
             'entity_type' => $this->faker->word(),
             'entity_id' => $this->faker->randomNumber(),
+            'creator_id' => $this->faker->unique()->uuid(),
             'module' => $this->faker->word(),
             'title' => $this->faker->word(),
             'body' => $this->faker->word(),
@@ -30,7 +31,6 @@ final class GlobalSearchFactory extends Factory
             'urls' => $this->faker->words(),
             'is_private' => $this->faker->boolean(),
             'is_archived' => $this->faker->boolean(),
-            'keyboards' => $this->faker->words(),
             'source_updated_at' => Date::now(),
             'created_at' => Date::now(),
             'updated_at' => Date::now(),

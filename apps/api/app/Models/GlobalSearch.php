@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Contracts\UserModelInterface;
+use App\Observers\GlobalSearchObserver;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
+use Database\Factories\GlobalSearchFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Searchable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Override;
 
 /**
@@ -21,28 +26,28 @@ use Override;
  * @property string $module
  * @property string $title
  * @property string $body
- * @property array $tags
- * @property array $keywords
- * @property array $metadata
- * @property array $urls
+ * @property array<int|string, mixed> $tags
+ * @property array<int|string, mixed> $keywords
+ * @property array<int|string, mixed> $metadata
+ * @property array<int|string, mixed> $urls
  * @property bool $is_private
  * @property bool $is_archived
  * @property-read CarbonImmutable|null $source_updated_at
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  * @property-read User $user
+ * @property-read Collection<int, GlobalSearchChunk> $chunks
  */
+#[ObservedBy([GlobalSearchObserver::class])]
+#[UseFactory(GlobalSearchFactory::class)]
 final class GlobalSearch extends Model implements UserModelInterface
 {
     use BelongsToUser;
     use HasFactory;
-    use Searchable;
 
-    public function searchableAs(): string
-    {
-        return 'global_search_index';
-    }
-
+    /**
+     * @return array<string, mixed>
+     */
     public function toSearchableArray(): array
     {
         return [
@@ -63,6 +68,14 @@ final class GlobalSearch extends Model implements UserModelInterface
             'updated_at' => $this->updated_at?->unix() ?? now()->unix(),
             'source_updated_at' => $this->source_updated_at?->unix(),
         ];
+    }
+
+    /**
+     * @return HasMany<GlobalSearchChunk, $this>
+     */
+    public function chunks(): HasMany
+    {
+        return $this->hasMany(GlobalSearchChunk::class);
     }
 
     #[Override]

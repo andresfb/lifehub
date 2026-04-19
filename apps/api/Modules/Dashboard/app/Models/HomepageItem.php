@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Models;
 
-use App\Contracts\GlobalSearchInterface;
 use App\Contracts\UserModelInterface;
 use App\Enums\ModuleKey;
 use App\Models\Media;
@@ -24,8 +23,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
-use Modules\Dashboard\Enums\MorphTypes;
-use Modules\Dashboard\Http\Resources\HomepageItemResource;
+use Laravel\Scout\Searchable;
+use Modules\Dashboard\Http\Resources\Api\V1\HomepageItemResource;
 use Modules\Dashboard\Libraries\MediaNamesLibrary;
 use Modules\Dashboard\Observers\HomepageItemObserver;
 use Modules\Dashboard\Policies\HomepageItemPolicy;
@@ -59,7 +58,7 @@ use Spatie\Tags\HasTags;
 #[ObservedBy([HomepageItemObserver::class])]
 #[UsePolicy(HomepageItemPolicy::class)]
 #[UseResource(HomepageItemResource::class)]
-final class HomepageItem extends Model implements GlobalSearchInterface, HasMedia, UserModelInterface
+final class HomepageItem extends Model implements HasMedia, UserModelInterface
 {
     use BelongsToUser;
     use CascadeSoftDeletes;
@@ -67,6 +66,7 @@ final class HomepageItem extends Model implements GlobalSearchInterface, HasMedi
     use HasSlug;
     use HasTags;
     use InteractsWithMedia;
+    use Searchable;
     use SlugOptionable;
     use SoftDeletes;
 
@@ -134,42 +134,24 @@ final class HomepageItem extends Model implements GlobalSearchInterface, HasMedi
             ->all();
     }
 
-    public function getIdentifier(): string
+    public function searchableAs(): string
     {
-        return str(ModuleKey::DASHBOARD->value)
-            ->append(':')
-            ->append('homepage_item')
-            ->append(':')
-            ->append($this->id)
-            ->lower()
-            ->toString();
+        return 'home_page_item_index';
     }
 
-    public function buildGlobalSearch(): array
+    public function toSearchableArray(): array
     {
+        $this->load('tags');
+
         return [
-            'creator_id' => $this->getIdentifier(),
-            'user_id' => (string) $this->user_id,
-            'entity_type' => MorphTypes::DASHBOARD_HOMEPAGE_ITEM->name,
-            'entity_id' => (string) $this->id,
-            'module' => ModuleKey::DASHBOARD->name,
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'section_id' => $this->section_id,
+            'section' => $this->section->name,
             'title' => $this->title,
-            'body' => str($this->section->name)
-                ->newLine(2)
-                ->append($this->title)
-                ->newLine(2)
-                ->append($this->url),
+            'url' => $this->url,
             'tags' => $this->getTags(),
-            'keywords' => [],
-            'metadata' => [
-                'icon' => 'link',
-            ],
-            'urls' => [
-                'api_route' => 'api.v1.bookmarks.show',
-            ],
-            'is_private' => false,
-            'is_archived' => ! $this->active,
-            'source_updated_at' => $this->updated_at,
+            'created_at' => $this->created_at,
         ];
     }
 

@@ -217,7 +217,7 @@ final class CreateAdminCommand extends Command
 
     private function downloadAiProvidersSeeder(): void
     {
-        $seeder = __DIR__.'/../../../Database/Seeders/AiProvidersSeeder.php';
+        $seeder = __DIR__.'/../../../Modules/Core/database/Seeders/AiProvidersSeeder.php';
         if (file_exists($seeder)) {
             return;
         }

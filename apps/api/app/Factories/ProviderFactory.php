@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Factories;
 
-use App\Dtos\AI\ProviderItem;
 use Illuminate\Support\Facades\Config;
 use Laravel\Ai\Enums\Lab;
+use Modules\Core\Dtos\AI\ProviderItem;
 
 final class ProviderFactory
 {

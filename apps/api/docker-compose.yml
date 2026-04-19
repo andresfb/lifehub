@@ -11,48 +11,92 @@ services:
     volumes:
       - cache:/data
 
-  typesense:
-    image: typesense/typesense:30.1
-    container_name: typesense
+  s3:
+    image: rustfs/rustfs:latest
+    container_name: s3
+    environment:
+      - RUSTFS_VOLUMES=/data
+      - RUSTFS_ADDRESS=0.0.0.0:9000
+      - RUSTFS_CONSOLE_ADDRESS=0.0.0.0:9001
+      - RUSTFS_CONSOLE_ENABLE=true
+      - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY:-rustfsadmin}
+      - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
+      - RUSTFS_CORS_ALLOWED_ORIGINS=*
+      - RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS=*
     restart: unless-stopped
-    command: '--data-dir /data --api-key=xyz'
     ports:
-      - "8108:8108"
-    volumes:
-      - search:/data
+      - "9000:9000"
+      - "9001:9001"
     networks:
       - project_network
+    volumes:
+      - s3-data:/data
+      - s3-logs:/app/logs
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 4GB
+
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: meilisearch
+    environment:
+      - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
+      - MEILI_ENV=production
+      - MEILI_NO_ANALYTICS=true
+    volumes:
+      - search:/meili_data
+    ports:
+      - "7700:7700"
+    networks:
+      - project_network
+    restart: unless-stopped
+
+  dashboard:
+    image: riccoxie/meilisearch-ui:latest
+    container_name: dashboard
+    environment:
+      - MEILI_HOST=http://meilisearch:7700
+    ports:
+      - "24900:24900"
+    depends_on:
+      - meilisearch
+    networks:
+      - project_network
+    restart: unless-stopped
 
   database:
-    image: pgvector/pgvector:pg17
+    image: mysql
     container_name: database
     environment:
-      POSTGRES_DB: ${DB_DATABASE}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_HOST=%
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - database:/var/lib/postgresql/data:rw
-      - ./docker/postgres/postgres.conf:/etc/postgresql/postgresql.conf:ro
-      - ./docker/postgres/init-scripts:/docker-entrypoint-initdb.d:ro
+      - database:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
     networks:
       - project_network
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
     restart: unless-stopped
     depends_on:
       - database
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - ui:/var/lib/pgadmin
     ports:
-      - "${PGADMIN_PORT}:80"
+      - "8330:80"
+    environment:
+      - PMA_HOST=database
+      - PMA_POST=3306
+    volumes:
+      - ui:/sessions:rw
+      - ./docker/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
     networks:
       - project_network
 
@@ -62,6 +106,8 @@ networks:
 
 volumes:
   cache:
-  database:
+  s3-data:
+  s3-logs:
   search:
+  database:
   ui:

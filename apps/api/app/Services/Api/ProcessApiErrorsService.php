@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Api;
 
-use App\Dtos\AI\ApiErrorItem;
 use App\Models\ApiError;
 use Illuminate\Support\Collection;
+use Modules\Core\Dtos\AI\ApiErrorItem;
 
 final class ProcessApiErrorsService
 {
