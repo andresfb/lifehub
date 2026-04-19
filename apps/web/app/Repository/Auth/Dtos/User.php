@@ -11,8 +11,9 @@ class User extends Data implements Authenticatable
         public readonly string $id,
         public readonly string $name,
         public readonly string $email,
-        public readonly bool $isAdmin =false,
-        protected ?string $rememberToken = null,
+        public readonly bool $two_factor_enabled = false,
+        public readonly bool $is_admin =false,
+        protected ?string $remember_token = null,
     ) {}
 
     public function getAuthIdentifierName(): string
@@ -37,12 +38,12 @@ class User extends Data implements Authenticatable
 
     public function getRememberToken(): ?string
     {
-        return $this->rememberToken;
+        return $this->remember_token;
     }
 
     public function setRememberToken($value): void
     {
-        $this->rememberToken = $value;
+        $this->remember_token = $value;
     }
 
     public function getRememberTokenName(): string
@@ -52,6 +53,6 @@ class User extends Data implements Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->isAdmin;
+        return $this->is_admin;
     }
 }

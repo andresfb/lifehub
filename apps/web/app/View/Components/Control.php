@@ -4,20 +4,22 @@ namespace App\View\Components;
 
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\HigherOrderWhenProxy;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\Component;
+use Illuminate\View\ComponentAttributeBag;
 
 abstract class Control extends Component
 {
-    public $id;
+    public mixed $id;
 
-    public $value;
+    public string|array|null $value;
 
-    public $label;
+    public mixed $label;
 
-    public $description;
+    public mixed $description;
 
-    public $controlAttributes;
+    public HigherOrderWhenProxy|ComponentAttributeBag $controlAttributes;
 
     public function __construct($name, $id = null, $value = '', $label = '', $description = '', $bag = 'default')
     {
@@ -39,12 +41,12 @@ abstract class Control extends Component
 
     protected function errorBag($name = 'default')
     {
-        $bags = View::shared('errors', fn () => Session::get('errors', new ViewErrorBag));
+        $bags = View::shared('errors', static fn () => Session::get('errors', new ViewErrorBag));
 
         return $bags->getBag($name);
     }
 
-    public static function sessionPath($name)
+    public static function sessionPath($name): string
     {
         return trim(str_replace(['[', ']'], ['.', ''], $name), '.');
     }

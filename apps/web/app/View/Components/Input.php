@@ -2,6 +2,8 @@
 
 namespace App\View\Components;
 
+use Illuminate\View\View;
+
 class Input extends Control
 {
     public function __construct($name, $id = null, $value = '', $label = '', $description = '', $bag = 'default', $type = 'text')
@@ -10,7 +12,7 @@ class Input extends Control
         $this->controlAttributes = $this->controlAttributes->merge(['type' => $type]);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('components.input');
     }

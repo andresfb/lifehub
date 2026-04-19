@@ -2,9 +2,8 @@
 
 namespace App\Repository\Auth\Libraries;
 
-use DateInterval;
-use DateTimeInterface;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use UnitEnum;
 
@@ -25,22 +24,29 @@ class AuthSession
 
     public static function get(array|string|UnitEnum $key, $default = null): mixed
     {
-        if (Cache::has($key)) {
-            return Cache::get($key, $default);
+        if (Session::has($key)) {
+            return Session::get($key, $default);
         }
 
-        return Session::get($key, $default);
+        if (! Cache::has($key)) {
+            return $default;
+        }
+
+        $value = Cache::get($key, $default);
+        if ($value === $default) {
+            return $value;
+        }
+
+        Session::put($key, $value);
+
+        return $value;
     }
 
-    public static function put(string $key, mixed $value, DateInterval|DateTimeInterface|int|null $ttl = null): bool
+    public static function put(string $key, mixed $value): bool
     {
         Session::put($key, $value);
 
-        if (blank($ttl)) {
-            $ttl = now()->addDay();
-        }
-
-        return Cache::put($key, $value, $ttl);
+        return static::putOnCache($key, $value);
     }
 
     public static function forget(array|string|UnitEnum $keys): bool
@@ -48,5 +54,14 @@ class AuthSession
         Session::forget($keys);
 
         return Cache::forget($keys);
+    }
+
+    private static function putOnCache(string $key, mixed $value): bool
+    {
+        return Cache::put(
+            $key,
+            $value,
+            Config::integer('session.lifetime') * 2
+        );
     }
 }

@@ -35,6 +35,9 @@ use Spatie\Permission\Traits\HasRoles;
  * @property CarbonImmutable|null $email_verified_at
  * @property string $password
  * @property string $remember_token
+ * @property string $two_factor_secret
+ * @property string $two_factor_recovery_codes
+ * @property-read CarbonImmutable|null $two_factor_confirmed_at
  * @property-read CarbonImmutable|null $deleted_at
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at

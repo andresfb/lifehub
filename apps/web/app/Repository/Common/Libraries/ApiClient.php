@@ -4,14 +4,17 @@ namespace App\Repository\Common\Libraries;
 
 use App\Repository\Auth\Libraries\AuthSession;
 use Exception;
+use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Promises\LazyPromise;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
 class ApiClient
 {
-    private string $token;
+    private string $token = '';
 
     public int $statusCode = 0 {
         get {
@@ -38,17 +41,7 @@ class ApiClient
     {
         $response = $this->client()->get($uri, $query);
 
-        if ($response->unauthorized()) {
-            AuthSession::forget(['api_token', 'auth_user']);
-        }
-
-        if ($response->failed()) {
-            throw new RuntimeException("GET {$uri} failed: {$response->status()}");
-        }
-
-        $this->statusCode = $response->getStatusCode();
-
-        return $response->json();
+        return $this->parseResponse($response);
     }
 
     /**
@@ -58,17 +51,7 @@ class ApiClient
     {
         $response = $this->client()->post($uri, $data);
 
-        if ($response->unauthorized()) {
-            AuthSession::forget(['api_token', 'auth_user']);
-        }
-
-        if ($response->failed()) {
-            throw new RuntimeException("POST {$uri} failed: {$response->status()}");
-        }
-
-        $this->statusCode = $response->getStatusCode();
-
-        return $response->json();
+        return $this->parseResponse($response);
     }
 
     public function setToken(string $token): self
@@ -80,10 +63,33 @@ class ApiClient
 
     private function getToken(): string
     {
-        if (blank($this->token)) {
+        if (filled($this->token)) {
             $this->token = AuthSession::get('api_token');
         }
 
         return $this->token;
+    }
+
+    private function parseResponse(LazyPromise|PromiseInterface|Response $response): array
+    {
+        if ($response->unauthorized()) {
+            AuthSession::forget(['api_token', 'auth_user']);
+        }
+
+        if ($response->failed()) {
+            throw new RuntimeException("Request failed: {$response->status()}");
+        }
+
+        $result = $response->json();
+
+        if ($result['success'] === false) {
+            throw new RuntimeException("Request failed: {$result['message']}");
+        }
+
+        $this->statusCode = $response->getStatusCode();
+
+        return array_key_exists('data', $result)
+            ? $result['data']
+            : $result;
     }
 }

@@ -22,7 +22,6 @@ Route::middleware([
             ->name('v1.dashboard');
 
         Route::apiResource('/pins', PinController::class)
-            ->withoutMiddlewareFor(['index', 'show'], 'idempotency')
             ->middlewareFor(
                 ['index', 'show'],
                 CacheResponse::for(
@@ -39,7 +38,6 @@ Route::middleware([
             ]);
 
         Route::apiResource('/search/providers', SearchProviderController::class)
-            ->withoutMiddlewareFor(['index', 'show'], 'idempotency')
             ->middlewareFor(
                 ['index', 'show'],
                 CacheResponse::for(

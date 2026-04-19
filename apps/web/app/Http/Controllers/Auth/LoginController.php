@@ -8,12 +8,13 @@ use App\Repository\Auth\Enums\LoginStatus;
 use App\Repository\Auth\Services\ApiAuthService;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-    public function create()
+    public function show(): View
     {
-        return view('auth.login');
+        return view('auth.login.show');
     }
 
     /**
@@ -26,8 +27,12 @@ class LoginController extends Controller
             $request->string('password')->toString()
         );
 
+        if ($result === LoginStatus::FAILURE) {
+            abort(401);
+        }
+
         if ($result === LoginStatus::TWO_FACTOR) {
-            return redirect()->route('login.two-factor.create');
+            return redirect()->route('login.two-factor.show');
         }
 
         return redirect()->intended(route('dashboard'));

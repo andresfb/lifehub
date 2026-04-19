@@ -30,7 +30,7 @@ final class CreateApiTokenCommand extends BaseUserCommand
 
             $clientName = text(
                 label: 'Enter the Client Name',
-                default: 'bruno',
+                default: 'CLI',
                 required: true,
                 validate: 'string|max:50',
                 transform: fn (string $value): string => mb_trim($value),

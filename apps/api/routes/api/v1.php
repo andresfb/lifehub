@@ -20,12 +20,15 @@ use function Illuminate\Support\hours;
 */
 
 // Public routes with auth rate limiter (5/min - brute force protection)
-Route::middleware(['throttle:auth', 'idempotency'])->group(function (): void {
+Route::middleware(['throttle:auth'])->group(function (): void {
     Route::post('register', [AuthController::class, 'register'])
         ->name('api.v1.register');
 
     Route::post('login', [AuthController::class, 'login'])
         ->name('api.v1.login');
+
+    Route::post('login/validate', [AuthController::class, 'validateTwoFactorCode'])
+        ->name('api.v1.login.validate');
 });
 
 // Protected routes with authenticated rate limiter (120/min)
@@ -67,7 +70,7 @@ Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function ()
 });
 
 // Password reset routes (public with rate limiting)
-Route::middleware(['throttle:6,1', 'idempotency'])->group(function (): void {
+Route::middleware(['throttle:6,1'])->group(function (): void {
     Route::post('forgot-password', [AuthController::class, 'forgotPassword'])
         ->name('api.v1.password.email');
 
