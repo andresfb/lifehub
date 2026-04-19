@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Modules\Dashboard\Actions\PinsAction;
-use Modules\Dashboard\Http\Requests\HomeSectionRequest;
+use Modules\Dashboard\Http\Requests\Api\V1\HomeSectionRequest;
 use Modules\Dashboard\Models\HomepageItem;
 use Throwable;
 

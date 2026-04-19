@@ -6,7 +6,6 @@ use App\Contracts\Search\GlobalSearchEmbeddingServiceInterface;
 use App\Contracts\Search\GlobalSearchQueryServiceInterface;
 use App\Contracts\Search\MeilisearchGlobalSearchServiceInterface;
 use App\Contracts\Search\TokenTextChunkerInterface;
-use App\Dtos\AI\ResolvedUserAiProvider;
 use App\Jobs\SyncGlobalSearchChunksJob;
 use App\Models\GlobalSearch;
 use App\Models\GlobalSearchChunk;
@@ -14,7 +13,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Ai\Enums\Lab;
-
+use Modules\Core\Dtos\AI\ResolvedUserAiProvider;
 use function Pest\Laravel\actingAs;
 
 uses(RefreshDatabase::class);

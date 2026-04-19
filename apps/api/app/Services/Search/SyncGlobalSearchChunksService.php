@@ -5,12 +5,12 @@ namespace App\Services\Search;
 use App\Contracts\Search\GlobalSearchEmbeddingServiceInterface;
 use App\Contracts\Search\MeilisearchGlobalSearchServiceInterface;
 use App\Contracts\Search\TokenTextChunkerInterface;
-use App\Dtos\AI\ResolvedUserAiProvider;
 use App\Models\GlobalSearch;
 use App\Models\GlobalSearchChunk;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\DB;
 use JsonException;
+use Modules\Core\Dtos\AI\ResolvedUserAiProvider;
 use Throwable;
 
 final readonly class SyncGlobalSearchChunksService

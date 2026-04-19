@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Modules\Dashboard\Actions\SearchProvidersAction;
-use Modules\Dashboard\Http\Resources\SearchProviderResource;
+use Modules\Dashboard\Http\Resources\Api\V1\SearchProviderResource;
 use Modules\Dashboard\Models\SearchProvider;
 
 final class SearchProviderController extends ApiController

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Services\Search\Embeddings;
 
 use App\Contracts\Search\GlobalSearchEmbeddingServiceInterface;
-use App\Dtos\AI\ResolvedUserAiProvider;
-use App\Enums\AiModelFeatures;
 use App\Exceptions\UserAiConfigurationException;
 use App\Models\User;
-use App\Services\AI\UserAiResolver;
 use Illuminate\Support\Facades\Config;
 use Laravel\Ai\Embeddings;
 use Laravel\Ai\Exceptions\FailoverableException;
+use Modules\Core\Dtos\AI\ResolvedUserAiProvider;
+use Modules\Core\Enums\AiModelFeatures;
+use Modules\Core\Services\AI\UserAiResolver;
 
 final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddingServiceInterface
 {

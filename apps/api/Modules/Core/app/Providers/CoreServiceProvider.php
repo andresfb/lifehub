@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Modules\Core\Providers;
 
 use App\Dtos\Modules\MorphTypesItems;
+use App\Services\Manifest\ManifestService;
+use Exception;
 use Illuminate\Support\Collection;
 use Modules\Core\Enums\MorphTypes;
+use Modules\Core\Manifest\CoreManifestProvider;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 use Override;
 
@@ -62,5 +65,17 @@ final class CoreServiceProvider extends ModuleServiceProvider
                 ),
             );
         });
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Override]
+    public function boot(): void
+    {
+        parent::boot();
+
+        $this->app->make(ManifestService::class)
+            ->register(resolve(CoreManifestProvider::class));
     }
 }

@@ -5,11 +5,8 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\GlobalSearchController;
 use App\Http\Controllers\Api\V1\ManifestController;
-use App\Http\Controllers\Api\V1\UserAiModelController;
-use App\Http\Controllers\Api\V1\UserAiProviderController;
 use Illuminate\Support\Facades\Route;
 use Spatie\ResponseCache\Middlewares\CacheResponse;
-
 use function Illuminate\Support\hours;
 
 /*
@@ -52,39 +49,6 @@ Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function ()
 
     Route::get('search', GlobalSearchController::class)
         ->name('api.v1.search');
-
-    Route::get('me/ai/providers', [UserAiProviderController::class, 'index'])
-        ->name('api.v1.me.ai.providers.index');
-
-    Route::post('me/ai/providers', [UserAiProviderController::class, 'store'])
-        ->middleware('idempotency')
-        ->name('api.v1.me.ai.providers.store');
-
-    Route::get('me/ai/providers/{provider}', [UserAiProviderController::class, 'show'])
-        ->name('api.v1.me.ai.providers.show');
-
-    Route::patch('me/ai/providers/{provider}', [UserAiProviderController::class, 'update'])
-        ->middleware('idempotency')
-        ->name('api.v1.me.ai.providers.update');
-
-    Route::delete('me/ai/providers/{provider}', [UserAiProviderController::class, 'destroy'])
-        ->middleware('idempotency')
-        ->name('api.v1.me.ai.providers.destroy');
-
-    Route::post('me/ai/providers/{provider}/models', [UserAiProviderController::class, 'storeModel'])
-        ->middleware('idempotency')
-        ->name('api.v1.me.ai.providers.models.store');
-
-    Route::get('me/ai/models/{model}', [UserAiModelController::class, 'show'])
-        ->name('api.v1.me.ai.models.show');
-
-    Route::patch('me/ai/models/{model}', [UserAiModelController::class, 'update'])
-        ->middleware('idempotency')
-        ->name('api.v1.me.ai.models.update');
-
-    Route::delete('me/ai/models/{model}', [UserAiModelController::class, 'destroy'])
-        ->middleware('idempotency')
-        ->name('api.v1.me.ai.models.destroy');
 
     Route::middleware('idempotency')->group(function (): void {
         Route::post('logout', [AuthController::class, 'logout'])

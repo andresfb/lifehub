@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Modules\Dashboard\Http\Resources\HomepageSectionResource;
+use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionResource;
 use Modules\Dashboard\Observers\HomepageSectionObserver;
 use Modules\Dashboard\Policies\HomepageSectionPolicy;
 use Override;

@@ -37,8 +37,8 @@ use Spatie\Tags\HasTags;
  * @property-read User $user
  * @property-read Collection<Tag> $tags
  */
-#[ObservedBy([ReminderObserver::class])]
 #[Table(name: 'core_reminders')]
+#[ObservedBy([ReminderObserver::class])]
 final class Reminder extends Model implements GlobalSearchInterface, UserModelInterface
 {
     use BelongsToUser;

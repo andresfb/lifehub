@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Searchable;
-use Modules\Dashboard\Http\Resources\HomepageItemResource;
+use Modules\Dashboard\Http\Resources\Api\V1\HomepageItemResource;
 use Modules\Dashboard\Libraries\MediaNamesLibrary;
 use Modules\Dashboard\Observers\HomepageItemObserver;
 use Modules\Dashboard\Policies\HomepageItemPolicy;

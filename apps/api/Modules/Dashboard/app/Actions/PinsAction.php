@@ -6,7 +6,7 @@ namespace Modules\Dashboard\Actions;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Modules\Dashboard\Http\Resources\HomepageSectionResource;
+use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionResource;
 use Modules\Dashboard\Models\HomepageSection;
 use Throwable;
 
