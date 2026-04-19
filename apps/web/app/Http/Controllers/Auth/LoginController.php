@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Repository\Auth\Enums\LoginStatus;
+use App\Repository\Auth\Services\ApiAuthService;
+use Exception;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+
+class LoginController extends Controller
+{
+    public function show(): View
+    {
+        return view('auth.login.show');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function store(LoginRequest $request, ApiAuthService $service): RedirectResponse
+    {
+        $result = $service->login(
+            $request->string('email')->toString(),
+            $request->string('password')->toString()
+        );
+
+        if ($result === LoginStatus::FAILURE) {
+            abort(401);
+        }
+
+        if ($result === LoginStatus::TWO_FACTOR) {
+            return redirect()->route('login.two-factor.show');
+        }
+
+        return redirect()->intended(route('dashboard'));
+    }
+}

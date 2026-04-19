@@ -15,6 +15,11 @@ config:
       bypassProxy: ""
 
 request:
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Accept-Encoding
+      value: application/json
   auth:
     type: bearer
     token: "{{process.env.API_TOKEN}}"

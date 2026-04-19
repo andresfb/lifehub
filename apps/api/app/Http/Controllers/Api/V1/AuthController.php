@@ -11,6 +11,7 @@ use App\Http\Requests\Api\V1\LoginRequest;
 use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V1\ResendVerificationRequest;
 use App\Http\Requests\Api\V1\ResetPasswordRequest;
+use App\Http\Requests\Api\V1\TwoFactorCodeRequest;
 use App\Http\Requests\Api\V1\VerifyEmailRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
@@ -18,6 +19,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
@@ -30,36 +32,69 @@ final class AuthController extends ApiController
     public function login(LoginRequest $request): JsonResponse
     {
         $user = User::query()
-            ->where('email', $request->string('email')->lower()->toString())
+            ->with('roles')
+            ->where('email', $request->safe()->string('email')->lower()->toString())
             ->first();
 
-        if (! $user || ! Hash::check($request->string('password')->toString(), $user->password)) {
+        if (! $user || ! Hash::check($request->safe()->string('password')->toString(), $user->password)) {
             return $this->unauthorized('Invalid credentials');
         }
 
         if ($user->hasEnabledTwoFactorAuthentication()) {
-            $code = $request->string('two_factor_code')->toString();
+            $expire = 60 * 5; // 5 minutes
 
-            if ($code === '') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Two-factor authentication required',
-                    'two_factor' => true,
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
+            Cache::put(
+                md5(sprintf("%s:%s", $user->id, $user->email)),
+                $request->safe()->string('device')->toString(),
+                $expire,
+            );
 
-            if (! $this->validateTwoFactorCode($user, $code)) {
-                return $this->unauthorized('Invalid two-factor authentication code');
-            }
+            return response()->json([
+                'success' => false,
+                'message' => 'Two-factor authentication required',
+                'two_factor' => true,
+                'ttl' => $expire,
+            ], Response::HTTP_NON_AUTHORITATIVE_INFORMATION);
         }
 
-        $token = $user->createToken($request->string('device_name')->toString())->plainTextToken;
-        $userResource = new UserResource($user);
+        return $this->authorized(
+            $user,
+            $request->safe()->string('device')->toString()
+        );
+    }
 
-        return $this->created([
-            'user' => $userResource->resolveResourceData($request),
-            'token' => $token,
-        ], 'Token created successfully');
+    public function validateTwoFactorCode(TwoFactorCodeRequest $request): JsonResponse
+    {
+        $user = User::query()
+            ->with('roles')
+            ->where('email', $request->safe()->string('email')->lower()->toString())
+            ->first();
+
+        $code = $request->safe()->string('two_factor_code')->toString();
+
+        $key = md5(sprintf("%s:%s", $user->id, $user->email));
+        if (! Cache::has($key)) {
+            return $this->unauthorized('Two Factor Validation Expired');
+        }
+
+        $device = Cache::get($key, '');
+
+        $provider = resolve(TwoFactorAuthenticationProvider::class);
+        $secret = Fortify::currentEncrypter()->decrypt($user->two_factor_secret);
+
+        if ($provider->verify($secret, $code)) {
+            return $this->authorized($user, $device);
+        }
+
+        $recoveryCodes = $user->recoveryCodes();
+
+        if (in_array($code, $recoveryCodes, strict: true)) {
+            $user->replaceRecoveryCode($code);
+
+            return $this->authorized($user, $device);
+        }
+
+        return $this->unauthorized('Invalid two-factor authentication code');
     }
 
     public function logout(Request $request): JsonResponse
@@ -86,13 +121,11 @@ final class AuthController extends ApiController
 
         $user->sendEmailVerificationNotification();
 
-        $token = $user->createToken('auth-token')->plainTextToken;
-        $userResource = new UserResource($user);
-
-        return $this->created([
-            'user' => $userResource->resolveResourceData($request),
-            'token' => $token,
-        ], 'User registered successfully. Please check your email to verify your account.');
+        return $this->authorized(
+            user: $user,
+            device: 'auth-token',
+            message: 'User registered successfully. Please check your email to verify your account'
+        );
     }
 
     public function verifyEmail(VerifyEmailRequest $request): JsonResponse
@@ -113,7 +146,9 @@ final class AuthController extends ApiController
 
     public function resendVerificationEmail(ResendVerificationRequest $request): JsonResponse
     {
-        $user = User::query()->where('email', $request->email)->first();
+        $user = User::query()
+            ->where('email', $request->safe()->string('email')->lower()->toString())
+            ->first();
 
         if (! $user) {
             return $this->notFound('User not found');
@@ -131,7 +166,7 @@ final class AuthController extends ApiController
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
         $status = Password::sendResetLink(
-            $request->only('email')
+            $request->safe()->only('email')
         );
 
         if ($status === Password::RESET_LINK_SENT) {
@@ -144,7 +179,7 @@ final class AuthController extends ApiController
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request->safe()->only('email', 'password', 'password_confirmation', 'token'),
             static function (User $user, string $password): void {
                 $user->forceFill([
                     'password' => Hash::make($password),
@@ -170,23 +205,22 @@ final class AuthController extends ApiController
         );
     }
 
-    private function validateTwoFactorCode(User $user, string $code): bool
+    private function authorized(
+        User $user,
+        string $device,
+        string $message = 'Login successfully'
+    ): JsonResponse
     {
-        $provider = resolve(TwoFactorAuthenticationProvider::class);
-        $secret = Fortify::currentEncrypter()->decrypt($user->two_factor_secret);
+        $user->tokens()
+            ->where('name', $device)
+            ->delete();
 
-        if ($provider->verify($secret, $code)) {
-            return true;
-        }
+        $token = $user->createToken($device)->plainTextToken;
+        $userResource = new UserResource($user);
 
-        $recoveryCodes = $user->recoveryCodes();
-
-        if (in_array($code, $recoveryCodes, strict: true)) {
-            $user->replaceRecoveryCode($code);
-
-            return true;
-        }
-
-        return false;
+        return $this->created([
+            'user' => $userResource->jsonSerialize(),
+            'token' => $token,
+        ], $message);
     }
 }
