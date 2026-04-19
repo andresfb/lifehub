@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Services\Search\Embeddings;
 
 use App\Contracts\Search\GlobalSearchEmbeddingServiceInterface;
-use App\Dtos\AI\ResolvedUserAiProvider;
-use App\Enums\AiModelFeatures;
 use App\Exceptions\UserAiConfigurationException;
 use App\Models\User;
-use App\Services\AI\UserAiResolver;
 use Illuminate\Support\Facades\Config;
 use Laravel\Ai\Embeddings;
 use Laravel\Ai\Exceptions\FailoverableException;
+use Modules\Core\Dtos\AI\ResolvedUserAiProvider;
+use Modules\Core\Enums\AiModelFeatures;
+use Modules\Core\Services\AI\UserAiResolver;
 
 final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddingServiceInterface
 {
@@ -33,6 +33,7 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
 
     /**
      * @return array<int, array<int, float>>
+     *
      * @throws FailoverableException
      */
     public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null, bool $cache = false): array
@@ -43,7 +44,7 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
 
         $resolved ??= $this->resolve($user);
 
-        if ($resolved === null) {
+        if (! $resolved instanceof ResolvedUserAiProvider) {
             return [];
         }
 
@@ -51,7 +52,7 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
             ->dimensions($this->dimensions())
             ->timeout(Config::integer('search.hybrid.timeout', 30));
 
-        if ($cache === true) {
+        if ($cache) {
             $embedder = $embedder->cache();
         }
 

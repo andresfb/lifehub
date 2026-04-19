@@ -8,11 +8,12 @@ use App\Contracts\Search\GlobalSearchEmbeddingServiceInterface;
 use App\Contracts\Search\GlobalSearchQueryServiceInterface;
 use App\Contracts\Search\MeilisearchGlobalSearchServiceInterface;
 use App\Models\User;
+use Modules\Core\Dtos\AI\ResolvedUserAiProvider;
 
 final readonly class GlobalSearchQueryService implements GlobalSearchQueryServiceInterface
 {
     public function __construct(
-        private GlobalSearchEmbeddingServiceInterface   $embeddingService,
+        private GlobalSearchEmbeddingServiceInterface $embeddingService,
         private MeilisearchGlobalSearchServiceInterface $meilisearch,
     ) {}
 
@@ -25,7 +26,7 @@ final readonly class GlobalSearchQueryService implements GlobalSearchQueryServic
         $resolved = $this->embeddingService->resolve($user);
         $embedding = null;
 
-        if ($resolved !== null) {
+        if ($resolved instanceof ResolvedUserAiProvider) {
             $this->meilisearch->ensureIndex($this->embeddingService->dimensions());
             $embedding = $this->embeddingService->embed(
                 user: $user,
@@ -86,7 +87,7 @@ final readonly class GlobalSearchQueryService implements GlobalSearchQueryServic
                     'is_archived' => (bool) ($top['is_archived'] ?? false),
                     'score' => $top['_rankingScore'] ?? null,
                     'matched_chunks' => $items->take(3)
-                        ->filter(fn ($item) => is_array($item))
+                        ->filter(fn ($item): true => is_array($item))
                         ->map(static fn (array $hit): array => [
                             'global_search_chunk_id' => $hit['global_search_chunk_id'] ?? null,
                             'chunk_index' => $hit['chunk_index'] ?? null,
@@ -127,8 +128,6 @@ final readonly class GlobalSearchQueryService implements GlobalSearchQueryServic
      */
     private function normalizeHit(array $hit): array
     {
-        return array_filter($hit, static function ($key) {
-            return is_string($key);
-        }, ARRAY_FILTER_USE_KEY);
+        return array_filter($hit, is_string(...), ARRAY_FILTER_USE_KEY);
     }
 }

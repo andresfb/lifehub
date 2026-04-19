@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
-use App\Dtos\AI\ProviderItem;
 use App\Factories\ProviderFactory;
+use Modules\Core\Dtos\AI\ProviderItem;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\select;

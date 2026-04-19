@@ -10,9 +10,13 @@ final class CoreDatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @noinspection ClassConstantCanBeUsedInspection
      */
     public function run(): void
     {
-        // $this->call([]);
+        $this->call([
+            '\Modules\Core\Database\Seeders\AiProvidersSeeder',
+        ]);
     }
 }

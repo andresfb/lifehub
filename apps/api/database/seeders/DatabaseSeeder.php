@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Core\Database\Seeders\CoreDatabaseSeeder;
 use Modules\Dashboard\Database\Seeders\DashboardDatabaseSeeder;
 
 final class DatabaseSeeder extends Seeder
@@ -18,7 +19,7 @@ final class DatabaseSeeder extends Seeder
     {
         $this->call([
             DashboardDatabaseSeeder::class,
-            '\Database\Seeders\AiProvidersSeeder',
+            CoreDatabaseSeeder::class,
         ]);
     }
 }

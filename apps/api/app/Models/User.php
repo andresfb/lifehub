@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Observers\UserObserver;
-use App\Services\AI\UserAiSettingsService;
 use App\Services\Modules\ModuleAccessService;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
@@ -23,6 +22,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Modules\Core\Models\AiModel;
+use Modules\Core\Models\AiProvider;
+use Modules\Core\Services\AI\UserAiSettingsService;
 use Override;
 use Spatie\Permission\Traits\HasRoles;
 

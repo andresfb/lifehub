@@ -6,7 +6,6 @@ use App\Contracts\Search\GlobalSearchEmbeddingServiceInterface;
 use App\Contracts\Search\GlobalSearchQueryServiceInterface;
 use App\Contracts\Search\MeilisearchGlobalSearchServiceInterface;
 use App\Contracts\Search\TokenTextChunkerInterface;
-use App\Dtos\AI\ResolvedUserAiProvider;
 use App\Jobs\SyncGlobalSearchChunksJob;
 use App\Models\GlobalSearch;
 use App\Models\GlobalSearchChunk;
@@ -14,6 +13,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Ai\Enums\Lab;
+use Modules\Core\Dtos\AI\ResolvedUserAiProvider;
 
 use function Pest\Laravel\actingAs;
 
@@ -116,7 +116,7 @@ test('it syncs changed chunks and removes stale chunks', function (): void {
         }
     };
 
-    (new SyncGlobalSearchChunksJob($globalSearch->id))->handle($chunker, $embeddingService, $meilisearch);
+    new SyncGlobalSearchChunksJob($globalSearch->id)->handle($chunker);
 
     expect(GlobalSearchChunk::query()->where('global_search_id', $globalSearch->id)->count())->toBe(2)
         ->and($meilisearch->deleted)->toBe([$staleChunk->meilisearchId()])
@@ -155,7 +155,7 @@ test('it adds embeddings when the user has an embedding capable provider', funct
     };
     $embeddingService = new class implements GlobalSearchEmbeddingServiceInterface
     {
-        public function resolve(User $user): ?ResolvedUserAiProvider
+        public function resolve(User $user): ResolvedUserAiProvider
         {
             return new ResolvedUserAiProvider(
                 name: 'user-provider',
@@ -177,7 +177,7 @@ test('it adds embeddings when the user has an embedding capable provider', funct
         }
     };
 
-    (new SyncGlobalSearchChunksJob($globalSearch->id))->handle($chunker, $embeddingService, $meilisearch);
+    new SyncGlobalSearchChunksJob($globalSearch->id)->handle($chunker);
 
     $chunk = GlobalSearchChunk::query()->where('global_search_id', $globalSearch->id)->firstOrFail();
 

@@ -35,7 +35,7 @@ final readonly class DashboardManifestProvider implements ManifestProvider
 
     public function moduleDescription(): string
     {
-        return 'Application Entry Point';
+        return 'Dashboard';
     }
 
     public function isPublic(): bool

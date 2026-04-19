@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Contracts\Search;
 
-use App\Dtos\AI\ResolvedUserAiProvider;
 use App\Models\User;
+use Modules\Core\Dtos\AI\ResolvedUserAiProvider;
 
 interface GlobalSearchEmbeddingServiceInterface
 {

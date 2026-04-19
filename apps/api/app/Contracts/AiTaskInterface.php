@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Contracts;
 
-use App\Dtos\AI\ProviderItem;
 use Laravel\Ai\Responses\AgentResponse;
+use Modules\Core\Dtos\AI\ProviderItem;
 
 interface AiTaskInterface
 {

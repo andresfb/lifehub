@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Dtos\AI\ApiErrorItem;
 use App\Services\Api\ProcessApiErrorsService;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -14,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Modules\Core\Dtos\AI\ApiErrorItem;
 
 final class ProcessApiErrorsJob implements ShouldQueue
 {
