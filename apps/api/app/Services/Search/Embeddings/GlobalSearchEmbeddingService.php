@@ -33,6 +33,7 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
 
     /**
      * @return array<int, array<int, float>>
+     *
      * @throws FailoverableException
      */
     public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null, bool $cache = false): array
@@ -43,7 +44,7 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
 
         $resolved ??= $this->resolve($user);
 
-        if ($resolved === null) {
+        if (! $resolved instanceof ResolvedUserAiProvider) {
             return [];
         }
 
@@ -51,7 +52,7 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
             ->dimensions($this->dimensions())
             ->timeout(Config::integer('search.hybrid.timeout', 30));
 
-        if ($cache === true) {
+        if ($cache) {
             $embedder = $embedder->cache();
         }
 

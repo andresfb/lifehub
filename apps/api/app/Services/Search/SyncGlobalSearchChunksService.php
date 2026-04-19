@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Search;
 
 use App\Contracts\Search\GlobalSearchEmbeddingServiceInterface;
@@ -90,8 +92,7 @@ final readonly class SyncGlobalSearchChunksService
                             'embedded_at' => null,
                             'embedding_failed_reason' => null,
                             'embedding_failed_at' => null,
-                        ],
-                    );
+                        ]);
                 }
 
                 $chunk->setRelation('globalSearch', $globalSearch);
@@ -119,9 +120,9 @@ final readonly class SyncGlobalSearchChunksService
         $this->meilisearch->upsertDocuments($documents);
     }
 
-
     /**
      * @return array<int, float>|null
+     *
      * @throws Throwable
      */
     private function embeddingForChunk(
@@ -130,7 +131,7 @@ final readonly class SyncGlobalSearchChunksService
         ?ResolvedUserAiProvider $resolved,
         int $dimensions,
     ): ?array {
-        if ($resolved === null) {
+        if (! $resolved instanceof ResolvedUserAiProvider) {
             return null;
         }
 
@@ -160,7 +161,7 @@ final readonly class SyncGlobalSearchChunksService
                 'embedding_failed_at' => null,
             ])->save();
 
-            return array_map(static fn (mixed $value): float => (float) $value, $embedding);
+            return array_map(static fn (mixed $value): float => $value, $embedding);
         } catch (Throwable $throwable) {
             $chunk->forceFill([
                 'embedding_failed_reason' => mb_substr($throwable->getMessage(), 0, 1000),

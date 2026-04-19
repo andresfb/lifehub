@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\GlobalSearchController;
 use App\Http\Controllers\Api\V1\ManifestController;
 use Illuminate\Support\Facades\Route;
 use Spatie\ResponseCache\Middlewares\CacheResponse;
+
 use function Illuminate\Support\hours;
 
 /*

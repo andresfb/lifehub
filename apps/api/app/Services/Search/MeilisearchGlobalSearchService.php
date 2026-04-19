@@ -28,7 +28,7 @@ final class MeilisearchGlobalSearchService implements MeilisearchGlobalSearchSer
     public function indexUid(): string
     {
         return sprintf(
-            "%s%s",
+            '%s%s',
             Config::string('scout.prefix', ''),
             Config::string('search.hybrid.index', 'global_search_chunks')
         );
@@ -93,7 +93,8 @@ final class MeilisearchGlobalSearchService implements MeilisearchGlobalSearchSer
     }
 
     /**
-     * @param array<int, string> $ids
+     * @param  array<int, string>  $ids
+     *
      * @throws Exception
      */
     public function deleteDocuments(array $ids): void

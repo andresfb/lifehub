@@ -7,6 +7,7 @@ use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Models\AiModel;
 use Modules\Core\Models\AiProvider;
+
 use function Pest\Laravel\actingAs;
 
 uses(RefreshDatabase::class);

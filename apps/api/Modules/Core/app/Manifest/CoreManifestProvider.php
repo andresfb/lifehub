@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Core\Manifest;
 
 use App\Contracts\ManifestProvider;
@@ -13,7 +15,7 @@ use App\Services\Modules\ModuleAccessService;
 use Illuminate\Support\Collection;
 use Nwidart\Modules\Facades\Module;
 
-readonly class CoreManifestProvider implements ManifestProvider
+final readonly class CoreManifestProvider implements ManifestProvider
 {
     public function __construct(
         private ModuleAccessService $accessService
@@ -44,7 +46,7 @@ readonly class CoreManifestProvider implements ManifestProvider
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function features(): Collection
     {

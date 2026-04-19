@@ -10,6 +10,6 @@ return [
         'dimensions' => (int) env('GLOBAL_SEARCH_EMBEDDING_DIMENSIONS', 1536),
         'target_tokens' => (int) env('GLOBAL_SEARCH_CHUNK_TARGET_TOKENS', 512),
         'overlap_tokens' => (int) env('GLOBAL_SEARCH_CHUNK_OVERLAP_TOKENS', 64),
-        'timeout' => (int) env('GLOBAL_SEARCH_EMBEDDING_TIMEOUT', 300), # 5 Minutes
+        'timeout' => (int) env('GLOBAL_SEARCH_EMBEDDING_TIMEOUT', 300), // 5 Minutes
     ],
 ];

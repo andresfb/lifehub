@@ -25,7 +25,7 @@ final class UserAiResolver
     ): ResolvedUserAiProvider {
         $feature = $feature instanceof AiModelFeatures
             ? $feature
-            : (AiModelFeatures::tryFrom($feature) ?? constant(AiModelFeatures::class.'::'.mb_strtolower($feature)));
+            : (AiModelFeatures::tryFrom($feature) ?? AiModelFeatures::{mb_strtolower($feature)});
 
         $query = AiModel::query()
             ->with('provider')

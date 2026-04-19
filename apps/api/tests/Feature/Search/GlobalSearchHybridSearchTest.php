@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Ai\Enums\Lab;
 use Modules\Core\Dtos\AI\ResolvedUserAiProvider;
+
 use function Pest\Laravel\actingAs;
 
 uses(RefreshDatabase::class);
@@ -115,7 +116,7 @@ test('it syncs changed chunks and removes stale chunks', function (): void {
         }
     };
 
-    (new SyncGlobalSearchChunksJob($globalSearch->id))->handle($chunker, $embeddingService, $meilisearch);
+    new SyncGlobalSearchChunksJob($globalSearch->id)->handle($chunker);
 
     expect(GlobalSearchChunk::query()->where('global_search_id', $globalSearch->id)->count())->toBe(2)
         ->and($meilisearch->deleted)->toBe([$staleChunk->meilisearchId()])
@@ -154,7 +155,7 @@ test('it adds embeddings when the user has an embedding capable provider', funct
     };
     $embeddingService = new class implements GlobalSearchEmbeddingServiceInterface
     {
-        public function resolve(User $user): ?ResolvedUserAiProvider
+        public function resolve(User $user): ResolvedUserAiProvider
         {
             return new ResolvedUserAiProvider(
                 name: 'user-provider',
@@ -176,7 +177,7 @@ test('it adds embeddings when the user has an embedding capable provider', funct
         }
     };
 
-    (new SyncGlobalSearchChunksJob($globalSearch->id))->handle($chunker, $embeddingService, $meilisearch);
+    new SyncGlobalSearchChunksJob($globalSearch->id)->handle($chunker);
 
     $chunk = GlobalSearchChunk::query()->where('global_search_id', $globalSearch->id)->firstOrFail();
 

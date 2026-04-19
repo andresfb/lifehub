@@ -15,8 +15,8 @@ final class CoreDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-         $this->call([
-             '\Modules\Core\Database\Seeders\AiProvidersSeeder',
-         ]);
+        $this->call([
+            '\Modules\Core\Database\Seeders\AiProvidersSeeder',
+        ]);
     }
 }

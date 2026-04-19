@@ -19,7 +19,7 @@ final class DatabaseSeeder extends Seeder
     {
         $this->call([
             DashboardDatabaseSeeder::class,
-            CoreDatabaseSeeder::class
+            CoreDatabaseSeeder::class,
         ]);
     }
 }
