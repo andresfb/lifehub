@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(gunzip -c \"/Users/bastidas/.claude/projects/-Volumes-Personal-SourceControl-Projects-lifehub-apps-web/f1a84abf-0c33-4543-9b5f-d6c92ed2eeb0/tool-results/webfetch-1776802713423-i75v1c.bin\")",
+      "Bash(tar -xf /tmp/lifehub_design.tar -C /tmp/)",
+      "Read(//tmp/**)",
+      "Read(//private/tmp/lifehub/project/**)",
+      "Read(//private/tmp/lifehub/chats/**)",
+      "Bash(php artisan *)",
+      "Bash(vendor/bin/pint *)",
+      "Bash(npm run *)"
+    ]
+  }
+}

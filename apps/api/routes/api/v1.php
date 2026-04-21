@@ -54,19 +54,9 @@ Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function ()
     Route::get('search', GlobalSearchController::class)
         ->name('api.v1.search');
 
-    Route::middleware('idempotency')->group(function (): void {
-        Route::post('logout', [AuthController::class, 'logout'])
-            ->name('api.v1.logout');
+    Route::post('logout', [AuthController::class, 'logout'])
+        ->name('api.v1.logout');
 
-        // Email verification
-        Route::post('email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
-            ->middleware('signed')
-            ->name('api.v1.verification.verify');
-
-        Route::post('email/resend', [AuthController::class, 'resendVerificationEmail'])
-            ->middleware('throttle:6,1')
-            ->name('api.v1.verification.send');
-    });
 });
 
 // Password reset routes (public with rate limiting)

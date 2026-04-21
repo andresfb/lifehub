@@ -53,7 +53,15 @@ class AuthSession
     {
         Session::forget($keys);
 
-        return Cache::forget($keys);
+        if (is_string($keys)) {
+            $keys = [$keys];
+        }
+
+        foreach ($keys as $key) {
+            Cache::forget($key);
+        }
+
+        return true;
     }
 
     private static function putOnCache(string $key, mixed $value): bool

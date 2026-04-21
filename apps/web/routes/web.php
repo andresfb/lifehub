@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\TwoFactorController;
+use App\Http\Controllers\Dashboard\HomepageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
@@ -16,6 +18,14 @@ Route::middleware(['throttle:login'])->group(function () {
 
         Route::post('/login', 'store')
             ->name('login.store');
+    });
+
+    Route::controller(RegisterController::class)->group(function () {
+        Route::get('/register', 'show')
+            ->name('register');
+
+        Route::post('/register', 'store')
+            ->name('register.store');
     });
 
 });
@@ -34,8 +44,10 @@ Route::middleware(['throttle:two-factor'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/dashboard', static function () {
-        echo 'dashboard';
-    })->name('dashboard');
+    Route::get('/dashboard', [HomepageController::class, 'show'])
+        ->name('dashboard');
+
+    Route::delete('/logout', [LoginController::class, 'destroy'])
+        ->name('logout');
 
 });

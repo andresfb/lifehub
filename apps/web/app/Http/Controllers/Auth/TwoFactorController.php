@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TwoFactorRequest;
-use App\Repository\Auth\Enums\LoginStatus;
+use App\Repository\Auth\Enums\AuthStatus;
 use App\Repository\Auth\Libraries\AuthSession;
 use App\Repository\Auth\Services\ApiAuthService;
 use Exception;
@@ -32,7 +32,7 @@ class TwoFactorController extends Controller
             AuthSession::get('login.email')
         );
 
-        if ($result === LoginStatus::FAILURE) {
+        if ($result === AuthStatus::FAILURE) {
             abort(401);
         }
 

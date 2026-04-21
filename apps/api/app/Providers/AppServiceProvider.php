@@ -71,10 +71,6 @@ final class AppServiceProvider extends ServiceProvider
 
             return $user->isAdmin();
         });
-
-        // TODO: Add a BaseManifestProvider to load all the AI routes
-        // $this->app->make(ManifestService::class)
-        //     ->register(resolve(BaseManifestProvider::class));
     }
 
     /**
