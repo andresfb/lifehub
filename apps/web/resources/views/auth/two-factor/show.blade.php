@@ -1,13 +1,13 @@
 <x-layouts.auth description="{{ __('Enter the authentication code sent to your device') }}">
 
     @if(session('message'))
-        <p class="mb-4 text-center text-[13px] font-medium" style="color:var(--lh-accent-text)">
+        <p class="mb-4 text-center text-[13px] font-medium text-(--lh-accent-text)">
             {{ session('message') }}
         </p>
     @endif
 
     @if(session('error'))
-        <p class="mb-4 text-center text-[13px]" style="color:#e54">{{ session('error') }}</p>
+        <p class="mb-4 text-center text-[13px] text-[#e54]">{{ session('error') }}</p>
     @endif
 
     {{-- Countdown --}}
@@ -28,11 +28,10 @@
                     />
                 </svg>
                 <span id="countdown-text"
-                    class="absolute inset-0 flex items-center justify-center font-display font-bold text-[18px] tabular-nums"
-                    style="color:var(--lh-text)"
+                    class="absolute inset-0 flex items-center justify-center font-display text-[18px] font-bold text-(--lh-text) tabular-nums"
                 ></span>
             </div>
-            <p id="countdown-label" class="text-[12px]" style="color:var(--lh-text-muted)">{{ __('remaining') }}</p>
+            <p id="countdown-label" class="text-[12px] text-(--lh-text-muted)">{{ __('remaining') }}</p>
         </div>
     @endif
 
@@ -40,7 +39,7 @@
         @csrf
 
         <div class="mb-5">
-            <label for="code" class="block text-[13px] font-medium mb-1.5" style="color:var(--lh-text-sec)">
+            <label for="code" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
                 {{ __('Authentication Code') }}
             </label>
             <input
@@ -53,32 +52,24 @@
                 inputmode="numeric"
                 maxlength="6"
                 placeholder="000000"
-                class="w-full h-11 rounded-[10px] px-3.5 text-[14px] border text-center tracking-[0.5em] font-display font-bold"
-                style="background:var(--lh-input);color:var(--lh-text);border-color:var(--lh-border);transition:border-color 0.2s,box-shadow 0.2s;font-family:inherit;letter-spacing:0.4em"
-                onfocus="this.style.borderColor='var(--lh-accent)';this.style.boxShadow='0 0 0 3px oklch(0.65 0.15 175 / 0.12)'"
-                onblur="this.style.borderColor='var(--lh-border)';this.style.boxShadow='none'"
+                class="h-11 w-full rounded-[10px] border border-(--lh-border) bg-(--lh-input) px-3.5 text-center font-display text-[14px] font-bold tracking-[0.4em] text-(--lh-text) transition-[border-color,box-shadow] duration-200 focus:border-(--lh-accent) focus:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.12)]"
             />
             @error('code')
-                <p class="mt-1 text-[12px]" style="color:#e54">{{ $message }}</p>
+                <p class="mt-1 text-[12px] text-[#e54]">{{ $message }}</p>
             @enderror
         </div>
 
         <button
             id="submit-btn"
             type="submit"
-            class="w-full h-11 rounded-[10px] border-none text-white text-[15px] font-semibold cursor-pointer"
-            style="background:var(--lh-accent);font-family:inherit;transition:opacity 0.15s,transform 0.1s"
-            onmouseenter="this.style.opacity='0.9'"
-            onmouseleave="this.style.opacity='1'"
-            onmousedown="this.style.transform='scale(0.98)'"
-            onmouseup="this.style.transform='scale(1)'"
+            class="h-11 w-full cursor-pointer rounded-[10px] border-none bg-(--lh-accent) text-[15px] font-semibold text-white transition-[opacity,transform] duration-150 hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:opacity-40"
         >
             {{ __('Verify') }}
         </button>
     </form>
 
     <x-slot:footer>
-        <a href="{{ route('login') }}" class="font-medium no-underline" style="color:var(--lh-text-muted)">
+        <a href="{{ route('login') }}" class="font-medium text-(--lh-text-muted) no-underline">
             ← {{ __('Back to login') }}
         </a>
     </x-slot:footer>
@@ -110,11 +101,10 @@
 
         if (remaining <= 0) {
             btn.disabled = true;
-            btn.style.opacity = '0.4';
-            btn.style.cursor  = 'not-allowed';
             text.textContent  = '0';
-            text.style.color  = '#e54';
-            arc.style.stroke  = '#e54';
+            text.classList.remove('text-(color:--lh-text)');
+            text.classList.add('text-[#e54]');
+            arc.setAttribute('stroke', '#e54');
             return;
         }
 

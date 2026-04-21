@@ -15,8 +15,12 @@ const LifeHub = {
         document.documentElement.classList.toggle('dark', dark);
         const sun = document.getElementById('icon-sun');
         const moon = document.getElementById('icon-moon');
-        if (sun)  sun.style.display  = dark ? 'block' : 'none';
-        if (moon) moon.style.display = dark ? 'none'  : 'block';
+        if (sun) {
+            sun.classList.toggle('hidden', !dark);
+        }
+        if (moon) {
+            moon.classList.toggle('hidden', dark);
+        }
     },
 
     // ── Sidebar ─────────────────────────────────────────────
@@ -24,8 +28,8 @@ const LifeHub = {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
         if (!sidebar || !overlay) return;
-        sidebar.style.translate = '0 0';
-        sidebar.style.boxShadow = 'var(--lh-shadow-lg)';
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('shadow-[var(--lh-shadow-lg)]');
         overlay.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     },
@@ -34,8 +38,8 @@ const LifeHub = {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
         if (!sidebar || !overlay) return;
-        sidebar.style.translate = '-100% 0';
-        sidebar.style.boxShadow = 'none';
+        sidebar.classList.add('-translate-x-full');
+        sidebar.classList.remove('shadow-[var(--lh-shadow-lg)]');
         overlay.classList.add('hidden');
         document.body.style.overflow = '';
     },

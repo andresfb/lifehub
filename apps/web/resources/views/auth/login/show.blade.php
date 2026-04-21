@@ -1,13 +1,13 @@
 <x-layouts.auth description="{{ __('Sign in to your account') }}">
 
     @if(session('message'))
-        <p class="mb-4 text-center text-[13px] font-medium" style="color:var(--lh-accent-text)">
+        <p class="mb-4 text-center text-[13px] font-medium text-(--lh-accent-text)">
             {{ session('message') }}
         </p>
     @endif
 
     @if(session('error'))
-        <p class="mb-4 text-center text-[13px]" style="color:#e54">{{ session('error') }}</p>
+        <p class="mb-4 text-center text-[13px] text-[#e54]">{{ session('error') }}</p>
     @endif
 
     <form method="POST" action="{{ route('login.store') }}" class="space-y-4">
@@ -15,7 +15,7 @@
 
         {{-- Email --}}
         <div>
-            <label for="email" class="block text-[13px] font-medium mb-1.5" style="color:var(--lh-text-sec)">
+            <label for="email" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
                 {{ __('Email') }}
             </label>
             <input
@@ -27,19 +27,16 @@
                 autofocus
                 autocomplete="email"
                 placeholder="you@example.com"
-                class="lh-input w-full h-11 rounded-[10px] px-3.5 text-[14px] border"
-                style="background:var(--lh-input);color:var(--lh-text);border-color:var(--lh-border);transition:border-color 0.2s,box-shadow 0.2s;font-family:inherit"
-                onfocus="this.style.borderColor='var(--lh-accent)';this.style.boxShadow='0 0 0 3px oklch(0.65 0.15 175 / 0.12)'"
-                onblur="this.style.borderColor='var(--lh-border)';this.style.boxShadow='none'"
+                class="lh-input h-11 w-full rounded-[10px] border border-(--lh-border) bg-(--lh-input) px-3.5 text-[14px] text-(--lh-text) transition-[border-color,box-shadow] duration-200 focus:border-(--lh-accent) focus:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.12)]"
             />
             @error('email')
-                <p class="mt-1 text-[12px]" style="color:#e54">{{ $message }}</p>
+                <p class="mt-1 text-[12px] text-[#e54]">{{ $message }}</p>
             @enderror
         </div>
 
         {{-- Password --}}
         <div>
-            <label for="password" class="block text-[13px] font-medium mb-1.5" style="color:var(--lh-text-sec)">
+            <label for="password" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
                 {{ __('Password') }}
             </label>
             <input
@@ -49,19 +46,16 @@
                 required
                 autocomplete="current-password"
                 placeholder="••••••••"
-                class="w-full h-11 rounded-[10px] px-3.5 text-[14px] border"
-                style="background:var(--lh-input);color:var(--lh-text);border-color:var(--lh-border);transition:border-color 0.2s,box-shadow 0.2s;font-family:inherit"
-                onfocus="this.style.borderColor='var(--lh-accent)';this.style.boxShadow='0 0 0 3px oklch(0.65 0.15 175 / 0.12)'"
-                onblur="this.style.borderColor='var(--lh-border)';this.style.boxShadow='none'"
+                class="h-11 w-full rounded-[10px] border border-(--lh-border) bg-(--lh-input) px-3.5 text-[14px] text-(--lh-text) transition-[border-color,box-shadow] duration-200 focus:border-(--lh-accent) focus:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.12)]"
             />
             @error('password')
-                <p class="mt-1 text-[12px]" style="color:#e54">{{ $message }}</p>
+                <p class="mt-1 text-[12px] text-[#e54]">{{ $message }}</p>
             @enderror
         </div>
 
         {{-- Forgot password --}}
         <div class="flex justify-end">
-            <button type="button" class="border-none bg-transparent text-[13px] font-medium cursor-pointer" style="color:var(--lh-accent-text)">
+            <button type="button" class="cursor-pointer border-none bg-transparent text-[13px] font-medium text-(--lh-accent-text)">
                 {{ __('Forgot password?') }}
             </button>
         </div>
@@ -69,12 +63,7 @@
         {{-- Submit --}}
         <button
             type="submit"
-            class="w-full h-11 rounded-[10px] border-none text-white text-[15px] font-semibold cursor-pointer"
-            style="background:var(--lh-accent);font-family:inherit;transition:opacity 0.15s,transform 0.1s"
-            onmouseenter="this.style.opacity='0.9'"
-            onmouseleave="this.style.opacity='1'"
-            onmousedown="this.style.transform='scale(0.98)'"
-            onmouseup="this.style.transform='scale(1)'"
+            class="h-11 w-full cursor-pointer rounded-[10px] border-none bg-(--lh-accent) text-[15px] font-semibold text-white transition-[opacity,transform] duration-150 hover:opacity-90 active:scale-[0.98]"
         >
             {{ __('Sign In') }}
         </button>
@@ -82,7 +71,7 @@
 
     <x-slot:footer>
         {{ __("Don't have an account?") }}
-        <a href="{{ route('register') }}" class="font-semibold no-underline" style="color:var(--lh-accent-text)">
+        <a href="{{ route('register') }}" class="font-semibold text-(--lh-accent-text) no-underline">
             {{ __('Create one') }}
         </a>
     </x-slot:footer>

@@ -1,11 +1,10 @@
 <x-layouts.app module="Dashboard">
 
     {{-- Search bar --}}
-    <div style="max-width:640px;margin:0 auto;padding:32px 20px 8px">
+    <div class="mx-auto max-w-160 px-5 pt-8 pb-2">
         <div
             id="search-wrap"
-            class="flex items-center h-12 rounded-[14px]"
-            style="background:var(--lh-input);border:2px solid var(--lh-border);box-shadow:var(--lh-shadow);transition:border-color 0.2s,box-shadow 0.2s"
+            class="flex h-12 items-center rounded-[14px] border-2 border-(--lh-border) bg-(--lh-input) shadow-(--lh-shadow) transition-[border-color,box-shadow] duration-200 focus-within:border-(--lh-accent) focus-within:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.13)]"
         >
             {{-- Engine selector --}}
             <div class="relative shrink-0" id="engine-wrap">
@@ -13,8 +12,7 @@
                     type="button"
                     id="engine-btn"
                     onclick="LifeHub.toggleEngineDropdown()"
-                    class="flex items-center gap-1.5 h-12 border-none bg-transparent cursor-pointer text-[13px] font-medium pl-3.5 pr-1"
-                    style="color:var(--lh-text-sec);font-family:inherit"
+                    class="flex h-12 cursor-pointer items-center gap-1.5 border-none bg-transparent pr-1 pl-3.5 text-[13px] font-medium text-(--lh-text-sec)"
                 >
                     <span id="engine-name">{{ $searchEngines[0]['name'] }}</span>
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
@@ -24,8 +22,7 @@
 
                 <div
                     id="engine-dropdown"
-                    class="absolute top-full left-2 mt-1 hidden z-20 rounded-[10px] p-1 min-w-42.5"
-                    style="background:var(--lh-card);border:1px solid var(--lh-border);box-shadow:var(--lh-shadow-lg)"
+                    class="absolute top-full left-2 z-20 mt-1 hidden min-w-42.5 rounded-[10px] border border-(--lh-border) bg-(--lh-card) p-1 shadow-(--lh-shadow-lg)"
                 >
                     @foreach($searchEngines as $engine)
                         <button
@@ -33,12 +30,12 @@
                             data-url="{{ $engine['url'] }}"
                             data-name="{{ $engine['name'] }}"
                             onclick="LifeHub.selectEngine(this)"
-                            class="flex items-center gap-2 w-full px-2.5 py-2 border-none rounded-md text-[13px] cursor-pointer text-left"
-                            style="background:{{ $loop->first ? 'var(--lh-accent-light)' : 'none' }};color:var(--lh-text);font-family:inherit;transition:background 0.1s"
-                            onmouseenter="this.style.background='var(--lh-hover)'"
-                            onmouseleave="this.style.background='none'"
+                            @class([
+                                'flex w-full cursor-pointer items-center gap-2 rounded-md border-none px-2.5 py-2 text-left text-[13px] text-(color:--lh-text) transition-colors duration-150 hover:bg-(--lh-hover)',
+                                'bg-(--lh-accent-light)' => $loop->first,
+                            ])
                         >
-                            <span class="w-5 h-5 rounded-[5px] flex items-center justify-center text-[10px] font-bold shrink-0 text-white" style="background:{{ $engine['color'] }}">{{ $engine['icon'] }}</span>
+                            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] text-[10px] font-bold text-white {{ $engine['colorClass'] }}">{{ $engine['icon'] }}</span>
                             {{ $engine['name'] }}
                         </button>
                     @endforeach
@@ -46,17 +43,14 @@
             </div>
 
             {{-- Divider --}}
-            <div class="w-px h-6 shrink-0" style="background:var(--lh-border)"></div>
+            <div class="h-6 w-px shrink-0 bg-(--lh-border)"></div>
 
             {{-- Search input --}}
             <input
                 id="search-input"
                 type="text"
                 placeholder="Search the web..."
-                class="flex-1 h-full border-none bg-transparent px-3.5 text-[15px]"
-                style="color:var(--lh-text);font-family:inherit"
-                onfocus="document.getElementById('search-wrap').style.borderColor='var(--lh-accent)';document.getElementById('search-wrap').style.boxShadow='0 0 0 3px oklch(0.65 0.15 175 / 0.13)'"
-                onblur="document.getElementById('search-wrap').style.borderColor='var(--lh-border)';document.getElementById('search-wrap').style.boxShadow='var(--lh-shadow)'"
+                class="h-full flex-1 border-none bg-transparent px-3.5 text-[15px] text-(--lh-text)"
                 onkeydown="if(event.key==='Enter') LifeHub.doSearch()"
             />
 
@@ -64,10 +58,7 @@
             <button
                 type="button"
                 onclick="LifeHub.doSearch()"
-                class="px-4 h-full border-none bg-transparent cursor-pointer flex items-center"
-                style="color:var(--lh-text-muted);transition:color 0.12s"
-                onmouseenter="this.style.color='var(--lh-accent)'"
-                onmouseleave="this.style.color='var(--lh-text-muted)'"
+                class="flex h-full cursor-pointer items-center border-none bg-transparent px-4 text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-accent)"
             >
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <circle cx="7.5" cy="7.5" r="5"/><line x1="11.5" y1="11.5" x2="16" y2="16"/>
@@ -77,28 +68,24 @@
     </div>
 
     {{-- Bookmarks grid --}}
-    <div style="padding:20px 24px 40px;max-width:1320px;margin:0 auto">
+    <div class="mx-auto max-w-330 px-6 pt-5 pb-10">
         @foreach($bookmarks as $group)
             <div class="mb-7">
-                <h3 class="text-[12px] font-semibold uppercase tracking-[1px] mb-2.5 pl-1" style="color:var(--lh-text-muted)">
+                <h3 class="mb-2.5 pl-1 text-[12px] font-semibold tracking-[1px] text-(--lh-text-muted) uppercase">
                     {{ $group['category'] }}
                 </h3>
-                <div class="grid gap-2" style="grid-template-columns:repeat(6,1fr)">
+                <div class="grid grid-cols-6 gap-2">
                     @foreach($group['items'] as $bookmark)
                         <a
                             href="{{ $bookmark['url'] }}"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="flex items-center gap-2.5 px-3 py-2.5 rounded-[10px] no-underline"
-                            style="background:var(--lh-card);border:1px solid var(--lh-border-light);transition:all 0.15s;cursor:pointer"
-                            onmouseenter="this.style.background='var(--lh-hover)';this.style.borderColor='var(--lh-border)';this.style.transform='translateY(-1px)'"
-                            onmouseleave="this.style.background='var(--lh-card)';this.style.borderColor='var(--lh-border-light)';this.style.transform='none'"
+                            class="flex cursor-pointer items-center gap-2.5 rounded-[10px] border border-(--lh-border-light) bg-(--lh-card) px-3 py-2.5 no-underline transition-[background-color,border-color,transform] duration-150 hover:-translate-y-px hover:border-(--lh-border) hover:bg-(--lh-hover)"
                         >
                             <span
-                                class="w-8 h-8 rounded-lg flex items-center justify-center text-[13px] font-bold shrink-0 text-white font-display"
-                                style="background:{{ $bookmark['iconBg'] }}"
+                                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-display text-[13px] font-bold text-white {{ $bookmark['iconBgClass'] }}"
                             >{{ $bookmark['icon'] }}</span>
-                            <span class="text-[13px] font-medium truncate" style="color:var(--lh-text)">
+                            <span class="truncate text-[13px] font-medium text-(--lh-text)">
                                 {{ $bookmark['title'] }}
                             </span>
                         </a>
