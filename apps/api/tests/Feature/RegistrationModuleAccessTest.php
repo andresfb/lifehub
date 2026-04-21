@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Models\Invitation;
 use App\Models\User;
 use App\Services\Modules\ModuleAccessService;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 
@@ -38,6 +37,4 @@ test('newly registered users receive core writer access', function (): void {
         ->and($moduleAccess->canWrite($user, 'core'))->toBeTrue()
         ->and($user->hasRole($moduleAccess->readerRoleName('core')))->toBeFalse()
         ->and($user->hasRole($moduleAccess->writerRoleName('core')))->toBeTrue();
-
-    Notification::assertSentTo($user, VerifyEmail::class);
 });

@@ -2,12 +2,14 @@
 
 namespace App\Repository\Auth\Services;
 
+use App\Dtos\Auth\RegisterItem;
 use App\Repository\Auth\Dtos\User;
-use App\Repository\Auth\Enums\LoginStatus;
+use App\Repository\Auth\Enums\AuthStatus;
 use App\Repository\Auth\Libraries\AuthSession;
 use App\Repository\Common\Libraries\ApiClient;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Concurrency;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -22,7 +24,7 @@ readonly class ApiAuthService
     /**
      * @throws Exception
      */
-    public function login(string $email, string $password): LoginStatus
+    public function login(string $email, string $password): AuthStatus
     {
         try {
             $payload = $this->apiClient->post(
@@ -39,7 +41,7 @@ readonly class ApiAuthService
             session()->flash('error', $e->getMessage());
             Log::error($e->getMessage());
 
-            return LoginStatus::FAILURE;
+            return AuthStatus::FAILURE;
         }
 
         if ($this->needsTwoFactor($payload)) {
@@ -48,18 +50,18 @@ readonly class ApiAuthService
 
             AuthSession::put('login.email', $email);
 
-            return LoginStatus::TWO_FACTOR;
+            return AuthStatus::TWO_FACTOR;
         }
 
         $this->saveAuthInfo($payload);
 
-        return LoginStatus::SUCCESS;
+        return AuthStatus::SUCCESS;
     }
 
     /**
      * @throws Exception
      */
-    public function validateTwoFactorCode(string $email, string $code): LoginStatus
+    public function validateTwoFactorCode(string $email, string $code): AuthStatus
     {
         try {
             $payload = $this->apiClient->post(
@@ -73,29 +75,35 @@ readonly class ApiAuthService
             session()->flash('error', $e->getMessage());
             Log::error($e->getMessage());
 
-            return LoginStatus::FAILURE;
+            return AuthStatus::FAILURE;
         }
 
         AuthSession::forget('login.email');
         $this->saveAuthInfo($payload);
 
-        return LoginStatus::SUCCESS;
+        return AuthStatus::SUCCESS;
     }
 
-    /**
-     * @throws Exception
-     */
     public function logout(): void
     {
-        $this->apiClient->post(
-            Config::string('services.backend.endpoints.auth.logout'),
-        );
+        $token = AuthSession::get('api_token');
 
         AuthSession::forget(['api_token', 'auth_user']);
-
         session()->invalidate();
         session()->regenerateToken();
-        Auth::guard('web')->logout();
+
+        Concurrency::defer([
+            function () use ($token) {
+                try {
+                    $this->apiClient->setToken($token)
+                        ->post(
+                            Config::string('services.backend.endpoints.auth.logout'),
+                        );
+                } catch (Exception $e) {
+                    Log::error($e->getMessage(), $e->getTrace());
+                }
+            }
+        ]);
     }
 
     /**
@@ -120,6 +128,31 @@ readonly class ApiAuthService
         AuthSession::put('auth_user', $response);
 
         return User::from($response);
+    }
+
+    public function register(RegisterItem $item): AuthStatus
+    {
+        try {
+            $payload = $this->apiClient->post(
+                Config::string('services.backend.endpoints.auth.register'),
+                [
+                    'name' => $item->name,
+                    'email' => $item->email,
+                    'password' => $item->password,
+                    'password_confirmation' => $item->password_confirmation,
+                    'invitation' => $item->invitation,
+                ]
+            );
+        } catch (Exception $e) {
+            session()->flash('error', $e->getMessage());
+            Log::error($e->getMessage());
+
+            return AuthStatus::FAILURE;
+        }
+
+        $this->saveAuthInfo($payload);
+
+        return AuthStatus::SUCCESS;
     }
 
     private function needsTwoFactor(array $payload): bool

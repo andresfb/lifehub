@@ -8,7 +8,6 @@ use App\Observers\UserObserver;
 use App\Services\Modules\ModuleAccessService;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -49,7 +48,7 @@ use Spatie\Permission\Traits\HasRoles;
 #[UseFactory(UserFactory::class)]
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
-final class User extends Authenticatable implements MustVerifyEmail
+final class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;

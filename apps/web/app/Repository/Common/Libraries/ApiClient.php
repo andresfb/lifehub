@@ -64,8 +64,10 @@ class ApiClient
     private function getToken(): string
     {
         if (filled($this->token)) {
-            $this->token = AuthSession::get('api_token');
+            return $this->token;
         }
+
+        $this->token = AuthSession::get('api_token', '');
 
         return $this->token;
     }
@@ -78,6 +80,10 @@ class ApiClient
 
         if ($response->failed()) {
             throw new RuntimeException("Request failed: {$response->status()}");
+        }
+
+        if ($response->noContent()) {
+            return [];
         }
 
         $result = $response->json();

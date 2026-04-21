@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -5,7 +6,65 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@custom-variant dark (&:is(.dark, .dark *));
+
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ── Design Tokens ── */
+:root {
+    --lh-bg:           #f6f5f2;
+    --lh-card:         #ffffff;
+    --lh-hover:        #f0efec;
+    --lh-input:        #ffffff;
+    --lh-border:       #e8e5df;
+    --lh-border-light: #f0ede8;
+    --lh-text:         #1a1a1f;
+    --lh-text-sec:     #6b6b76;
+    --lh-text-muted:   #9a9aa3;
+    --lh-accent:       oklch(0.65 0.15 175);
+    --lh-accent-light: oklch(0.92 0.04 175);
+    --lh-accent-text:  oklch(0.45 0.15 175);
+    --lh-shadow:       0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+    --lh-shadow-lg:    0 4px 24px rgba(0,0,0,0.08);
+    --lh-header-bg:    rgba(246,245,242,0.85);
+    --lh-sidebar-bg:   #ffffff;
+    --lh-overlay-bg:   rgba(0,0,0,0.25);
+}
+
+.dark {
+    --lh-bg:           #131316;
+    --lh-card:         #1c1c21;
+    --lh-hover:        #25252b;
+    --lh-input:        #1c1c21;
+    --lh-border:       #2a2a32;
+    --lh-border-light: #222228;
+    --lh-text:         #e8e8ec;
+    --lh-text-sec:     #9a9aab;
+    --lh-text-muted:   #6a6a7a;
+    --lh-accent:       oklch(0.65 0.15 175);
+    --lh-accent-light: oklch(0.25 0.06 175);
+    --lh-accent-text:  oklch(0.65 0.15 175);
+    --lh-shadow:       0 2px 12px rgba(0,0,0,0.4);
+    --lh-shadow-lg:    0 8px 32px rgba(0,0,0,0.5);
+    --lh-header-bg:    rgba(19,19,22,0.85);
+    --lh-sidebar-bg:   #18181c;
+    --lh-overlay-bg:   rgba(0,0,0,0.6);
+}
+
+/* ── Base ── */
+html, body {
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+    background: oklch(0.65 0.15 175 / 0.3);
+}
+
+input:focus {
+    outline: none;
 }

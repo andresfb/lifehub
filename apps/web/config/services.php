@@ -39,8 +39,9 @@ return [
         'url' => env('API_BASE_URL'),
         'endpoints' => [
             'auth' => [
+                'register' => env('API_BASE_URL') . '/register',
                 'login' => env('API_BASE_URL') . '/login',
-                'validate' => env('API_BASE_URL') . '/logout/validate',
+                'validate' => env('API_BASE_URL') . '/login/validate',
                 'logout' => env('API_BASE_URL') . '/logout',
                 'user' => env('API_BASE_URL') . '/me',
             ],
