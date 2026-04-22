@@ -45,6 +45,10 @@ return [
                 'logout' => env('API_BASE_URL') . '/logout',
                 'user' => env('API_BASE_URL') . '/me',
             ],
+            'manifest' => [
+                'data' => env('API_BASE_URL') . '/manifesto',
+                'version' => env('API_BASE_URL') . '/manifesto/version',
+            ],
         ],
     ],
 

@@ -16,5 +16,6 @@ final class NavHints extends Data
         public readonly ?string $tuiCommand = null,
         public readonly ?string $icon = null,
         public readonly ?string $shortcutKey = null,
+        public readonly bool $showInMenu = false,
     ) {}
 }

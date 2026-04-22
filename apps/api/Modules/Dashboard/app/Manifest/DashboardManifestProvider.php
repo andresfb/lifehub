@@ -54,73 +54,76 @@ final readonly class DashboardManifestProvider implements ManifestProvider
             new FeatureNode(
                 id: 'dashboard.home',
                 title: 'Dashboard',
-                kind: FeatureKind::Screen,
+                kind: FeatureKind::Group,
                 requiredAccess: ModuleAccessLevel::READ,
                 nav: new NavHints(
                     webPath: '/dashboard',
                     tuiCommand: 'dashboard',
                     icon: 'home',
+                    showInMenu: true,
                 ),
                 endpoints: collect([
                     new EndpointBinding(routeName: 'v1.dashboard'),
                 ]),
-            ),
-            new FeatureNode(
-                id: 'dashboard.pins',
-                title: 'Pins',
-                kind: FeatureKind::Group,
-                requiredAccess: ModuleAccessLevel::READ,
-                nav: new NavHints(webPath: '/dashboard/pins', icon: 'pin'),
                 children: collect([
                     new FeatureNode(
-                        id: 'dashboard.pins.list',
-                        title: 'View Pins',
-                        kind: FeatureKind::Screen,
+                        id: 'dashboard.pins',
+                        title: 'Pins',
+                        kind: FeatureKind::Group,
                         requiredAccess: ModuleAccessLevel::READ,
-                        endpoints: collect([
-                            new EndpointBinding(routeName: 'v1.dashboard.pins.index'),
-                            new EndpointBinding(routeName: 'v1.dashboard.pins.show'),
+                        nav: new NavHints(webPath: '/dashboard/pins', icon: 'pin'),
+                        children: collect([
+                            new FeatureNode(
+                                id: 'dashboard.pins.list',
+                                title: 'View Pins',
+                                kind: FeatureKind::Screen,
+                                requiredAccess: ModuleAccessLevel::READ,
+                                endpoints: collect([
+                                    new EndpointBinding(routeName: 'v1.dashboard.pins.index'),
+                                    new EndpointBinding(routeName: 'v1.dashboard.pins.show'),
+                                ]),
+                            ),
+                            new FeatureNode(
+                                id: 'dashboard.pins.manage',
+                                title: 'Manage Pins',
+                                kind: FeatureKind::Action,
+                                requiredAccess: ModuleAccessLevel::WRITE,
+                                endpoints: collect([
+                                    new EndpointBinding(routeName: 'v1.dashboard.pins.store'),
+                                    new EndpointBinding(routeName: 'v1.dashboard.pins.update'),
+                                    new EndpointBinding(routeName: 'v1.dashboard.pins.destroy'),
+                                ]),
+                            ),
                         ]),
                     ),
                     new FeatureNode(
-                        id: 'dashboard.pins.manage',
-                        title: 'Manage Pins',
-                        kind: FeatureKind::Action,
-                        requiredAccess: ModuleAccessLevel::WRITE,
-                        endpoints: collect([
-                            new EndpointBinding(routeName: 'v1.dashboard.pins.store'),
-                            new EndpointBinding(routeName: 'v1.dashboard.pins.update'),
-                            new EndpointBinding(routeName: 'v1.dashboard.pins.destroy'),
-                        ]),
-                    ),
-                ]),
-            ),
-            new FeatureNode(
-                id: 'dashboard.search',
-                title: 'Search Providers',
-                kind: FeatureKind::Group,
-                requiredAccess: ModuleAccessLevel::READ,
-                nav: new NavHints(webPath: '/dashboard/search', icon: 'search'),
-                children: collect([
-                    new FeatureNode(
-                        id: 'dashboard.search.list',
-                        title: 'View Search Providers',
-                        kind: FeatureKind::Screen,
+                        id: 'dashboard.search',
+                        title: 'Search Providers',
+                        kind: FeatureKind::Group,
                         requiredAccess: ModuleAccessLevel::READ,
-                        endpoints: collect([
-                            new EndpointBinding(routeName: 'v1.dashboard.search.providers.index'),
-                            new EndpointBinding(routeName: 'v1.dashboard.search.providers.show'),
-                        ]),
-                    ),
-                    new FeatureNode(
-                        id: 'dashboard.search.manage',
-                        title: 'Manage Search Providers',
-                        kind: FeatureKind::Action,
-                        requiredAccess: ModuleAccessLevel::WRITE,
-                        endpoints: collect([
-                            new EndpointBinding(routeName: 'v1.dashboard.search.providers.store'),
-                            new EndpointBinding(routeName: 'v1.dashboard.search.providers.update'),
-                            new EndpointBinding(routeName: 'v1.dashboard.search.providers.destroy'),
+                        nav: new NavHints(webPath: '/dashboard/search', icon: 'search'),
+                        children: collect([
+                            new FeatureNode(
+                                id: 'dashboard.search.list',
+                                title: 'View Search Providers',
+                                kind: FeatureKind::Screen,
+                                requiredAccess: ModuleAccessLevel::READ,
+                                endpoints: collect([
+                                    new EndpointBinding(routeName: 'v1.dashboard.search.providers.index'),
+                                    new EndpointBinding(routeName: 'v1.dashboard.search.providers.show'),
+                                ]),
+                            ),
+                            new FeatureNode(
+                                id: 'dashboard.search.manage',
+                                title: 'Manage Search Providers',
+                                kind: FeatureKind::Action,
+                                requiredAccess: ModuleAccessLevel::WRITE,
+                                endpoints: collect([
+                                    new EndpointBinding(routeName: 'v1.dashboard.search.providers.store'),
+                                    new EndpointBinding(routeName: 'v1.dashboard.search.providers.update'),
+                                    new EndpointBinding(routeName: 'v1.dashboard.search.providers.destroy'),
+                                ]),
+                            ),
                         ]),
                     ),
                 ]),

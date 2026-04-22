@@ -42,14 +42,13 @@ Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function ()
             )
         );
 
-    Route::get('manifesto', ManifestController::class)
-        ->name('api.v1.manifesto')
-        ->middleware(
-            CacheResponse::for(
-                lifetime: hours(8),
-                tags: ['manifest']
-            )
-        );
+    Route::controller(ManifestController::class)->group(function () {
+        Route::get('manifesto', 'index')
+            ->name('api.v1.manifesto');
+
+        Route::get('manifesto/version', 'show')
+            ->name('api.v1.manifesto.version');
+    });
 
     Route::get('search', GlobalSearchController::class)
         ->name('api.v1.search');

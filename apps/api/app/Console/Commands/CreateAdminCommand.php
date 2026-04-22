@@ -37,13 +37,13 @@ final class CreateAdminCommand extends Command
             $results = form()
                 ->text(
                     label: 'Name',
-                    default: Config::string('constants.admin_name'),
+                    default: Config::string('settings.admin_name'),
                     required: true,
                     name: 'name',
                 )
                 ->text(
                     label: 'Email',
-                    default: Config::string('constants.admin_email'),
+                    default: Config::string('settings.admin_email'),
                     required: true,
                     validate: 'string|email|max:255',
                     name: 'email',

@@ -1,7 +1,7 @@
 info:
   name: Dashboard Pins
   type: http
-  seq: 2
+  seq: 3
 
 http:
   method: GET

@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Services\Modules\ModuleAccessService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Spatie\ResponseCache\Facades\ResponseCache;
 
 final readonly class ManifestService
@@ -53,7 +54,7 @@ final readonly class ManifestService
                 ));
 
                 return new ManifestItem(
-                    version: config('app.version', '1.0.0'),
+                    version: Config::string('settings.manifest.version'),
                     modules: $modules,
                 )->toArray();
             });

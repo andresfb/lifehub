@@ -11,11 +11,12 @@ class AuthSession
 {
     public static function has(string $key): bool
     {
-        if (Cache::has($key)) {
+        if (Session::has($key)) {
             return true;
         }
 
-        if (Session::has($key)) {
+        // TODO: cannot use cache with the key as-is. This is not user segregated so there will be record clashes.
+        if (Cache::has($key)) {
             return true;
         }
 

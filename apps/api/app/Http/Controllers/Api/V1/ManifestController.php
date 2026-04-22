@@ -5,20 +5,26 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
-use App\Models\User;
 use App\Services\Manifest\ManifestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 final class ManifestController extends ApiController
 {
-    public function __invoke(Request $request, ManifestService $manifestService): JsonResponse
+    public function index(Request $request, ManifestService $manifestService): JsonResponse
     {
-        /** @var User $user */
-        $user = $request->user();
+        return $this->success(
+            $manifestService->buildForUser(
+                $request->user()
+            ),
+        );
+    }
 
-        $manifest = $manifestService->buildForUser($user);
-
-        return response()->json($manifest->toArray());
+    public function show(): JsonResponse
+    {
+        return $this->success([
+            'version' => Config::string('settings.manifest.version')
+        ]);
     }
 }
