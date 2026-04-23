@@ -29,21 +29,27 @@ readonly class ApiManifestService
     /**
      * @throws Throwable
      */
-    public function loadUserManifest(int $userId): void
+    public function loadUserManifest(int $userId): array
     {
-        $payload = $this->apiClient->get(
-            Config::string('services.backend.endpoints.manifest.data'),
-        );
+        $payload = $this->apiClient
+            ->setUserId($userId)
+            ->get(
+                uri: Config::string('services.backend.endpoints.manifest.data'),
+            );
 
         $this->catalogService->execute($payload, $userId);
+
+        return $payload;
     }
 
-    public function getVersion(): ?string
+    public function getVersion(int $userId): ?string
     {
         try {
-            $payload = $this->apiClient->get(
-                Config::string('services.backend.endpoints.manifest.version'),
-            );
+            $payload = $this->apiClient
+                ->setUserId($userId)
+                ->get(
+                  uri: Config::string('services.backend.endpoints.manifest.version'),
+                );
 
             return $payload['version'] ?? null;
         } catch (Exception $e) {

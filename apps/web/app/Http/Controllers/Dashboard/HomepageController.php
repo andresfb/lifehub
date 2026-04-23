@@ -16,11 +16,11 @@ class HomepageController extends Controller
     {
         $bookmarks = $this->bookmarks();
         $searchEngines = $this->searchEngines();
-        $catalog = $this->getCatalog($request->user());
+        $manifest = $this->getManifest($request->user());
 
         return view(
             'dashboard.homepage.show',
-            compact('bookmarks', 'searchEngines', 'catalog')
+            compact('bookmarks', 'searchEngines', 'manifest')
         );
     }
 

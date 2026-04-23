@@ -2,7 +2,8 @@
 
 namespace App\Repository\Manifest\Services;
 
-use App\Models\ApiCatalog;
+use App\Models\ApiManifest;
+use Illuminate\Support\Facades\Cache;
 use Throwable;
 
 readonly class CheckUserManifestService
@@ -16,18 +17,26 @@ readonly class CheckUserManifestService
      */
     public function execute(int $userId): void
     {
-        $catalog = ApiCatalog::getUserCatalog($userId);
-        if (! $catalog instanceof ApiCatalog) {
+        try {
+            $manifest = ApiManifest::getForUser($userId);
+            if (! $manifest instanceof ApiManifest) {
+                $this->manifestService->loadUserManifest($userId);
+
+                return;
+            }
+
+            $version = $this->manifestService->getVersion($userId);
+            if ($manifest->version === $version) {
+                return;
+            }
+
             $this->manifestService->loadUserManifest($userId);
-
-            return;
+        } finally {
+            Cache::put(
+                md5("USER:MANIFEST:VERSION:$userId"),
+                $userId,
+                now()->addHours(8)
+            );
         }
-
-        $version = $this->manifestService->getVersion();
-        if ($catalog->version === $version) {
-            return;
-        }
-
-        $this->manifestService->loadUserManifest($userId);
     }
 }

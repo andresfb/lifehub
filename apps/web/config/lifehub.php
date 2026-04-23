@@ -2,6 +2,10 @@
 
 return [
 
+    'icons' => [
+        'home' => '𖠿',
+    ],
+
     'modules' => [
         ['name' => 'Dashboard',       'icon' => '⊞', 'route' => 'dashboard'],
         ['name' => 'Bookmarks',       'icon' => '★', 'route' => 'dashboard'],

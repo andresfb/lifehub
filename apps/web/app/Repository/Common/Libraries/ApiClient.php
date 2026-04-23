@@ -2,6 +2,7 @@
 
 namespace App\Repository\Common\Libraries;
 
+use App\Models\User;
 use App\Repository\Auth\Libraries\AuthSession;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -14,12 +15,43 @@ use RuntimeException;
 
 class ApiClient
 {
+    private ?int $userId = null;
+
     private string $token = '';
 
     public int $statusCode = 0 {
         get {
             return $this->statusCode;
         }
+    }
+
+    public function setUserId(?int $userId): self
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
+
+    public function setToken(string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    private function getToken(): string
+    {
+        if (filled($this->token)) {
+            return $this->token;
+        }
+
+        $this->token = AuthSession::get('api_token', '');
+
+        if (blank($this->token) && filled($this->userId)) {
+            $this->token = User::getToken($this->userId);
+        }
+
+        return $this->token;
     }
 
     protected function client(): PendingRequest
@@ -52,24 +84,6 @@ class ApiClient
         $response = $this->client()->post($uri, $data);
 
         return $this->parseResponse($response);
-    }
-
-    public function setToken(string $token): self
-    {
-        $this->token = $token;
-
-        return $this;
-    }
-
-    private function getToken(): string
-    {
-        if (filled($this->token)) {
-            return $this->token;
-        }
-
-        $this->token = AuthSession::get('api_token', '');
-
-        return $this->token;
     }
 
     private function parseResponse(LazyPromise|PromiseInterface|Response $response): array

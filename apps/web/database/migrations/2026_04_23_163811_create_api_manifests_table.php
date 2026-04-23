@@ -8,18 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('api_catalogs', static function (Blueprint $table) {
+        Schema::create('api_manifest', static function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')
-                ->index();
+                ->unique();
             $table->string('version');
-            $table->json('raw_payload');
+            $table->json('payload');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('api_catalogs');
+        Schema::dropIfExists('api_manifests');
     }
 };
