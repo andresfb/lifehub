@@ -24,7 +24,9 @@
       "Bash(git stash:*)",
       "mcp__jcodemunch-mcp__get_file_outline",
       "mcp__jcodemunch-mcp__find_references",
-      "Bash(curl -si http://localhost:8000/api/v1/manifesto)"
+      "Bash(curl -si http://localhost:8000/api/v1/manifesto)",
+      "Bash(xargs ls *)",
+      "Bash(xargs cat *)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -6,9 +6,9 @@ namespace Modules\Core\Manifest;
 
 use App\Contracts\ManifestProvider;
 use App\Dtos\Manifest\EndpointBinding;
+use App\Dtos\Manifest\FeatureAction;
 use App\Dtos\Manifest\FeatureNode;
-use App\Dtos\Manifest\NavHints;
-use App\Enums\FeatureKind;
+use App\Dtos\Manifest\MenuItem;
 use App\Enums\ModuleAccessLevel;
 use App\Enums\ModuleKey;
 use App\Services\Modules\ModuleAccessService;
@@ -52,61 +52,80 @@ final readonly class CoreManifestProvider implements ManifestProvider
     {
         return collect([
             new FeatureNode(
-                id: 'ai.providers',
-                title: 'AI Providers',
-                kind: FeatureKind::Group,
+                id: 'ai',
+                title: 'AI',
                 requiredAccess: ModuleAccessLevel::READ,
-                nav: new NavHints(webPath: '/ai/providers', icon: 'ai'),
-                children: collect([
-                    new FeatureNode(
-                        id: 'ai.providers.list',
-                        title: 'View AI Providers',
-                        kind: FeatureKind::Screen,
-                        requiredAccess: ModuleAccessLevel::READ,
-                        endpoints: collect([
-                            new EndpointBinding(routeName: 'v1.ai.providers.index'),
-                            new EndpointBinding(routeName: 'v1.ai.providers.show'),
+                menuItem: new MenuItem(
+                    name: 'AI Information',
+                    webPath: '/ai',
+                    icon: 'ai',
+                    show: false,
+                ),
+                nodes: collect([
+                    new MenuItem(
+                        name: 'AI Providers',
+                        webPath: '/ai/providers',
+                        icon: 'ai',
+                        show: false,
+                        actions: collect([
+                            new FeatureAction(
+                                name: 'list',
+                                requiredAccess: ModuleAccessLevel::READ,
+                                endpoint: new EndpointBinding(routeName: 'v1.ai.providers.index'),
+                            ),
+                            new FeatureAction(
+                                name: 'show',
+                                requiredAccess: ModuleAccessLevel::READ,
+                                endpoint: new EndpointBinding(routeName: 'v1.ai.providers.show'),
+                            ),
+                            new FeatureAction(
+                                name: 'save',
+                                requiredAccess: ModuleAccessLevel::WRITE,
+                                endpoint: new EndpointBinding(routeName: 'v1.ai.providers.store'),
+                            ),
+                            new FeatureAction(
+                                name: 'update',
+                                requiredAccess: ModuleAccessLevel::WRITE,
+                                endpoint: new EndpointBinding(routeName: 'v1.ai.providers.update'),
+                            ),
+                            new FeatureAction(
+                                name: 'delete',
+                                requiredAccess: ModuleAccessLevel::WRITE,
+                                endpoint: new EndpointBinding(routeName: 'v1.ai.providers.destroy'),
+                            ),
                         ]),
                     ),
-                    new FeatureNode(
-                        id: 'ai.providers.manage',
-                        title: 'Manage AI Providers',
-                        kind: FeatureKind::Action,
-                        requiredAccess: ModuleAccessLevel::WRITE,
-                        endpoints: collect([
-                            new EndpointBinding(routeName: 'v1.ai.providers.store'),
-                            new EndpointBinding(routeName: 'v1.ai.providers.update'),
-                            new EndpointBinding(routeName: 'v1.ai.providers.destroy'),
-                        ]),
-                    ),
-                ]),
-            ),
-            new FeatureNode(
-                id: 'ai.models',
-                title: 'AI Models',
-                kind: FeatureKind::Group,
-                requiredAccess: ModuleAccessLevel::READ,
-                nav: new NavHints(webPath: '/ai/models', icon: 'ai'),
-                children: collect([
-                    new FeatureNode(
-                        id: 'ai.models.list',
-                        title: 'View AI Models',
-                        kind: FeatureKind::Screen,
-                        requiredAccess: ModuleAccessLevel::READ,
-                        endpoints: collect([
-                            new EndpointBinding(routeName: 'v1.ai.models.index'),
-                            new EndpointBinding(routeName: 'v1.ai.models.show'),
-                        ]),
-                    ),
-                    new FeatureNode(
-                        id: 'ai.models.manage',
-                        title: 'Manage AI Models',
-                        kind: FeatureKind::Action,
-                        requiredAccess: ModuleAccessLevel::WRITE,
-                        endpoints: collect([
-                            new EndpointBinding(routeName: 'v1.ai.models.store'),
-                            new EndpointBinding(routeName: 'v1.ai.models.update'),
-                            new EndpointBinding(routeName: 'v1.ai.models.destroy'),
+                    new MenuItem(
+                        name: 'AI Models',
+                        webPath: '/ai/models',
+                        icon: 'ai',
+                        show: false,
+                        actions: collect([
+                            new FeatureAction(
+                                name: 'list',
+                                requiredAccess: ModuleAccessLevel::READ,
+                                endpoint: new EndpointBinding(routeName: 'v1.ai.models.index'),
+                            ),
+                            new FeatureAction(
+                                name: 'show',
+                                requiredAccess: ModuleAccessLevel::READ,
+                                endpoint: new EndpointBinding(routeName: 'v1.ai.models.show'),
+                            ),
+                            new FeatureAction(
+                                name: 'save',
+                                requiredAccess: ModuleAccessLevel::WRITE,
+                                endpoint: new EndpointBinding(routeName: 'v1.ai.models.store'),
+                            ),
+                            new FeatureAction(
+                                name: 'update',
+                                requiredAccess: ModuleAccessLevel::WRITE,
+                                endpoint: new EndpointBinding(routeName: 'v1.ai.models.update'),
+                            ),
+                            new FeatureAction(
+                                name: 'delete',
+                                requiredAccess: ModuleAccessLevel::WRITE,
+                                endpoint: new EndpointBinding(routeName: 'v1.ai.models.destroy'),
+                            ),
                         ]),
                     ),
                 ]),

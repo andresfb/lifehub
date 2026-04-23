@@ -3,6 +3,7 @@
 namespace App\Repository\Auth\Services;
 
 use App\Dtos\Auth\RegisterItem;
+use App\Models\User as UserModel;
 use App\Repository\Auth\Dtos\User;
 use App\Repository\Auth\Enums\AuthStatus;
 use App\Repository\Auth\Libraries\AuthSession;
@@ -28,8 +29,8 @@ readonly class ApiAuthService
     {
         try {
             $payload = $this->apiClient->post(
-                Config::string('services.backend.endpoints.auth.login'),
-                [
+                uri: Config::string('services.backend.endpoints.auth.login'),
+                data: [
                     'email' => $email,
                     'password' => $password,
                     'device' => str(Config::string('app.name'))
@@ -65,8 +66,8 @@ readonly class ApiAuthService
     {
         try {
             $payload = $this->apiClient->post(
-                Config::string('services.backend.endpoints.auth.validate'),
-                [
+                uri: Config::string('services.backend.endpoints.auth.validate'),
+                data: [
                     'email' => $email,
                     'code' => $code,
                 ]
@@ -134,8 +135,8 @@ readonly class ApiAuthService
     {
         try {
             $payload = $this->apiClient->post(
-                Config::string('services.backend.endpoints.auth.register'),
-                [
+                uri: Config::string('services.backend.endpoints.auth.register'),
+                data: [
                     'name' => $item->name,
                     'email' => $item->email,
                     'password' => $item->password,
@@ -184,8 +185,20 @@ readonly class ApiAuthService
         AuthSession::put('api_token', $token);
         AuthSession::put('auth_user', $user);
 
-        Auth::setUser(
-            User::from($user)
-        );
+        $user = User::from($user);
+        Auth::setUser($user);
+
+        UserModel::updateOrCreate([
+            'id' => $user->id,
+        ], [
+            'name' => $user->name,
+            'email' => $user->email,
+            'two_factor_enabled' => $user->two_factor_enabled,
+            'token_hash' => AuthSession::getTokenHash($token),
+            'api_token' => $token,
+            'is_admin' => $user->is_admin,
+            'remember_token' => $user->getRememberToken(),
+            'password' => "{$user->email}:{$token}",
+        ]);
     }
 }

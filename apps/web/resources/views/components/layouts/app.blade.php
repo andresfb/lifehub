@@ -1,4 +1,7 @@
-@props(['module' => 'Dashboard'])
+@props([
+    'module' => 'Dashboard',
+    'manifest' => [],
+])
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -40,19 +43,28 @@
             </button>
         </div>
         <div class="flex-1 overflow-y-auto px-2 pb-5">
-            @foreach(config('lifehub.modules', []) as $mod)
-                @php $isActive = ($module === $mod['name']); @endphp
-                <a
-                    href="{{ route($mod['route'] ?? 'dashboard') }}"
-                    @class([
-                        'mb-px flex w-full items-center gap-2.5 rounded-lg px-3 py-2.25 text-sm no-underline transition-colors duration-150',
-                        'bg-(--lh-accent-light) font-semibold text-(color:--lh-accent-text)' => $isActive,
-                        'font-normal text-(color:--lh-text-sec) hover:bg-(--lh-hover)' => ! $isActive,
-                    ])
-                >
-                    <span class="w-5.5 text-center text-[15px] opacity-80">{{ $mod['icon'] }}</span>
-                    {{ $mod['name'] }}
-                </a>
+            @foreach($manifest as $mod)
+                @foreach($mod['features'] as $feature)
+                    @php $isActive = ($module === $mod['name']); @endphp
+
+                    @if($feature['menu_item']['show'] === false)
+                        @continue;
+                    @endif
+
+                    <a
+                        href="{{ $feature['menu_item']['web_path'] }}"
+                        @class([
+                            'mb-px flex w-full items-center gap-2.5 rounded-lg px-3 py-2.25 text-sm no-underline transition-colors duration-150',
+                            'bg-(--lh-accent-light) font-semibold text-(color:--lh-accent-text)' => $isActive,
+                            'font-normal text-(color:--lh-text-sec) hover:bg-(--lh-hover)' => ! $isActive,
+                        ])
+                    >
+                        <span class="w-5.5 text-center text-[15px] opacity-80">
+                            {{ config('lifehub.icons')[$feature['menu_item']['icon']] }}
+                        </span>
+                        {{ $feature['title'] }}
+                    </a>
+                @endforeach
             @endforeach
         </div>
     </nav>

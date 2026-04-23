@@ -3,16 +3,25 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Throwable;
 
 class HomepageController extends Controller
 {
-    public function show(): View
+    /**
+     * @throws Throwable
+     */
+    public function show(Request $request): View
     {
         $bookmarks = $this->bookmarks();
         $searchEngines = $this->searchEngines();
+        $manifest = $this->getManifest($request->user());
 
-        return view('dashboard.homepage.show', compact('bookmarks', 'searchEngines'));
+        return view(
+            'dashboard.homepage.show',
+            compact('bookmarks', 'searchEngines', 'manifest')
+        );
     }
 
     /** @return array<int, array{category: string, items: array<int, array{title: string, icon: string, iconBgClass: string, url: string}>}> */

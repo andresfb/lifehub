@@ -21,7 +21,7 @@ trait UserLogin
         $response = form()
             ->text(
                 label: 'Email',
-                default: Config::string('constants.admin_email'),
+                default: Config::string('settings.admin_email'),
                 required: true,
                 validate: 'string|email|max:255',
                 name: 'email',

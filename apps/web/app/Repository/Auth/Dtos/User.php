@@ -12,7 +12,7 @@ class User extends Data implements Authenticatable
         public readonly string $name,
         public readonly string $email,
         public readonly bool $two_factor_enabled = false,
-        public readonly bool $is_admin =false,
+        public readonly bool $is_admin = false,
         protected ?string $remember_token = null,
     ) {}
 
