@@ -19,30 +19,30 @@ Route::middleware([
             ->name('v1.reminder.show');
 
         Route::get('/ai/providers', [UserAiProviderController::class, 'index'])
-            ->name('api.v1.ai.providers.index');
+            ->name('v1.ai.providers.index');
 
         Route::get('/ai/providers/{provider}', [UserAiProviderController::class, 'show'])
-            ->name('api.v1.ai.providers.show');
+            ->name('v1.ai.providers.show');
 
         Route::post('/ai/providers', [UserAiProviderController::class, 'store'])
-            ->name('api.v1.ai.providers.store');
+            ->name('v1.ai.providers.store');
 
         Route::patch('/ai/providers/{provider}', [UserAiProviderController::class, 'update'])
-            ->name('api.v1.ai.providers.update');
+            ->name('v1.ai.providers.update');
 
         Route::delete('/ai/providers/{provider}', [UserAiProviderController::class, 'destroy'])
-            ->name('api.v1.ai.providers.destroy');
+            ->name('v1.ai.providers.destroy');
 
         Route::post('/ai/providers/{provider}/models', [UserAiProviderController::class, 'storeModel'])
-            ->name('api.v1.ai.providers.models.store');
+            ->name('v1.ai.providers.models.store');
 
         Route::get('/ai/models/{model}', [UserAiModelController::class, 'show'])
-            ->name('api.v1.ai.models.show');
+            ->name('v1.ai.models.show');
 
         Route::patch('/ai/models/{model}', [UserAiModelController::class, 'update'])
-            ->name('api.v1.ai.models.update');
+            ->name('v1.ai.models.update');
 
         Route::delete('/ai/models/{model}', [UserAiModelController::class, 'destroy'])
-            ->name('api.v1.ai.models.destroy');
+            ->name('v1.ai.models.destroy');
 
     });
