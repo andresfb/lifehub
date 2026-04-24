@@ -48,6 +48,19 @@ test('layout opens a parent submenu when a child path is active', function () {
         ->toMatch('/id="navigation-reports-reports"\s+x-show="isExpanded"\s+class="mt-1 space-y-px"/');
 });
 
+test('layout wires the sidebar keyboard shortcut', function () {
+    $this->withoutVite();
+
+    $html = (string) $this->blade(
+        '<x-layouts.app module-name="reports" :modules="$modules">Content</x-layouts.app>',
+        ['modules' => layoutNavigationSubmenuModules()]
+    );
+
+    expect($html)
+        ->toContain('x-data="layoutShell()"')
+        ->toContain('x-on:keydown.window="toggleSidebarFromShortcut($event)"');
+});
+
 /**
  * @return Collection<int, ModuleItem>
  */

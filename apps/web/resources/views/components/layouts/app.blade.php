@@ -14,6 +14,7 @@
 <body
     x-data="layoutShell()"
     x-on:keydown.escape.window="closeOpenMenus()"
+    x-on:keydown.window="toggleSidebarFromShortcut($event)"
     class="min-h-screen bg-(--lh-bg) text-(--lh-text)"
 >
 
