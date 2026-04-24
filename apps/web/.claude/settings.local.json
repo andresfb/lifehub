@@ -11,5 +11,9 @@
       "Bash(vendor/bin/pint *)",
       "Bash(npm run *)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "laravel-boost"
+  ],
+  "enableAllProjectMcpServers": true
 }
