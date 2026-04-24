@@ -38,6 +38,22 @@ Alpine.data('layoutShell', () => ({
         this.$store.theme.toggle()
     },
 
+    toggleSidebarFromShortcut(event) {
+        if (!event.metaKey || event.key !== '1' || this.isEditableTarget(event.target)) {
+            return
+        }
+
+        event.preventDefault()
+
+        this.isSidebarOpen = !this.isSidebarOpen
+        this.isProfileMenuOpen = false
+    },
+
+    isEditableTarget(target) {
+        return target instanceof HTMLElement
+            && (target.isContentEditable || target.closest('input, textarea, select, [contenteditable="true"]') !== null)
+    },
+
     closeOpenMenus() {
         this.isSidebarOpen = false
         this.isProfileMenuOpen = false
