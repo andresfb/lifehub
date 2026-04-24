@@ -11,20 +11,29 @@
     <title>{{ config('app.name', 'LifeHub') }} — {{ ucwords($moduleName) }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-(--lh-bg) text-(--lh-text)">
+<body
+    x-data="layoutShell()"
+    x-on:keydown.escape.window="closeOpenMenus()"
+    class="min-h-screen bg-(--lh-bg) text-(--lh-text)"
+>
 
     {{-- Sidebar overlay --}}
     <div
-        id="sidebar-overlay"
-        onclick="LifeHub.closeSidebar()"
-        class="fixed inset-0 z-90 hidden bg-(--lh-overlay-bg) backdrop-blur-xs"
+        x-cloak
+        x-show="isSidebarOpen"
+        x-on:click="isSidebarOpen = false"
+        class="fixed inset-0 z-90 bg-(--lh-overlay-bg) backdrop-blur-xs"
         aria-hidden="true"
     ></div>
 
     {{-- Sidebar --}}
     <nav
-        id="sidebar"
-        class="fixed top-0 bottom-0 left-0 z-100 flex w-65 -translate-x-full flex-col border-r border-(--lh-border) bg-(--lh-sidebar-bg) transition-transform duration-250 ease-in-out"
+        x-cloak
+        x-bind:class="{
+            '-translate-x-full': ! isSidebarOpen,
+            'shadow-(--lh-shadow-lg)': isSidebarOpen,
+        }"
+        class="fixed top-0 bottom-0 left-0 z-100 flex w-65 flex-col border-r border-(--lh-border) bg-(--lh-sidebar-bg) transition-transform duration-250 ease-in-out"
         aria-label="Main navigation"
     >
         <div class="flex items-center justify-between px-4 pt-4 pb-3">
@@ -33,7 +42,7 @@
                 <span class="font-display text-[15px] font-bold text-(--lh-text)">LifeHub</span>
             </a>
             <button
-                onclick="LifeHub.closeSidebar()"
+                x-on:click="isSidebarOpen = false"
                 class="flex cursor-pointer rounded-md border-none bg-transparent p-1 text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-text)"
                 aria-label="Close sidebar"
             >
@@ -59,7 +68,7 @@
                     @endphp
 
                     @if($hasChildren)
-                        <div class="mb-px">
+                        <div class="mb-px" x-data="navigationGroup({{ Js::from($isExpanded) }})">
                             <div
                                 @class([
                                     'flex w-full items-center rounded-lg transition-colors duration-150',
@@ -80,15 +89,13 @@
                                     type="button"
                                     class="flex cursor-pointer rounded-r-lg border-none bg-transparent px-3 py-2.25 text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-text)"
                                     aria-label="Toggle {{ $navigation->name }} submenu"
-                                    aria-expanded="{{ $isExpanded ? 'true' : 'false' }}"
+                                    x-bind:aria-expanded="isExpanded.toString()"
                                     aria-controls="{{ $childrenId }}"
-                                    onclick="LifeHub.toggleNavigationGroup(this)"
+                                    x-on:click="toggle()"
                                 >
                                     <svg
-                                        @class([
-                                            'size-3.5 transition-transform duration-150',
-                                            'rotate-90' => $isExpanded,
-                                        ])
+                                        x-bind:class="{ 'rotate-90': isExpanded }"
+                                        class="size-3.5 transition-transform duration-150"
                                         viewBox="0 0 16 16"
                                         fill="none"
                                         stroke="currentColor"
@@ -103,10 +110,9 @@
                             </div>
                             <div
                                 id="{{ $childrenId }}"
-                                @class([
-                                    'mt-1 space-y-px',
-                                    'hidden' => ! $isExpanded,
-                                ])
+                                @if(! $isExpanded) x-cloak @endif
+                                x-show="isExpanded"
+                                class="mt-1 space-y-px"
                             >
                                 @foreach($children as $child)
                                     <a
@@ -148,7 +154,7 @@
         {{-- Left: hamburger + logo --}}
         <div class="flex items-center gap-3 min-w-50">
             <button
-                onclick="LifeHub.openSidebar()"
+                x-on:click="isSidebarOpen = true"
                 class="flex cursor-pointer rounded-md border-none bg-transparent p-1.5 text-(--lh-text-sec) transition-colors duration-150 hover:bg-(--lh-hover)"
                 aria-label="Open navigation"
             >
@@ -172,30 +178,29 @@
         {{-- Right: theme toggle + profile --}}
         <div class="min-w-50 flex items-center justify-end gap-2">
             <button
-                id="theme-toggle"
-                onclick="LifeHub.toggleTheme()"
+                x-on:click="toggleTheme()"
                 class="flex cursor-pointer rounded-md border-none bg-transparent p-1.5 text-(--lh-text-sec) transition-colors duration-150 hover:bg-(--lh-hover)"
                 aria-label="Toggle theme"
             >
-                <svg id="icon-sun" class="hidden" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                <svg x-cloak x-show="isDark" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
                     <circle cx="9" cy="9" r="4"/>
                     <path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.2 3.2l1.4 1.4M13.4 13.4l1.4 1.4M13.4 3.2l1.4 1.4M3.2 13.4l1.4 1.4"/>
                 </svg>
-                <svg id="icon-moon" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <svg x-show="! isDark" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M15.1 10.4A7 7 0 017.6 2.9a7 7 0 107.5 7.5z"/>
                 </svg>
             </button>
 
-            <div class="relative" id="profile-menu-wrap">
+            <div class="relative" x-on:click.outside="isProfileMenuOpen = false">
                 <button
-                    id="profile-btn"
-                    onclick="LifeHub.toggleProfileMenu()"
+                    x-on:click="isProfileMenuOpen = ! isProfileMenuOpen"
                     class="h-8.5 w-8.5 cursor-pointer rounded-full border-2 border-(--lh-border) bg-(--lh-accent-light) font-display text-[13px] font-semibold text-(--lh-accent-text) transition-colors duration-150 hover:border-(--lh-accent)"
                 >{{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}{{ strtoupper(substr(strstr(auth()->user()?->name ?? ' D', ' '), 1, 1)) }}</button>
 
                 <div
-                    id="profile-dropdown"
-                    class="absolute top-full right-0 z-60 mt-2 hidden min-w-45 rounded-[10px] border border-(--lh-border) bg-(--lh-card) p-1 shadow-(--lh-shadow-lg)"
+                    x-cloak
+                    x-show="isProfileMenuOpen"
+                    class="absolute top-full right-0 z-60 mt-2 min-w-45 rounded-[10px] border border-(--lh-border) bg-(--lh-card) p-1 shadow-(--lh-shadow-lg)"
                 >
                     <div class="border-b border-(--lh-border) px-3.5 py-2.5">
                         <div class="text-[14px] font-semibold text-(--lh-text)">{{ auth()->user()?->name ?? 'User' }}</div>

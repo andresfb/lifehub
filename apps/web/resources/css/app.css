@@ -9,6 +9,10 @@
 
 @custom-variant dark (&:is(.dark, .dark *));
 
+[x-cloak] {
+    display: none !important;
+}
+
 @theme {
     --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';

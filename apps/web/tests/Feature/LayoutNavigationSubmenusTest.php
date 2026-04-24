@@ -43,8 +43,9 @@ test('layout opens a parent submenu when a child path is active', function () {
     );
 
     expect($html)
-        ->toContain('aria-expanded="true"')
-        ->toMatch('/id="navigation-reports-reports"\s+class="mt-1 space-y-px"/');
+        ->toContain('x-data="navigationGroup(true)"')
+        ->toContain('x-bind:aria-expanded="isExpanded.toString()"')
+        ->toMatch('/id="navigation-reports-reports"\s+x-show="isExpanded"\s+class="mt-1 space-y-px"/');
 });
 
 /**

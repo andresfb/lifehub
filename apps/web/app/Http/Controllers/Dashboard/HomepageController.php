@@ -89,8 +89,8 @@ final class HomepageController extends Controller
     private function searchEngines(): array
     {
         return [
+            ['name' => 'DuckDuckGo', 'url' => 'https://noai.duckduckgo.com/?ia=web&origin=lifehub&q=', 'icon' => 'D', 'colorClass' => 'bg-[#DE5833]'],
             ['name' => 'Google',     'url' => 'https://www.google.com/search?q=',             'icon' => 'G', 'colorClass' => 'bg-[#4285F4]'],
-            ['name' => 'DuckDuckGo', 'url' => 'https://duckduckgo.com/?q=',                   'icon' => 'D', 'colorClass' => 'bg-[#DE5833]'],
             ['name' => 'Bing',       'url' => 'https://www.bing.com/search?q=',               'icon' => 'B', 'colorClass' => 'bg-[#008373]'],
             ['name' => 'Brave',      'url' => 'https://search.brave.com/search?q=',           'icon' => '🦁', 'colorClass' => 'bg-[#FB542B]'],
             ['name' => 'YouTube',    'url' => 'https://www.youtube.com/results?search_query=', 'icon' => '▶', 'colorClass' => 'bg-[#FF0000]'],
