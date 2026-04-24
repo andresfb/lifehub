@@ -24,7 +24,7 @@ final class ManifestController extends ApiController
     public function show(): JsonResponse
     {
         return $this->success([
-            'version' => Config::string('settings.manifest.version')
+            'version' => Config::string('settings.manifest.version'),
         ]);
     }
 }

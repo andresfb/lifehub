@@ -41,7 +41,7 @@ final class AuthController extends ApiController
             $expire = 60 * 5; // 5 minutes
 
             Cache::put(
-                md5(sprintf("%s:%s", $user->id, $user->email)),
+                md5(sprintf('%s:%s', $user->id, $user->email)),
                 $request->safe()->string('device')->toString(),
                 $expire,
             );
@@ -69,7 +69,7 @@ final class AuthController extends ApiController
 
         $code = $request->safe()->string('two_factor_code')->toString();
 
-        $key = md5(sprintf("%s:%s", $user->id, $user->email));
+        $key = md5(sprintf('%s:%s', $user->id, $user->email));
         if (! Cache::has($key)) {
             return $this->unauthorized('Two Factor Validation Expired');
         }
@@ -171,8 +171,7 @@ final class AuthController extends ApiController
         User $user,
         string $device,
         string $message = 'Login successfully'
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $user->tokens()
             ->where('name', $device)
             ->delete();

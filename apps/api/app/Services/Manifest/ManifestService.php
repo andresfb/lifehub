@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Services\Manifest;
 
 use App\Contracts\ManifestProviderInterface;
-use App\Dtos\Manifest\ModuleActionItem;
 use App\Dtos\Manifest\ManifestItem;
+use App\Dtos\Manifest\ModuleActionItem;
 use App\Dtos\Manifest\ModuleCommandItem;
-use App\Dtos\Manifest\NavigationItem;
 use App\Dtos\Manifest\ModuleManifest;
+use App\Dtos\Manifest\NavigationItem;
 use App\Enums\ModuleAccessLevel;
 use App\Models\User;
 use App\Services\Modules\ModuleAccessService;
@@ -70,7 +70,7 @@ final readonly class ManifestService
                     $full = $this->buildFull();
 
                     $filtered = $full->modules
-                        ->filter(fn(ModuleManifest $module): bool => ($module->isPublic || $user->isAdmin())
+                        ->filter(fn (ModuleManifest $module): bool => ($module->isPublic || $user->isAdmin())
                             && $this->accessService->canRead($user, $module->key->value))
                         ->map(function (ModuleManifest $module) use ($user): ModuleManifest {
                             $userLevel = $this->accessService->canWrite($user, $module->key->value)
@@ -111,7 +111,7 @@ final readonly class ManifestService
     }
 
     /**
-     * @param  Collection<int, NavigationItem>|null $nodes
+     * @param  Collection<int, NavigationItem>|null  $nodes
      * @return Collection<int, NavigationItem>|null
      */
     private function resolveNodes(?Collection $nodes): ?Collection
@@ -124,7 +124,7 @@ final readonly class ManifestService
     }
 
     /**
-     * @param  Collection<int, ModuleCommandItem>|null $commands
+     * @param  Collection<int, ModuleCommandItem>|null  $commands
      * @return Collection<int, ModuleCommandItem>|null
      */
     private function resolveCommands(?Collection $commands): ?Collection
@@ -153,7 +153,7 @@ final readonly class ManifestService
     }
 
     /**
-     * @param  Collection<int, ModuleActionItem>|null $actions
+     * @param  Collection<int, ModuleActionItem>|null  $actions
      * @return Collection<int, ModuleActionItem>|null
      */
     private function resolveActions(?Collection $actions): ?Collection

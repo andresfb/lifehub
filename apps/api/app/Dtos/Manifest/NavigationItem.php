@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dtos\Manifest;
 
 use App\Enums\ModuleKey;
@@ -10,7 +12,7 @@ use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
-class NavigationItem extends Data
+final class NavigationItem extends Data
 {
     public function __construct(
         public readonly string $id,
@@ -20,7 +22,7 @@ class NavigationItem extends Data
         public readonly string $icon,
         public readonly ?string $shortcut = null,
         public readonly bool $show = false,
-        #[DataCollectionOf(__CLASS__)]
+        #[DataCollectionOf(self::class)]
         public readonly ?Collection $nodes = null,
     ) {}
 }

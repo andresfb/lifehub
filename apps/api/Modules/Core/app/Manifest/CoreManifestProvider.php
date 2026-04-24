@@ -78,7 +78,7 @@ final readonly class CoreManifestProvider implements ManifestProviderInterface
     /**
      * {inheritdoc}
      */
-    public function commands(): ?Collection
+    public function commands(): Collection
     {
         return collect([
             new ModuleCommandItem(
@@ -95,7 +95,7 @@ final readonly class CoreManifestProvider implements ManifestProviderInterface
     /**
      * {inheritdoc}
      */
-    public function actions(): ?Collection
+    public function actions(): Collection
     {
         return collect([
             new ModuleActionItem(
