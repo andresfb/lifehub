@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Dashboard\Http\Controllers\Api\V1\DashboardController;
 use Modules\Dashboard\Http\Controllers\Api\V1\PinController;
+use Modules\Dashboard\Http\Controllers\Api\V1\SearchPinController;
 use Modules\Dashboard\Http\Controllers\Api\V1\SearchProviderController;
 use Spatie\ResponseCache\Middlewares\CacheResponse;
 
@@ -36,6 +37,15 @@ Route::middleware([
                 'update' => 'v1.dashboard.pins.update',
                 'destroy' => 'v1.dashboard.pins.destroy',
             ]);
+
+        Route::get('/pins/search', SearchPinController::class)
+            ->name('v1.dashboard.pins.search')
+            ->middleware(
+                CacheResponse::for(
+                    lifetime: hours(8),
+                    tags: ['dashboard']
+                )
+            );
 
         Route::apiResource('/search/providers', SearchProviderController::class)
             ->middlewareFor(

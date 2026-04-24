@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Manifest\Services;
 
 use App\Jobs\CheckUserManifestJob;
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-readonly class ApiManifestService
+final readonly class ApiManifestService
 {
     public function __construct(
         private ApiClient $apiClient,
@@ -19,7 +21,7 @@ readonly class ApiManifestService
 
     public static function checkVersion(int $userId): void
     {
-        if (Cache::has(md5("USER:MANIFEST:VERSION:$userId"))) {
+        if (Cache::has(md5("USER:MANIFEST:VERSION:{$userId}"))) {
             return;
         }
 
@@ -48,7 +50,7 @@ readonly class ApiManifestService
             $payload = $this->apiClient
                 ->setUserId($userId)
                 ->get(
-                  uri: Config::string('services.backend.endpoints.manifest.version'),
+                    uri: Config::string('services.backend.endpoints.manifest.version'),
                 );
 
             return $payload['version'] ?? null;

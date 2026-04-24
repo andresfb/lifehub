@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Repository\Manifest\Services\CheckUserManifestService;
@@ -11,7 +13,7 @@ use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Throwable;
 
-class CheckUserManifestJob implements ShouldQueue
+final class CheckUserManifestJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;

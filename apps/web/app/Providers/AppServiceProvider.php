@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Repository\Auth\Dtos\User;
@@ -19,7 +21,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
-class AppServiceProvider extends ServiceProvider
+final class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -50,7 +52,7 @@ class AppServiceProvider extends ServiceProvider
             : null
         );
 
-        RedirectResponse::macro('announce', function ($text, $type = 'ghost') {
+        RedirectResponse::macro('announce', function ($text, $type = 'ghost'): object {
             $this->session->push('announcements', [
                 'id' => uniqid(Config::string('app.name'), true),
                 'type' => $type,
@@ -60,11 +62,11 @@ class AppServiceProvider extends ServiceProvider
             return $this;
         });
 
-        Gate::define('admin', static function (User $user) {
+        Gate::define('admin', static function (User $user): bool {
             return $user->isAdmin();
         });
 
-        Auth::viaRequest('backend-session', static function(): ?User {
+        Auth::viaRequest('backend-session', static function (): ?User {
             $token = AuthSession::get('api_token');
 
             if (blank($token)) {

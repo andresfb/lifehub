@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Dtos\Manifest;
 
-use App\Enums\ModuleAccessLevel;
+use App\Enums\ModuleKey;
 use Illuminate\Support\Collection;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapName;
@@ -12,14 +12,17 @@ use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
-final class FeatureNode extends Data
+final class NavigationItem extends Data
 {
     public function __construct(
         public readonly string $id,
-        public readonly string $title,
-        public readonly ModuleAccessLevel $requiredAccess = ModuleAccessLevel::READ,
-        public readonly MenuItem $menuItem,
-        #[DataCollectionOf(__CLASS__)]
+        public readonly ModuleKey $key,
+        public readonly string $name,
+        public readonly string $webPath,
+        public readonly string $icon,
+        public readonly ?string $shortcut = null,
+        public readonly bool $show = false,
+        #[DataCollectionOf(self::class)]
         public readonly ?Collection $nodes = null,
     ) {}
 }

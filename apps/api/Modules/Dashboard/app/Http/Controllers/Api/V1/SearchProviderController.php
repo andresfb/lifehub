@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Http\Controllers\Api\V1;
 
-use _PHPStan_5a70c2d68\Nette\NotImplementedException;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Mcp\Exceptions\NotImplementedException;
 use Modules\Dashboard\Actions\SearchProvidersAction;
 use Modules\Dashboard\Http\Resources\Api\V1\SearchProviderResource;
 use Modules\Dashboard\Models\SearchProvider;

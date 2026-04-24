@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
-class RegisterRequest extends FormRequest
+final class RegisterRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -25,7 +27,7 @@ class RegisterRequest extends FormRequest
                     ->mixedCase()
                     ->letters()
                     ->numbers()
-                    ->uncompromised()
+                    ->uncompromised(),
             ],
             'invitation' => ['required', 'string'],
         ];

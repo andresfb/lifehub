@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\TwoFactorController;
@@ -7,7 +9,7 @@ use App\Http\Controllers\Dashboard\HomepageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
-    return redirect()->route('dashboard');
+    return to_route('dashboard');
 })->name('home');
 
 Route::middleware(['throttle:login'])->group(function () {

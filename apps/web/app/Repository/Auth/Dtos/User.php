@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Auth\Dtos;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Spatie\LaravelData\Data;
 
-class User extends Data implements Authenticatable
+final class User extends Data implements Authenticatable
 {
     public function __construct(
-        public readonly string $id,
+        public readonly int $id,
         public readonly string $name,
         public readonly string $email,
         public readonly bool $two_factor_enabled = false,
         public readonly bool $is_admin = false,
-        protected ?string $remember_token = null,
+        public ?string $remember_token = null,
     ) {}
 
     public function getAuthIdentifierName(): string
@@ -23,7 +25,7 @@ class User extends Data implements Authenticatable
 
     public function getAuthIdentifier(): string
     {
-        return $this->id;
+        return (string) $this->id;
     }
 
     public function getAuthPasswordName(): string

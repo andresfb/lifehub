@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services\Manifest;
 
-use App\Contracts\ManifestProvider;
-use App\Dtos\Manifest\FeatureAction;
-use App\Dtos\Manifest\FeatureNode;
+use App\Contracts\ManifestProviderInterface;
 use App\Dtos\Manifest\ManifestItem;
-use App\Dtos\Manifest\MenuItem;
+use App\Dtos\Manifest\ModuleActionItem;
+use App\Dtos\Manifest\ModuleCommandItem;
 use App\Dtos\Manifest\ModuleManifest;
+use App\Dtos\Manifest\NavigationItem;
 use App\Enums\ModuleAccessLevel;
 use App\Models\User;
 use App\Services\Modules\ModuleAccessService;
@@ -20,7 +20,7 @@ use Spatie\ResponseCache\Facades\ResponseCache;
 
 final readonly class ManifestService
 {
-    /** @var Collection<int, ManifestProvider> */
+    /** @var Collection<int, ManifestProviderInterface> */
     private Collection $providers;
 
     public function __construct(
@@ -37,19 +37,21 @@ final readonly class ManifestService
         ResponseCache::clear(['manifest']);
     }
 
-    public function register(ManifestProvider $provider): void
+    public function register(ManifestProviderInterface $provider): void
     {
         $this->providers->push($provider);
     }
 
     public function buildFull(): ManifestItem
     {
-        $modules = $this->providers->map(fn (ManifestProvider $provider): ModuleManifest => new ModuleManifest(
+        $modules = $this->providers->map(fn (ManifestProviderInterface $provider): ModuleManifest => new ModuleManifest(
             key: $provider->moduleKey(),
             name: $provider->moduleName(),
             description: $provider->moduleDescription(),
             isPublic: $provider->isPublic(),
-            features: $this->resolveFeatures($provider->features()),
+            navigation: $this->resolveNavigation($provider->navigation()),
+            commands: $this->resolveCommands($provider->commands()),
+            actions: $this->resolveActions($provider->actions()),
         ));
 
         return new ManifestItem(
@@ -68,7 +70,7 @@ final readonly class ManifestService
                     $full = $this->buildFull();
 
                     $filtered = $full->modules
-                        ->filter(fn(ModuleManifest $module): bool => ($module->isPublic || $user->isAdmin())
+                        ->filter(fn (ModuleManifest $module): bool => ($module->isPublic || $user->isAdmin())
                             && $this->accessService->canRead($user, $module->key->value))
                         ->map(function (ModuleManifest $module) use ($user): ModuleManifest {
                             $userLevel = $this->accessService->canWrite($user, $module->key->value)
@@ -80,7 +82,9 @@ final readonly class ManifestService
                                 name: $module->name,
                                 description: $module->description,
                                 isPublic: $module->isPublic,
-                                features: $this->filterFeatures($module->features, $userLevel),
+                                navigation: $module->navigation,
+                                commands: $this->filterCommands($module->commands, $userLevel),
+                                actions: $this->filterActions($module->actions, $userLevel),
                             );
                         })
                         ->values();
@@ -92,67 +96,23 @@ final readonly class ManifestService
                 });
     }
 
-    /**
-     * @param  Collection<int, FeatureNode>  $features
-     * @return Collection<int, FeatureNode>
-     */
-    private function resolveFeatures(Collection $features): Collection
+    private function resolveNavigation(NavigationItem $navigation): NavigationItem
     {
-        return $features->map(fn (FeatureNode $node): FeatureNode => $this->resolveFeature($node));
-    }
-
-    private function resolveFeature(FeatureNode $node): FeatureNode
-    {
-        return new FeatureNode(
-            id: $node->id,
-            title: $node->title,
-            requiredAccess: $node->requiredAccess,
-            menuItem: $this->resolveMenuItem($node->menuItem),
-            nodes: $this->resolveNodes($node->nodes),
-        );
-    }
-
-    private function resolveMenuItem(MenuItem $menuItem): MenuItem
-    {
-        return new MenuItem(
-            name: $menuItem->name,
-            webPath: $menuItem->webPath,
-            icon: $menuItem->icon,
-            shortcut: $menuItem->shortcut,
-            show: $menuItem->show,
-            actions: $this->resolveActions($menuItem->actions),
+        return new NavigationItem(
+            id: $navigation->id,
+            key: $navigation->key,
+            name: $navigation->name,
+            webPath: $navigation->webPath,
+            icon: $navigation->icon,
+            shortcut: $navigation->shortcut,
+            show: $navigation->show,
+            nodes: $this->resolveNodes($navigation->nodes),
         );
     }
 
     /**
-     * @param  Collection<int, FeatureAction>|null $actions
-     * @return Collection<int, FeatureAction>|null
-     */
-    private function resolveActions(?Collection $actions): ?Collection
-    {
-        if (blank($actions)) {
-            return null;
-        }
-
-        return $actions->map(fn (FeatureAction $action): FeatureAction => $this->resolveAction($action));
-    }
-
-    private function resolveAction(?FeatureAction $action): ?FeatureAction
-    {
-        if (blank($action)) {
-            return null;
-        }
-
-        return new FeatureAction(
-            name: $action->name,
-            requiredAccess: $action->requiredAccess,
-            endpoint: $this->endpointResolver->resolve($action->endpoint),
-        );
-    }
-
-    /**
-     * @param  Collection<int, MenuItem>|null $nodes
-     * @return Collection<int, MenuItem>|null
+     * @param  Collection<int, NavigationItem>|null  $nodes
+     * @return Collection<int, NavigationItem>|null
      */
     private function resolveNodes(?Collection $nodes): ?Collection
     {
@@ -160,29 +120,92 @@ final readonly class ManifestService
             return null;
         }
 
-        return $nodes->map(fn (MenuItem $item): MenuItem => $this->resolveMenuItem($item));
+        return $nodes->map(fn (NavigationItem $item): NavigationItem => $this->resolveNavigation($item));
     }
 
     /**
-     * @param  Collection<int, FeatureNode>  $features
-     * @return Collection<int, FeatureNode>
+     * @param  Collection<int, ModuleCommandItem>|null  $commands
+     * @return Collection<int, ModuleCommandItem>|null
      */
-    private function filterFeatures(Collection $features, ModuleAccessLevel $userLevel): Collection
+    private function resolveCommands(?Collection $commands): ?Collection
     {
-        return $features
-            ->filter(fn (FeatureNode $node): bool => $userLevel->allows($node->requiredAccess))
-            ->map(function (FeatureNode $node) use ($userLevel): FeatureNode {
-                $feature = $this->resolveFeature($node);
+        if (blank($commands)) {
+            return null;
+        }
 
-                if (blank($feature->menuItem->actions)) {
-                    return $feature;
-                }
+        return $commands->map(fn (ModuleCommandItem $item): ModuleCommandItem => $this->resolveCommand($item));
+    }
 
-                return $feature->menuItem
-                    ->actions
-                    ->filter(fn (FeatureAction $action): bool => $userLevel->allows($action->requiredAccess))
-                    ->map(fn (FeatureAction $action): FeatureAction => $this->resolveAction($action));
-            })
-            ->values();
+    private function resolveCommand(ModuleCommandItem $item): ?ModuleCommandItem
+    {
+        if (blank($item)) {
+            return null;
+        }
+
+        return new ModuleCommandItem(
+            owner: $item->owner,
+            code: $item->code,
+            name: $item->name,
+            requiredAccess: $item->requiredAccess,
+            endpoint: $this->endpointResolver->resolve($item->endpoint),
+            shortcut: $item->shortcut,
+        );
+    }
+
+    /**
+     * @param  Collection<int, ModuleActionItem>|null  $actions
+     * @return Collection<int, ModuleActionItem>|null
+     */
+    private function resolveActions(?Collection $actions): ?Collection
+    {
+        if (blank($actions)) {
+            return null;
+        }
+
+        return $actions->map(fn (ModuleActionItem $action): ModuleActionItem => $this->resolveAction($action));
+    }
+
+    private function resolveAction(?ModuleActionItem $action): ?ModuleActionItem
+    {
+        if (blank($action)) {
+            return null;
+        }
+
+        return new ModuleActionItem(
+            owner: $action->owner,
+            name: $action->name,
+            requiredAccess: $action->requiredAccess,
+            endpoint: $this->endpointResolver->resolve($action->endpoint),
+        );
+    }
+
+    /**
+     * @param  Collection<int, ModuleCommandItem>|null  $commands
+     * @return Collection<int, ModuleCommandItem>|null
+     */
+    private function filterCommands(?Collection $commands, ModuleAccessLevel $userLevel): ?Collection
+    {
+        if (blank($commands)) {
+            return null;
+        }
+
+        return $commands
+            ->filter(fn (ModuleCommandItem $item): bool => $userLevel->allows($item->requiredAccess))
+            ->map(fn (ModuleCommandItem $item): ModuleCommandItem => $this->resolveCommand($item));
+    }
+
+    /**
+     * @param  Collection<int, ModuleActionItem>|null  $actions
+     * @return Collection<int, ModuleActionItem>|null
+     */
+    private function filterActions(?Collection $actions, ModuleAccessLevel $userLevel): ?Collection
+    {
+        if (blank($actions)) {
+            return null;
+        }
+
+        return $actions
+            ->filter(fn (ModuleActionItem $item): bool => $userLevel->allows($item->requiredAccess))
+            ->map(fn (ModuleActionItem $item): ModuleActionItem => $this->resolveAction($item));
     }
 }

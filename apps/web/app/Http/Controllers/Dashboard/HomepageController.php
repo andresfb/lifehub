@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
@@ -7,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Throwable;
 
-class HomepageController extends Controller
+final class HomepageController extends Controller
 {
     /**
      * @throws Throwable
@@ -16,11 +18,15 @@ class HomepageController extends Controller
     {
         $bookmarks = $this->bookmarks();
         $searchEngines = $this->searchEngines();
-        $manifest = $this->getManifest($request->user());
+        $modules = $this->getNavigation($request->user());
 
         return view(
             'dashboard.homepage.show',
-            compact('bookmarks', 'searchEngines', 'manifest')
+            [
+                'bookmarks' => $bookmarks,
+                'searchEngines' => $searchEngines,
+                'modules' => $modules,
+            ],
         );
     }
 

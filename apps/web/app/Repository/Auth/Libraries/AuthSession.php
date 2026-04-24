@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Auth\Libraries;
 
 use App\Models\User as UserModel;
@@ -9,13 +11,13 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 use UnitEnum;
 
-class AuthSession
+final class AuthSession
 {
-    const string API_TOKEN_KEY = 'api_token';
+    public const string API_TOKEN_KEY = 'api_token';
 
-    const string AUTH_USER_KEY = 'auth_user';
+    public const string AUTH_USER_KEY = 'auth_user';
 
-    const string TOKEN_HASH_KEY = 'token_hash';
+    public const string TOKEN_HASH_KEY = 'token_hash';
 
     public static function has(string $key): bool
     {
@@ -86,7 +88,7 @@ class AuthSession
     public static function getTokenHash(string $token): string
     {
         return hash('sha256', sprintf(
-            "USER:API:TOKEN:%s:%s",
+            'USER:API:TOKEN:%s:%s',
             $token,
             Config::string('app.key'),
         ));

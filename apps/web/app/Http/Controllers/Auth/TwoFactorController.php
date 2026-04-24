@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -11,7 +13,7 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
-class TwoFactorController extends Controller
+final class TwoFactorController extends Controller
 {
     public function show(): View
     {
@@ -23,18 +25,14 @@ class TwoFactorController extends Controller
      */
     public function store(TwoFactorRequest $request, ApiAuthService $service): RedirectResponse
     {
-        if (! AuthSession::has('login.email')) {
-            abort(401);
-        }
+        abort_unless(AuthSession::has('login.email'), 401);
 
         $result = $service->validateTwoFactorCode(
             $request->safe()->string('code')->toString(),
             AuthSession::get('login.email')
         );
 
-        if ($result === AuthStatus::FAILURE) {
-            abort(401);
-        }
+        abort_if($result === AuthStatus::FAILURE, 401);
 
         return redirect()->intended(route('dashboard'));
     }

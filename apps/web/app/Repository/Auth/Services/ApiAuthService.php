@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Auth\Services;
 
 use App\Dtos\Auth\RegisterItem;
@@ -16,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
-readonly class ApiAuthService
+final readonly class ApiAuthService
 {
     public function __construct(
         private ApiClient $apiClient
@@ -103,14 +105,14 @@ readonly class ApiAuthService
                 } catch (Exception $e) {
                     Log::error($e->getMessage(), $e->getTrace());
                 }
-            }
+            },
         ]);
     }
 
     /**
      * @throws Exception
      */
-    public function me(string $token): ?User
+    public function me(string $token): User
     {
         if (AuthSession::has('auth_user')) {
             $user = AuthSession::get('auth_user', []);
@@ -188,17 +190,18 @@ readonly class ApiAuthService
         $user = User::from($user);
         Auth::setUser($user);
 
-        UserModel::updateOrCreate([
-            'id' => $user->id,
-        ], [
-            'name' => $user->name,
-            'email' => $user->email,
-            'two_factor_enabled' => $user->two_factor_enabled,
-            'token_hash' => AuthSession::getTokenHash($token),
-            'api_token' => $token,
-            'is_admin' => $user->is_admin,
-            'remember_token' => $user->getRememberToken(),
-            'password' => "{$user->email}:{$token}",
-        ]);
+        UserModel::query()
+            ->updateOrCreate([
+                'id' => $user->id,
+            ], [
+                'name' => $user->name,
+                'email' => $user->email,
+                'two_factor_enabled' => $user->two_factor_enabled,
+                'token_hash' => AuthSession::getTokenHash($token),
+                'api_token' => $token,
+                'is_admin' => $user->is_admin,
+                'remember_token' => $user->getRememberToken(),
+                'password' => "{$user->email}:{$token}",
+            ]);
     }
 }
