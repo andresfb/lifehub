@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\ApiManifestModule;
 use App\Models\ApiManifestNavigationNode;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ApiManifestNavigationNodeFactory extends Factory
+/**
+ * @extends Factory<ApiManifestNavigationNode>
+ */
+final class ApiManifestNavigationNodeFactory extends Factory
 {
     protected $model = ApiManifestNavigationNode::class;
 

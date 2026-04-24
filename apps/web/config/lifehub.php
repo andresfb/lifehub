@@ -6,6 +6,8 @@ return [
 
     'icons' => [
         'home' => '𖠿',
+        'pin' => '𖤣',
+        'search' => '⌕',
     ],
 
     'modules' => [

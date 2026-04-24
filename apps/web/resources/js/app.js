@@ -44,6 +44,19 @@ const LifeHub = {
         document.body.style.overflow = '';
     },
 
+    toggleNavigationGroup(button) {
+        const controls = button.getAttribute('aria-controls');
+        if (!controls) return;
+
+        const submenu = document.getElementById(controls);
+        if (!submenu) return;
+
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', String(!isExpanded));
+        submenu.classList.toggle('hidden', isExpanded);
+        button.querySelector('svg')?.classList.toggle('rotate-90', !isExpanded);
+    },
+
     // ── Profile menu ─────────────────────────────────────────
     toggleProfileMenu() {
         const dropdown = document.getElementById('profile-dropdown');

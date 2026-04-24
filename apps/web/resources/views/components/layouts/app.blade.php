@@ -46,24 +46,96 @@
             @foreach($modules as $module)
                 @php $isActive = ($moduleName === $module->key); @endphp
 
-                @foreach($module->navigation as $navigation)
+                @foreach($module->navigation ?? collect() as $navigation)
                     @if($navigation->show === false)
                         @continue;
                     @endif
 
-                    <a
-                        href="{{ $navigation->web_path }}"
-                        @class([
-                            'mb-px flex w-full items-center gap-2.5 rounded-lg px-3 py-2.25 text-sm no-underline transition-colors duration-150',
-                            'bg-(--lh-accent-light) font-semibold text-(color:--lh-accent-text)' => $isActive,
-                            'font-normal text-(color:--lh-text-sec) hover:bg-(--lh-hover)' => ! $isActive,
-                        ])
-                    >
-                        <span class="w-5.5 text-center text-[15px] opacity-80">
-                            {{ config('lifehub.icons')[$navigation->icon] }}
-                        </span>
-                        {{ $navigation->name }}
-                    </a>
+                    @php
+                        $children = $navigation->children?->filter(fn ($child) => $child->show !== false) ?? collect();
+                        $hasChildren = $children->isNotEmpty();
+                        $childrenId = \Illuminate\Support\Str::slug("navigation-{$module->key}-{$navigation->key}");
+                        $isExpanded = $children->contains(fn ($child) => request()->is(ltrim($child->web_path, '/')));
+                    @endphp
+
+                    @if($hasChildren)
+                        <div class="mb-px">
+                            <div
+                                @class([
+                                    'flex w-full items-center rounded-lg transition-colors duration-150',
+                                    'bg-(--lh-accent-light) font-semibold text-(color:--lh-accent-text)' => $isActive,
+                                    'font-normal text-(color:--lh-text-sec) hover:bg-(--lh-hover)' => ! $isActive,
+                                ])
+                            >
+                                <a
+                                    href="{{ resolve_route($navigation->web_path) }}"
+                                    class="flex min-w-0 flex-1 items-center gap-2.5 rounded-l-lg px-3 py-2.25 text-sm no-underline"
+                                >
+                                    <span class="w-5.5 text-center text-xl lg:text-2xl opacity-80">
+                                        {{ config('lifehub.icons')[$navigation->icon] }}
+                                    </span>
+                                    <span class="truncate">{{ $navigation->name }}</span>
+                                </a>
+                                <button
+                                    type="button"
+                                    class="flex cursor-pointer rounded-r-lg border-none bg-transparent px-3 py-2.25 text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-text)"
+                                    aria-label="Toggle {{ $navigation->name }} submenu"
+                                    aria-expanded="{{ $isExpanded ? 'true' : 'false' }}"
+                                    aria-controls="{{ $childrenId }}"
+                                    onclick="LifeHub.toggleNavigationGroup(this)"
+                                >
+                                    <svg
+                                        @class([
+                                            'size-3.5 transition-transform duration-150',
+                                            'rotate-90' => $isExpanded,
+                                        ])
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M6 4l4 4-4 4" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div
+                                id="{{ $childrenId }}"
+                                @class([
+                                    'mt-1 space-y-px',
+                                    'hidden' => ! $isExpanded,
+                                ])
+                            >
+                                @foreach($children as $child)
+                                    <a
+                                        href="{{ resolve_route($child->web_path) }}"
+                                        class="flex w-full items-center gap-2 rounded-lg py-1.75 pr-3 pl-10 text-[13px] text-(--lh-text-sec) no-underline transition-colors duration-150 hover:bg-(--lh-hover) hover:text-(--lh-text)"
+                                    >
+                                        <span class="w-4 text-center text-xl lg:text-2xl opacity-70">
+                                            {{ config('lifehub.icons')[$child->icon] }}
+                                        </span>
+                                        <span class="truncate">{{ $child->name }}</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <a
+                            href="{{ resolve_route($navigation->web_path) }}"
+                            @class([
+                                'mb-px flex w-full items-center gap-2.5 rounded-lg px-3 py-2.25 text-sm no-underline transition-colors duration-150',
+                                'bg-(--lh-accent-light) font-semibold text-(color:--lh-accent-text)' => $isActive,
+                                'font-normal text-(color:--lh-text-sec) hover:bg-(--lh-hover)' => ! $isActive,
+                            ])
+                        >
+                            <span class="w-5.5 text-center text-[15px] opacity-80">
+                                {{ config('lifehub.icons')[$navigation->icon] }}
+                            </span>
+                            {{ $navigation->name }}
+                        </a>
+                    @endif
                 @endforeach
             @endforeach
         </div>

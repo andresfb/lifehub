@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Repository\Manifest\Services;
 
-use App\Dtos\Manifest\ModuleItem;
 use App\Models\ApiManifest;
 use App\Models\ApiManifestModule;
+use App\Repository\Manifest\Dtos\ModuleItem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Concurrency;
