@@ -9,7 +9,8 @@
     "packages": [
         "spatie/laravel-query-builder",
         "spatie/laravel-medialibrary",
-        "spatie/laravel-permission"
+        "spatie/laravel-permission",
+        "spatie/laravel-responsecache"
     ],
     "sail": false,
     "skills": [
@@ -21,6 +22,7 @@
         "pest-testing",
         "medialibrary-development",
         "laravel-permission-development",
-        "laravel-query-builder"
+        "laravel-query-builder",
+        "responsecache-development"
     ]
 }
