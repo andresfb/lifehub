@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Dtos\Auth\RegisterItem;
@@ -10,7 +12,7 @@ use App\Repository\Auth\Services\ApiAuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
-class RegisterController extends Controller
+final class RegisterController extends Controller
 {
     public function __construct(
         private readonly ApiAuthService $authService
@@ -28,8 +30,7 @@ class RegisterController extends Controller
         );
 
         if ($result === AuthStatus::FAILURE) {
-            return redirect()->back()
-                ->with('error', __('Cannot register this account'));
+            return back()->with('error', __('Cannot register this account'));
         }
 
         return redirect()->intended(route('dashboard'));

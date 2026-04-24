@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Auth\Enums;
 
 enum AuthStatus: string

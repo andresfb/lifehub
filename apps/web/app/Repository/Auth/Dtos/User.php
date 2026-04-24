@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Auth\Dtos;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Spatie\LaravelData\Data;
 
-class User extends Data implements Authenticatable
+final class User extends Data implements Authenticatable
 {
     public function __construct(
         public readonly string $id,

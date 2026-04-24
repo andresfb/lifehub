@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Common\Libraries;
 
 use App\Models\User;
@@ -13,17 +15,17 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
-class ApiClient
+final class ApiClient
 {
-    private ?int $userId = null;
-
-    private string $token = '';
-
     public int $statusCode = 0 {
         get {
             return $this->statusCode;
         }
     }
+
+    private ?int $userId = null;
+
+    private string $token = '';
 
     public function setUserId(?int $userId): self
     {
@@ -37,33 +39,6 @@ class ApiClient
         $this->token = $token;
 
         return $this;
-    }
-
-    private function getToken(): string
-    {
-        if (filled($this->token)) {
-            return $this->token;
-        }
-
-        $this->token = AuthSession::get('api_token', '');
-
-        if (blank($this->token) && filled($this->userId)) {
-            $this->token = User::getToken($this->userId);
-        }
-
-        return $this->token;
-    }
-
-    protected function client(): PendingRequest
-    {
-        $client = Http::baseUrl(Config::string('services.backend.url'))
-            ->acceptJson()
-            ->asJson()
-            ->timeout(10);
-
-        return $client->withToken(
-            $this->getToken()
-        );
     }
 
     /**
@@ -84,6 +59,33 @@ class ApiClient
         $response = $this->client()->post($uri, $data);
 
         return $this->parseResponse($response);
+    }
+
+    protected function client(): PendingRequest
+    {
+        $client = Http::baseUrl(Config::string('services.backend.url'))
+            ->acceptJson()
+            ->asJson()
+            ->timeout(10);
+
+        return $client->withToken(
+            $this->getToken()
+        );
+    }
+
+    private function getToken(): string
+    {
+        if (filled($this->token)) {
+            return $this->token;
+        }
+
+        $this->token = AuthSession::get('api_token', '');
+
+        if (blank($this->token) && filled($this->userId)) {
+            $this->token = User::getToken($this->userId);
+        }
+
+        return $this->token;
     }
 
     private function parseResponse(LazyPromise|PromiseInterface|Response $response): array

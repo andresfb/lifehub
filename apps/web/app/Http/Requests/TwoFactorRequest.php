@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TwoFactorRequest extends FormRequest
+final class TwoFactorRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,7 +16,7 @@ class TwoFactorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => 'required|string',
+            'code' => ['required', 'string'],
         ];
     }
 }

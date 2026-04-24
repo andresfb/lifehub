@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
@@ -16,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read CarbonImmutable|null $updated_at
  */
 #[Table(name: 'api_manifest')]
-class ApiManifest extends Model
+final class ApiManifest extends Model
 {
     use HasFactory;
 

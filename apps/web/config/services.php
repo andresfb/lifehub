@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -39,15 +41,15 @@ return [
         'url' => env('API_BASE_URL'),
         'endpoints' => [
             'auth' => [
-                'register' => env('API_BASE_URL') . '/register',
-                'login' => env('API_BASE_URL') . '/login',
-                'validate' => env('API_BASE_URL') . '/login/validate',
-                'logout' => env('API_BASE_URL') . '/logout',
-                'user' => env('API_BASE_URL') . '/me',
+                'register' => env('API_BASE_URL').'/register',
+                'login' => env('API_BASE_URL').'/login',
+                'validate' => env('API_BASE_URL').'/login/validate',
+                'logout' => env('API_BASE_URL').'/logout',
+                'user' => env('API_BASE_URL').'/me',
             ],
             'manifest' => [
-                'data' => env('API_BASE_URL') . '/manifesto',
-                'version' => env('API_BASE_URL') . '/manifesto/version',
+                'data' => env('API_BASE_URL').'/manifesto',
+                'version' => env('API_BASE_URL').'/manifesto/version',
             ],
         ],
     ],

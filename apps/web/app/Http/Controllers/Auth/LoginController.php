@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -10,7 +12,7 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
-class LoginController extends Controller
+final class LoginController extends Controller
 {
     public function __construct(
         private readonly ApiAuthService $authService
@@ -31,12 +33,10 @@ class LoginController extends Controller
             $request->string('password')->toString()
         );
 
-        if ($result === AuthStatus::FAILURE) {
-            abort(401);
-        }
+        abort_if($result === AuthStatus::FAILURE, 401);
 
         if ($result === AuthStatus::TWO_FACTOR) {
-            return redirect()->route('login.two-factor.show');
+            return to_route('login.two-factor.show');
         }
 
         return redirect()->intended(route('dashboard'));
@@ -46,6 +46,6 @@ class LoginController extends Controller
     {
         $this->authService->logout();
 
-        return redirect()->route('login');
+        return to_route('login');
     }
 }

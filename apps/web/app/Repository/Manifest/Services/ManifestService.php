@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Manifest\Services;
 
 use App\Models\ApiManifest;
@@ -8,7 +10,7 @@ use Illuminate\Support\Facades\Concurrency;
 use RuntimeException;
 use Throwable;
 
-readonly class ManifestService
+final readonly class ManifestService
 {
     public function __construct(
         private ApiManifestService $apiService
@@ -21,7 +23,7 @@ readonly class ManifestService
     {
         $cached = Cache::tags(['manifest'])
             ->remember(
-                md5("manifest:$userId"),
+                md5("manifest:{$userId}"),
                 now()->addWeek(),
                 function () use ($userId): array {
                     $manifest = ApiManifest::getForUser($userId);

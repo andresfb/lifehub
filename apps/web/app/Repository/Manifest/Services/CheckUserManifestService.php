@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Manifest\Services;
 
 use App\Models\ApiManifest;
 use Illuminate\Support\Facades\Cache;
 use Throwable;
 
-readonly class CheckUserManifestService
+final readonly class CheckUserManifestService
 {
     public function __construct(
         private ApiManifestService $manifestService
@@ -33,7 +35,7 @@ readonly class CheckUserManifestService
             $this->manifestService->loadUserManifest($userId);
         } finally {
             Cache::put(
-                md5("USER:MANIFEST:VERSION:$userId"),
+                md5("USER:MANIFEST:VERSION:{$userId}"),
                 $userId,
                 now()->addHours(8)
             );

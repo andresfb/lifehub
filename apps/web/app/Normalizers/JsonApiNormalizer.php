@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Normalizers;
 
 use Spatie\LaravelData\Normalizers\Normalizer;
 
-class JsonApiNormalizer implements Normalizer
+final class JsonApiNormalizer implements Normalizer
 {
     public function normalize(mixed $value): ?array
     {
