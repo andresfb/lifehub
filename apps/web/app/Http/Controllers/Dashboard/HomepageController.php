@@ -18,14 +18,14 @@ final class HomepageController extends Controller
     {
         $bookmarks = $this->bookmarks();
         $searchEngines = $this->searchEngines();
-        $manifest = $this->getManifest($request->user());
+        $modules = $this->getNavigation($request->user());
 
         return view(
             'dashboard.homepage.show',
             [
                 'bookmarks' => $bookmarks,
                 'searchEngines' => $searchEngines,
-                'manifest' => $manifest,
+                'modules' => $modules,
             ],
         );
     }

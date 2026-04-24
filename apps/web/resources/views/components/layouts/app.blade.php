@@ -1,6 +1,6 @@
 @props([
-    'module' => 'Dashboard',
-    'manifest' => [],
+    'moduleName' => 'Dashboard',
+    'modules'
 ])
 
 <!DOCTYPE html>
@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'LifeHub') }} — {{ $module }}</title>
+    <title>{{ config('app.name', 'LifeHub') }} — {{ ucwords($moduleName) }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-(--lh-bg) text-(--lh-text)">
@@ -43,16 +43,16 @@
             </button>
         </div>
         <div class="flex-1 overflow-y-auto px-2 pb-5">
-            @foreach($manifest as $mod)
-                @foreach($mod['features'] as $feature)
-                    @php $isActive = ($module === $mod['name']); @endphp
+            @foreach($modules as $module)
+                @php $isActive = ($moduleName === $module->key); @endphp
 
-                    @if($feature['menu_item']['show'] === false)
+                @foreach($module->navigation as $navigation)
+                    @if($navigation->show === false)
                         @continue;
                     @endif
 
                     <a
-                        href="{{ $feature['menu_item']['web_path'] }}"
+                        href="{{ $navigation->web_path }}"
                         @class([
                             'mb-px flex w-full items-center gap-2.5 rounded-lg px-3 py-2.25 text-sm no-underline transition-colors duration-150',
                             'bg-(--lh-accent-light) font-semibold text-(color:--lh-accent-text)' => $isActive,
@@ -60,9 +60,9 @@
                         ])
                     >
                         <span class="w-5.5 text-center text-[15px] opacity-80">
-                            {{ config('lifehub.icons')[$feature['menu_item']['icon']] }}
+                            {{ config('lifehub.icons')[$navigation->icon] }}
                         </span>
-                        {{ $feature['title'] }}
+                        {{ $navigation->name }}
                     </a>
                 @endforeach
             @endforeach
@@ -93,7 +93,7 @@
         {{-- Center: module name --}}
         <div class="flex-1 text-center">
             <span class="text-[13px] font-semibold tracking-[0.5px] text-(--lh-text-sec) uppercase">
-                {{ $module }}
+                {{ $module->name }}
             </span>
         </div>
 

@@ -19,7 +19,14 @@ final class ApiManifestFactory extends Factory
     {
         return [
             'version' => $this->faker->word(),
-            'payload' => $this->faker->words(),
+            'payload' => [
+                'success' => true,
+                'message' => 'Success',
+                'data' => [
+                    'version' => $this->faker->word(),
+                    'modules' => [],
+                ],
+            ],
             'user_id' => $this->faker->randomNumber(),
             'created_at' => CarbonImmutable::now(),
             'updated_at' => CarbonImmutable::now(),

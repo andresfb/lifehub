@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repository\Manifest\Services;
 
+use App\Dtos\Manifest\ModuleItem;
 use App\Models\ApiManifest;
+use App\Models\ApiManifestModule;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Concurrency;
-use RuntimeException;
 use Throwable;
 
 final readonly class ManifestService
@@ -17,32 +19,49 @@ final readonly class ManifestService
     ) {}
 
     /**
+     * @return Collection<ApiManifestModule>
+     *
      * @throws Throwable
      */
-    public function getForUser(int $userId): array
+    public function getUserNavigation(int $userId): Collection
     {
         $cached = Cache::tags(['manifest'])
             ->remember(
-                md5("manifest:{$userId}"),
+                md5("navigation:{$userId}"),
                 now()->addWeek(),
                 function () use ($userId): array {
-                    $manifest = ApiManifest::getForUser($userId);
-                    if ($manifest instanceof ApiManifest) {
-                        return $manifest->payload;
+                    $manifest = $this->loadNavigation($userId);
+                    if (filled($manifest)) {
+                        return $manifest;
                     }
 
-                    return $this->apiService->loadUserManifest($userId)['modules'];
-                }
-            );
+                    $this->apiService->loadUserManifest($userId);
 
-        if (blank($cached)) {
-            throw new RuntimeException('No API Manifest found');
-        }
+                    return $this->loadNavigation($userId);
+                });
 
         Concurrency::defer([
             fn () => ApiManifestService::checkVersion($userId),
         ]);
 
-        return $cached;
+        if (blank($cached)) {
+            return collect();
+        }
+
+        return collect($cached)
+            ->map(fn (array $node) => ModuleItem::from($node));
+    }
+
+    /**
+     * @return array<int, ApiManifestModule>|null
+     */
+    private function loadNavigation(int $userId): ?array
+    {
+        $manifest = ApiManifest::getUserNavigation($userId);
+        if (! $manifest instanceof ApiManifest) {
+            return null;
+        }
+
+        return $manifest->modules->toArray();
     }
 }

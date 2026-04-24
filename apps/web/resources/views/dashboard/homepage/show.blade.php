@@ -1,4 +1,4 @@
-<x-layouts.app module="Dashboard" :manifest="$manifest">
+<x-layouts.app moduleName="dashboard" :modules="$modules">
     {{-- Search bar --}}
     <div class="mx-auto max-w-160 px-5 pt-8 pb-2">
         <div

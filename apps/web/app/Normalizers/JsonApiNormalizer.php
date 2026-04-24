@@ -6,6 +6,9 @@ namespace App\Normalizers;
 
 use Spatie\LaravelData\Normalizers\Normalizer;
 
+/**
+ * Used the Spatie to normalize the JSON:API response.
+ */
 final class JsonApiNormalizer implements Normalizer
 {
     public function normalize(mixed $value): ?array

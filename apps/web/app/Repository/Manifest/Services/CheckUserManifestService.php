@@ -20,7 +20,7 @@ final readonly class CheckUserManifestService
     public function execute(int $userId): void
     {
         try {
-            $manifest = ApiManifest::getForUser($userId);
+            $manifest = ApiManifest::getUserNavigation($userId);
             if (! $manifest instanceof ApiManifest) {
                 $this->manifestService->loadUserManifest($userId);
 

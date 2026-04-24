@@ -10,7 +10,7 @@ use Spatie\LaravelData\Data;
 final class User extends Data implements Authenticatable
 {
     public function __construct(
-        public readonly string $id,
+        public readonly int $id,
         public readonly string $name,
         public readonly string $email,
         public readonly bool $two_factor_enabled = false,
@@ -25,7 +25,7 @@ final class User extends Data implements Authenticatable
 
     public function getAuthIdentifier(): string
     {
-        return $this->id;
+        return (string) $this->id;
     }
 
     public function getAuthPasswordName(): string
