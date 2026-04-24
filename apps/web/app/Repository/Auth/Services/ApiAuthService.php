@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Repository\Auth\Services;
 
-use App\Dtos\Auth\RegisterItem;
 use App\Models\User as UserModel;
+use App\Repository\Auth\Dtos\RegisterItem;
 use App\Repository\Auth\Dtos\User;
 use App\Repository\Auth\Enums\AuthStatus;
 use App\Repository\Auth\Libraries\AuthSession;

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Dtos\Auth\RegisterItem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
+use App\Repository\Auth\Dtos\RegisterItem;
 use App\Repository\Auth\Enums\AuthStatus;
 use App\Repository\Auth\Services\ApiAuthService;
 use Illuminate\Http\RedirectResponse;

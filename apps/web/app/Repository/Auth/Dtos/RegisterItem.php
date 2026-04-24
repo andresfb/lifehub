@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Dtos\Auth;
+namespace App\Repository\Auth\Dtos;
 
 use Spatie\LaravelData\Data;
 

@@ -9,6 +9,9 @@ use App\Models\ApiManifestEndpoint;
 use App\Models\ApiManifestModule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<ApiManifestCommand>
+ */
 final class ApiManifestCommandFactory extends Factory
 {
     protected $model = ApiManifestCommand::class;
