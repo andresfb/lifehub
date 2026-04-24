@@ -49,7 +49,7 @@ final readonly class ManifestService
         }
 
         return collect($cached)
-            ->map(fn (array $node) => ModuleItem::from($node));
+            ->map(fn (array $node): ModuleItem => ModuleItem::from($node));
     }
 
     /**

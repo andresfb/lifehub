@@ -61,7 +61,7 @@ final class ApiClient
         return $this->parseResponse($response);
     }
 
-    protected function client(): PendingRequest
+    private function client(): PendingRequest
     {
         $client = Http::baseUrl(Config::string('services.backend.url'))
             ->acceptJson()

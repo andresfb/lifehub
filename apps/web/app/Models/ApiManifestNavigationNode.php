@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,21 +31,11 @@ use Illuminate\Support\Collection;
  * @property-read ApiManifestNavigationNode|null $parent
  * @property-read Collection<ApiManifestNavigationNode>|null $children
  */
+#[Guarded('id')]
 #[Table(name: 'api_manifest_navigation_node')]
 final class ApiManifestNavigationNode extends Model
 {
-    protected $fillable = [
-        'api_manifest_module_id',
-        'parent_id',
-        'node_id',
-        'key',
-        'name',
-        'web_path',
-        'icon',
-        'shortcut',
-        'show',
-        'sort_order',
-    ];
+    use HasFactory;
 
     public function module(): BelongsTo
     {

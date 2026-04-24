@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,16 +24,11 @@ use Illuminate\Support\Collection;
  * @property-read Collection<ApiManifestModule> $modules
  * @property-read Collection<ApiManifestEndpoint>|null $endpoints
  */
+#[Guarded('id')]
 #[Table(name: 'api_manifest')]
 final class ApiManifest extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'user_id',
-        'version',
-        'payload',
-    ];
 
     public static function getUserNavigation(int $userId): ?self
     {

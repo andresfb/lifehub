@@ -112,7 +112,7 @@ final readonly class ApiAuthService
     /**
      * @throws Exception
      */
-    public function me(string $token): ?User
+    public function me(string $token): User
     {
         if (AuthSession::has('auth_user')) {
             $user = AuthSession::get('auth_user', []);

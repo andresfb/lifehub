@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -22,17 +24,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read ApiManifestModule $module
  * @property-read ApiManifestEndpoint $endpoint
  */
+#[Guarded('id')]
 #[Table(name: 'api_manifest_action')]
 final class ApiManifestAction extends Model
 {
-    protected $fillable = [
-        'api_manifest_module_id',
-        'api_manifest_endpoint_id',
-        'owner',
-        'name',
-        'required_access',
-        'sort_order',
-    ];
+    use HasFactory;
 
     public function module(): BelongsTo
     {

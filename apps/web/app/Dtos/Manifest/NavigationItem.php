@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dtos\Manifest;
 
 use Illuminate\Support\Collection;
@@ -9,7 +11,7 @@ use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
-class NavigationItem extends Data
+final class NavigationItem extends Data
 {
     public function __construct(
         public readonly string $key,

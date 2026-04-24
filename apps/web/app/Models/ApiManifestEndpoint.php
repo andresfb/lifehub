@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -24,16 +26,11 @@ use Illuminate\Support\Collection;
  * @property-read Collection<ApiManifestCommand> $commands
  * @property-read Collection<ApiManifestAction> $actions
  */
+#[Guarded('id')]
 #[Table(name: 'api_manifest_endpoint')]
 final class ApiManifestEndpoint extends Model
 {
-    protected $fillable = [
-        'api_manifest_id',
-        'route_name',
-        'method',
-        'path',
-        'operation_id',
-    ];
+    use HasFactory;
 
     public function manifest(): BelongsTo
     {
