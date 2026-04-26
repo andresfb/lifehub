@@ -23,10 +23,15 @@ Alpine.store('theme', {
 Alpine.data('layoutShell', () => ({
     isProfileMenuOpen: false,
     isSidebarOpen: false,
+    isCommandOpen: false,
 
     init() {
         this.$watch('isSidebarOpen', (isOpen) => {
             document.body.style.overflow = isOpen ? 'hidden' : ''
+        })
+        this.$watch('isCommandOpen', (isOpen) => {
+            document.body.style.overflow = isOpen ? 'hidden' : ''
+            if (isOpen) this.$nextTick(() => this.$refs.commandInput?.focus())
         })
     },
 
@@ -49,6 +54,26 @@ Alpine.data('layoutShell', () => ({
         this.isProfileMenuOpen = false
     },
 
+    toggleCommand(event) {
+        const hasModifier = event.metaKey || event.ctrlKey
+        if (!hasModifier || event.key !== '/') {
+            return
+        }
+
+        if (!this.isCommandOpen && this.isEditableTarget(event.target)) {
+            return
+        }
+
+        event.preventDefault()
+
+        this.isCommandOpen = !this.isCommandOpen
+
+        if (this.isCommandOpen) {
+            this.isSidebarOpen = false
+            this.isProfileMenuOpen = false
+        }
+    },
+
     isEditableTarget(target) {
         return target instanceof HTMLElement
             && (target.isContentEditable || target.closest('input, textarea, select, [contenteditable="true"]') !== null)
@@ -57,6 +82,7 @@ Alpine.data('layoutShell', () => ({
     closeOpenMenus() {
         this.isSidebarOpen = false
         this.isProfileMenuOpen = false
+        this.isCommandOpen = false
     },
 }))
 
