@@ -14,7 +14,7 @@
 <body
     x-data="layoutShell()"
     x-on:keydown.escape.window="closeOpenMenus()"
-    x-on:keydown.window="toggleSidebarFromShortcut($event)"
+    x-on:keydown.window="toggleSidebarFromShortcut($event); toggleCommand($event)"
     class="min-h-screen bg-(--lh-bg) text-(--lh-text)"
 >
 
@@ -226,6 +226,8 @@
     <main>
         {{ $slot }}
     </main>
+
+    <x-command-modal />
 
 </body>
 </html>
