@@ -34,19 +34,6 @@ final class ApiManifestEndpoint extends Model
 {
     use HasFactory;
 
-    #[Scope]
-    public function ofAction(Builder $query, int $userId, string $method, string $actionName, string $moduleKey): void
-    {
-        $query->select('api_manifest_endpoint.*')
-            ->join('api_manifest_action', 'api_manifest_action.api_manifest_endpoint_id', '=', 'api_manifest_endpoint.id')
-            ->join('api_manifest_module', 'api_manifest_module.id', '=', 'api_manifest_action.api_manifest_module_id')
-            ->join('api_manifest', 'api_manifest.id', '=', 'api_manifest_module.api_manifest_id')
-            ->where('api_manifest.user_id', $userId)
-            ->where('api_manifest_module.key', $moduleKey)
-            ->where('api_manifest_action.name', $actionName)
-            ->where('api_manifest_endpoint.method', $method);
-    }
-
     public function manifest(): BelongsTo
     {
         return $this->belongsTo(ApiManifest::class, 'api_manifest_id');
@@ -60,5 +47,18 @@ final class ApiManifestEndpoint extends Model
     public function actions(): HasMany
     {
         return $this->hasMany(ApiManifestAction::class, 'api_manifest_endpoint_id');
+    }
+
+    #[Scope]
+    protected function ofAction(Builder $query, int $userId, string $method, string $actionName, string $moduleKey): void
+    {
+        $query->select('api_manifest_endpoint.*')
+            ->join('api_manifest_action', 'api_manifest_action.api_manifest_endpoint_id', '=', 'api_manifest_endpoint.id')
+            ->join('api_manifest_module', 'api_manifest_module.id', '=', 'api_manifest_action.api_manifest_module_id')
+            ->join('api_manifest', 'api_manifest.id', '=', 'api_manifest_module.api_manifest_id')
+            ->where('api_manifest.user_id', $userId)
+            ->where('api_manifest_module.key', $moduleKey)
+            ->where('api_manifest_action.name', $actionName)
+            ->where('api_manifest_endpoint.method', $method);
     }
 }

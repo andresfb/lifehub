@@ -21,7 +21,7 @@ final class PinItem extends Data
 
     public function iconName(): string
     {
-        return sprintf('%s', $this->icon ?? mb_strtoupper($this->title[0]));
+        return $this->icon ?? mb_strtoupper($this->title[0]);
     }
 
     public function iconColor(): string
