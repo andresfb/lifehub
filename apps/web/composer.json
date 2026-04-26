@@ -13,6 +13,7 @@
         "ext-pdo": "*",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
+        "nunomaduro/essentials": "^1.2",
         "spatie/laravel-data": "^4.22"
     },
     "require-dev": {

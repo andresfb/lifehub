@@ -15,12 +15,13 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionResource;
 use Modules\Dashboard\Observers\HomepageSectionObserver;
 use Modules\Dashboard\Policies\HomepageSectionPolicy;
@@ -83,6 +84,16 @@ final class HomepageSection extends Model implements UserModelInterface
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    public static function getUserSections(int $userId): Collection
+    {
+        return self::query()
+            ->where('user_id', $userId)
+            ->where('active', true)
+            ->with('items.tags')
+            ->orderBy('order')
+            ->get();
     }
 
     #[Override]

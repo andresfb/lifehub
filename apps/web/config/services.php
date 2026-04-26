@@ -38,6 +38,7 @@ return [
     ],
 
     'backend' => [
+        'host' => env('API_HOST'),
         'url' => env('API_BASE_URL'),
         'endpoints' => [
             'auth' => [

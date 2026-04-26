@@ -33,6 +33,8 @@ final readonly class ApiManifestService
      */
     public function loadUserManifest(int $userId): array
     {
+        Cache::tags(['manifest'])->flush();
+
         $payload = $this->apiClient
             ->setUserId($userId)
             ->get(

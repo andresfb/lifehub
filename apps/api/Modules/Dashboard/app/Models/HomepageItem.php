@@ -25,12 +25,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Searchable;
 use Modules\Dashboard\Http\Resources\Api\V1\HomepageItemResource;
-use Modules\Dashboard\Libraries\MediaNamesLibrary;
 use Modules\Dashboard\Observers\HomepageItemObserver;
 use Modules\Dashboard\Policies\HomepageItemPolicy;
 use Override;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\Tags\HasTags;
@@ -43,7 +40,8 @@ use Spatie\Tags\HasTags;
  * @property string $title
  * @property string $url
  * @property string $description
- * @property string $bg_color
+ * @property string $icon
+ * @property string $icon_color
  * @property bool $active
  * @property int $order
  * @property CarbonImmutable|null $deleted_at
@@ -58,19 +56,18 @@ use Spatie\Tags\HasTags;
 #[ObservedBy([HomepageItemObserver::class])]
 #[UsePolicy(HomepageItemPolicy::class)]
 #[UseResource(HomepageItemResource::class)]
-final class HomepageItem extends Model implements HasMedia, UserModelInterface
+final class HomepageItem extends Model implements UserModelInterface
 {
     use BelongsToUser;
     use CascadeSoftDeletes;
     use HasFactory;
     use HasSlug;
     use HasTags;
-    use InteractsWithMedia;
     use Searchable;
     use SlugOptionable;
     use SoftDeletes;
 
-    protected array $cascadeDeletes = ['tags', 'media'];
+    protected array $cascadeDeletes = ['tags'];
 
     /**
      * @return BelongsTo<User, $this>
@@ -97,29 +94,6 @@ final class HomepageItem extends Model implements HasMedia, UserModelInterface
     public function getRouteKeyName(): string
     {
         return 'slug';
-    }
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection(MediaNamesLibrary::icon())
-            ->singleFile()
-            ->acceptsMimeTypes([
-                'image/png',
-                'image/jpeg',
-                'image/webp',
-                'image/svg+xml',
-                'image/x-icon',
-            ])
-            ->useDisk('s3_open');
-    }
-
-    public function getIcon(): ?string
-    {
-        if (! $this->hasMedia(MediaNamesLibrary::icon())) {
-            return null;
-        }
-
-        return $this->getFirstMediaUrl(MediaNamesLibrary::icon());
     }
 
     public function getTags(): ?array
@@ -161,8 +135,7 @@ final class HomepageItem extends Model implements HasMedia, UserModelInterface
         self::addGlobalScope(static function (Builder $builder) {
             $builder->with('section')
                 ->with('user')
-                ->with('tags')
-                ->with('media');
+                ->with('tags');
         });
     }
 

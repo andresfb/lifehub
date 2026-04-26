@@ -54,6 +54,18 @@ final class ApiClient
     /**
      * @throws Exception
      */
+    public function request(string $method, string $uri, array $data = []): array
+    {
+        return match (mb_strtoupper($method)) {
+            'GET' => $this->get($uri, $data),
+            'POST' => $this->post($uri, $data),
+            default => throw new RuntimeException("Unsupported method: {$method}"),
+        };
+    }
+
+    /**
+     * @throws Exception
+     */
     public function post(string $uri, array $data = []): array
     {
         $response = $this->client()->post($uri, $data);
