@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Http\Controllers\Api\V1;
 
-use _PHPStan_5a70c2d68\Nette\NotImplementedException;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Mcp\Exceptions\NotImplementedException;
 use Modules\Dashboard\Actions\PinsAction;
-use Modules\Dashboard\Http\Requests\Api\V1\HomeSectionRequest;
+use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionCollection;
 use Modules\Dashboard\Models\HomepageItem;
 use Throwable;
 
@@ -19,17 +18,9 @@ final class PinController extends ApiController
     /**
      * @throws Throwable
      */
-    public function index(HomeSectionRequest $request, PinsAction $homeAction): Response
+    public function index(PinsAction $homeAction): HomepageSectionCollection
     {
-        return response(
-            content: $homeAction->getJsonPayload(
-                Auth::id(),
-                $request->route()->getName(),
-                $request->validated()
-            ),
-            status: 200,
-            headers: ['Content-Type' => 'application/json']
-        );
+        return $homeAction->handle(Auth::id());
     }
 
     public function store(Request $request): never

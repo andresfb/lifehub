@@ -24,7 +24,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('url');
             $table->text('description')->nullable();
-            $table->string('bg_color')->nullable();
+            $table->string('icon', 10)->nullable();
+            $table->string('icon_color', 20)->nullable();
             $table->boolean('active')->default(true);
             $table->smallInteger('order')->default(0);
             $table->softDeletes();
