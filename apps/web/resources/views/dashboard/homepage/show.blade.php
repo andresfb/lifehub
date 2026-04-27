@@ -8,6 +8,7 @@
             @class([
                 'flex',
                 'h-12',
+                'min-w-0',
                 'items-center',
                 'rounded-[14px]',
                 'border-2',
@@ -63,14 +64,14 @@
                 placeholder="Search the web..."
                 x-model="query"
                 x-on:keydown.enter="doSearch()"
-                class="h-full flex-1 border-none bg-transparent px-3.5 text-[15px] text-(--lh-text)"
+                class="h-full min-w-0 flex-1 border-none bg-transparent px-3.5 text-[15px] text-(--lh-text)"
             />
 
             {{-- Search button --}}
             <button
                 type="button"
                 x-on:click="doSearch()"
-                class="flex h-full cursor-pointer items-center border-none bg-transparent px-4 text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-accent)"
+                class="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center self-stretch border-none bg-transparent text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-accent)"
             >
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <circle cx="7.5" cy="7.5" r="5"/>

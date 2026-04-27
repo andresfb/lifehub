@@ -71,7 +71,7 @@
 <div
     x-cloak
     x-bind:class="{ 'translate-y-full': ! isCommandOpen }"
-    class="md:hidden fixed bottom-0 inset-x-0 w-screen z-300 flex h-[75vh] flex-col overflow-hidden rounded-t-2xl border-t border-(--lh-border) bg-(--lh-card) shadow-[0_-12px_40px_rgba(0,0,0,0.3)] transition-transform duration-250 ease-in-out"
+    class="md:hidden fixed bottom-0 inset-x-0 w-screen z-300 flex h-[75vh] flex-col overflow-hidden border-t border-(--lh-border) bg-(--lh-card) shadow-[0_-12px_40px_rgba(0,0,0,0.3)] transition-transform duration-250 ease-in-out"
     role="dialog"
     aria-modal="true"
     aria-label="Command window"

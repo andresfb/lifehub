@@ -3,6 +3,16 @@
     'modules'
 ])
 
+@php
+    $user = auth()->user();
+    $userName = $user?->name ?? 'User';
+    $userEmail = $user?->email ?? '';
+    $nameParts = preg_split('/\s+/', trim($userName)) ?: [];
+    $firstInitial = \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($nameParts[0] ?? 'U', 0, 1));
+    $lastInitial = \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($nameParts[count($nameParts) > 1 ? count($nameParts) - 1 : 0] ?? '', 0, 1));
+    $userInitials = $firstInitial.$lastInitial;
+@endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -22,7 +32,7 @@
     <div
         x-cloak
         x-show="isSidebarOpen"
-        x-on:click="isSidebarOpen = false"
+        x-on:click="closeSidebar()"
         class="fixed inset-0 z-90 bg-(--lh-overlay-bg) backdrop-blur-xs"
         aria-hidden="true"
     ></div>
@@ -43,7 +53,7 @@
                 <span class="font-display text-[15px] font-bold text-(--lh-text)">LifeHub</span>
             </a>
             <button
-                x-on:click="isSidebarOpen = false"
+                x-on:click="closeSidebar()"
                 class="flex cursor-pointer rounded-md border-none bg-transparent p-1 text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-text)"
                 aria-label="Close sidebar"
             >
@@ -52,7 +62,7 @@
                 </svg>
             </button>
         </div>
-        <div class="flex-1 overflow-y-auto px-2 pb-5">
+        <div class="min-h-0 flex-1 overflow-y-auto px-2 pb-5">
             @foreach($modules as $module)
                 @php $isActive = ($moduleName === $module->key); @endphp
 
@@ -146,14 +156,52 @@
                 @endforeach
             @endforeach
         </div>
+        <div class="border-t border-(--lh-border) px-3 py-3">
+            <div class="relative" x-on:click.outside="isSidebarProfileMenuOpen = false">
+                <button
+                    type="button"
+                    x-on:click="toggleSidebarProfileMenu()"
+                    class="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-(--lh-border) bg-(--lh-card) px-3 py-2.5 text-left transition-colors duration-150 hover:bg-(--lh-hover)"
+                    aria-label="Open profile menu"
+                    x-bind:aria-expanded="isSidebarProfileMenuOpen.toString()"
+                >
+                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-(--lh-border) bg-(--lh-accent-light) font-display text-[13px] font-semibold text-(--lh-accent-text)">{{ $userInitials }}</span>
+                    <span class="min-w-0 flex-1">
+                        <span class="block truncate text-[13px] font-semibold text-(--lh-text)">{{ $userName }}</span>
+                        <span class="block truncate text-[12px] text-(--lh-text-muted)">{{ $userEmail }}</span>
+                    </span>
+                    <svg
+                        x-bind:class="{ 'rotate-180': isSidebarProfileMenuOpen }"
+                        class="size-4 shrink-0 text-(--lh-text-muted) transition-transform duration-150"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M4 6l4 4 4-4" />
+                    </svg>
+                </button>
+
+                <div
+                    x-cloak
+                    x-show="isSidebarProfileMenuOpen"
+                    class="absolute right-0 bottom-full left-0 z-60 mb-2 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-[10px] border border-(--lh-border) bg-(--lh-card) p-1 shadow-(--lh-shadow-lg)"
+                >
+                    <x-layouts.profile-menu-panel :user-email="$userEmail" :user-name="$userName" />
+                </div>
+            </div>
+        </div>
     </nav>
 
     {{-- Header --}}
     <header
-        class="sticky top-0 z-50 flex h-14 items-center gap-4 border-b border-(--lh-border) bg-(--lh-header-bg) px-5 backdrop-blur-md"
+        class="relative sticky top-0 z-50 flex h-14 items-center gap-2 border-b border-(--lh-border) bg-(--lh-header-bg) px-3 backdrop-blur-md sm:gap-4 sm:px-5"
     >
         {{-- Left: hamburger + logo --}}
-        <div class="flex items-center gap-3 min-w-50">
+        <div class="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
             <button
                 x-on:click="isSidebarOpen = true"
                 class="flex cursor-pointer rounded-md border-none bg-transparent p-1.5 text-(--lh-text-sec) transition-colors duration-150 hover:bg-(--lh-hover)"
@@ -163,21 +211,28 @@
                     <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
                 </svg>
             </button>
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 no-underline">
+            <a href="{{ route('dashboard') }}" class="flex min-w-0 items-center gap-2 no-underline">
                 <x-logo :size="28" />
-                <span class="font-display text-[17px] font-bold tracking-[-0.3px] text-(--lh-text)">LifeHub</span>
+                <span class="hidden font-display text-[17px] font-bold tracking-[-0.3px] text-(--lh-text) sm:inline">LifeHub</span>
             </a>
         </div>
 
         {{-- Center: module name --}}
-        <div class="flex-1 text-center">
-            <span class="text-[13px] font-semibold tracking-[0.5px] text-(--lh-text-sec) uppercase">
+        <div class="pointer-events-none absolute inset-x-0 flex justify-center px-16 sm:px-24">
+            <span class="block truncate text-center text-[13px] font-semibold tracking-[0.5px] text-(--lh-text-sec) uppercase">
                 {{ $module->name }}
             </span>
         </div>
 
         {{-- Right: theme toggle + profile --}}
-        <div class="min-w-50 flex items-center justify-end gap-2">
+        <div class="flex shrink-0 items-center justify-end gap-2">
+            <button
+                type="button"
+                x-on:click="openCommand()"
+                class="flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-0.5 md:p-1.5 text-2xl md:text-3xl leading-none text-(--lh-text-sec) transition-colors duration-150 hover:bg-(--lh-hover)"
+                aria-label="Open command window"
+            >𖦏</button>
+
             <button
                 x-on:click="toggleTheme()"
                 class="flex cursor-pointer rounded-md border-none bg-transparent p-1.5 text-(--lh-text-sec) transition-colors duration-150 hover:bg-(--lh-hover)"
@@ -194,30 +249,17 @@
 
             <div class="relative" x-on:click.outside="isProfileMenuOpen = false">
                 <button
-                    x-on:click="isProfileMenuOpen = ! isProfileMenuOpen"
+                    type="button"
+                    x-on:click="toggleHeaderProfileMenu()"
                     class="h-8.5 w-8.5 cursor-pointer rounded-full border-2 border-(--lh-border) bg-(--lh-accent-light) font-display text-[13px] font-semibold text-(--lh-accent-text) transition-colors duration-150 hover:border-(--lh-accent)"
-                >{{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}{{ strtoupper(substr(strstr(auth()->user()?->name ?? ' D', ' '), 1, 1)) }}</button>
+                >{{ $userInitials }}</button>
 
                 <div
                     x-cloak
                     x-show="isProfileMenuOpen"
                     class="absolute top-full right-0 z-60 mt-2 min-w-45 rounded-[10px] border border-(--lh-border) bg-(--lh-card) p-1 shadow-(--lh-shadow-lg)"
                 >
-                    <div class="border-b border-(--lh-border) px-3.5 py-2.5">
-                        <div class="text-[14px] font-semibold text-(--lh-text)">{{ auth()->user()?->name ?? 'User' }}</div>
-                        <div class="mt-0.5 text-[12px] text-(--lh-text-muted)">{{ auth()->user()?->email ?? '' }}</div>
-                    </div>
-                    <a href="#" class="block w-full rounded-md px-3.5 py-2 text-[13px] text-(--lh-text) no-underline hover:bg-(--lh-hover)"
-                    >Profile</a>
-                    <a href="#" class="block w-full rounded-md px-3.5 py-2 text-[13px] text-(--lh-text) no-underline hover:bg-(--lh-hover)"
-                    >Settings</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="block w-full cursor-pointer rounded-md border-none bg-transparent px-3.5 py-2 text-left font-[inherit] text-[13px] text-[#e54] transition-colors duration-150 hover:bg-(--lh-hover)"
-                        >Logout</button>
-                    </form>
+                    <x-layouts.profile-menu-panel :user-email="$userEmail" :user-name="$userName" />
                 </div>
             </div>
         </div>
