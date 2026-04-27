@@ -22,6 +22,7 @@ Alpine.store('theme', {
 
 Alpine.data('layoutShell', () => ({
     isProfileMenuOpen: false,
+    isSidebarProfileMenuOpen: false,
     isSidebarOpen: false,
     isCommandOpen: false,
 
@@ -31,7 +32,12 @@ Alpine.data('layoutShell', () => ({
         })
         this.$watch('isCommandOpen', (isOpen) => {
             document.body.style.overflow = isOpen ? 'hidden' : ''
-            if (isOpen) this.$nextTick(() => this.$refs.commandInput?.focus())
+            if (!isOpen) return
+            this.$nextTick(() => {
+                const isDesktop = window.matchMedia('(min-width: 768px)').matches
+                const ref = isDesktop ? this.$refs.commandInputDesktop : this.$refs.commandInputMobile
+                ref?.focus()
+            })
         })
     },
 
@@ -51,7 +57,7 @@ Alpine.data('layoutShell', () => ({
         event.preventDefault()
 
         this.isSidebarOpen = !this.isSidebarOpen
-        this.isProfileMenuOpen = false
+        this.closeProfileMenus()
     },
 
     toggleCommand(event) {
@@ -66,12 +72,39 @@ Alpine.data('layoutShell', () => ({
 
         event.preventDefault()
 
-        this.isCommandOpen = !this.isCommandOpen
-
         if (this.isCommandOpen) {
-            this.isSidebarOpen = false
-            this.isProfileMenuOpen = false
+            this.isCommandOpen = false
+
+            return
         }
+
+        this.openCommand()
+    },
+
+    openCommand() {
+        this.isCommandOpen = true
+        this.closeSidebar()
+        this.closeProfileMenus()
+    },
+
+    toggleHeaderProfileMenu() {
+        this.isProfileMenuOpen = !this.isProfileMenuOpen
+        this.isSidebarProfileMenuOpen = false
+    },
+
+    toggleSidebarProfileMenu() {
+        this.isSidebarProfileMenuOpen = !this.isSidebarProfileMenuOpen
+        this.isProfileMenuOpen = false
+    },
+
+    closeProfileMenus() {
+        this.isProfileMenuOpen = false
+        this.isSidebarProfileMenuOpen = false
+    },
+
+    closeSidebar() {
+        this.isSidebarOpen = false
+        this.isSidebarProfileMenuOpen = false
     },
 
     isEditableTarget(target) {
@@ -80,8 +113,8 @@ Alpine.data('layoutShell', () => ({
     },
 
     closeOpenMenus() {
-        this.isSidebarOpen = false
-        this.isProfileMenuOpen = false
+        this.closeSidebar()
+        this.closeProfileMenus()
         this.isCommandOpen = false
     },
 }))

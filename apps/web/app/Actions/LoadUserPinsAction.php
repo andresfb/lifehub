@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Repository\Auth\Dtos\User;
 use App\Repository\Dashboard\Dtos\SectionItem;
 use App\Repository\Dashboard\Services\ApiPinsService;
 use Illuminate\Support\Collection;
@@ -16,13 +17,13 @@ final readonly class LoadUserPinsAction
         private ApiPinsService $pinsService,
     ) {}
 
-    public function handle(string $userId): Collection
+    public function handle(User $user): Collection
     {
         $cached = Cache::remember(
-            md5("user-pins-{$userId}"),
+            md5("user-pins-{$user->id}"),
             now()->addDay(),
-            function () use ($userId): array {
-                return $this->pinsService->getUserPins((int) $userId);
+            function () use ($user): array {
+                return $this->pinsService->getUserPins($user->id);
             }
         );
 

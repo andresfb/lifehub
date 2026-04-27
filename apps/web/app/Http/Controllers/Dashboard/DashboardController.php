@@ -5,22 +5,25 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Actions\LoadUserPinsAction;
-use App\Http\Controllers\Controller;
+use App\Dtos\PageActionItem;
+use App\Http\Controllers\PageBaseController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Throwable;
 
-final class HomepageController extends Controller
+final class DashboardController extends PageBaseController
 {
     /**
      * @throws Throwable
      */
     public function show(Request $request, LoadUserPinsAction $pinsAction): View
     {
-        $bookmarks = $pinsAction->handle(Auth::id());
+        $user = $request->user();
+
+        $bookmarks = $pinsAction->handle($user);
         $searchEngines = $this->searchEngines();
-        $modules = $this->getNavigation($request->user());
+        $modules = $this->getNavigation($user);
 
         return view(
             'dashboard.homepage.show',
@@ -28,8 +31,25 @@ final class HomepageController extends Controller
                 'bookmarks' => $bookmarks,
                 'searchEngines' => $searchEngines,
                 'modules' => $modules,
+                'pageActions' => $this->getPageActions(),
             ],
         );
+    }
+
+    protected function getPageActions(): Collection
+    {
+        return collect([
+            new PageActionItem(
+                label: 'Pins',
+                route: 'dashboard.pins.index',
+                icon: '𖤘',
+            ),
+            new PageActionItem(
+                label: 'Search Engines',
+                route: '', // TODO: add search engines route
+                icon: '⌕',
+            ),
+        ]);
     }
 
     /** @return array<int, array{name: string, url: string, icon: string, colorClass: string}> */
