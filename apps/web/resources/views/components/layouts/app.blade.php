@@ -229,9 +229,9 @@
             <button
                 type="button"
                 x-on:click="openCommand()"
-                class="flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-0.5 md:p-1.5 text-2xl md:text-3xl leading-none text-(--lh-text-sec) transition-colors duration-150 hover:bg-(--lh-hover)"
+                class="flex cursor-pointer items-center justify-center rounded-md border-none bg-transparent pt-1 text-lg leading-none text-(--lh-text-sec) transition-colors duration-150 hover:bg-(--lh-hover)"
                 aria-label="Open command window"
-            >𖦏</button>
+            >⌘/</button>
 
             <button
                 x-on:click="toggleTheme()"

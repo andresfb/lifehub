@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Dtos\PageActionItem;
 use App\Repository\Dashboard\Dtos\PinItem;
 use App\Repository\Dashboard\Dtos\SectionItem;
 use App\Repository\Manifest\Dtos\ModuleItem;
@@ -14,6 +15,7 @@ test('homepage search button keeps its icon centered', function () {
     $html = (string) $this->view('dashboard.homepage.show', [
         'bookmarks' => homepageSections(),
         'modules' => homepageModules(),
+        'pageActions' => homepagePageActions(),
         'searchEngines' => homepageSearchEngines(),
     ]);
 
@@ -21,6 +23,26 @@ test('homepage search button keeps its icon centered', function () {
         ->toContain('Search the web...')
         ->toContain('min-w-0')
         ->toContain('flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center self-stretch border-none bg-transparent text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-accent)');
+});
+
+test('homepage renders responsive page actions menu', function () {
+    $this->withoutVite();
+
+    $html = (string) $this->view('dashboard.homepage.show', [
+        'bookmarks' => homepageSections(),
+        'modules' => homepageModules(),
+        'pageActions' => homepagePageActions(),
+        'searchEngines' => homepageSearchEngines(),
+    ]);
+
+    expect($html)
+        ->toContain('Manage')
+        ->toContain('𖦏')
+        ->toContain('Pins')
+        ->toContain('Search Engines')
+        ->toContain(route('dashboard.pins.index'))
+        ->toContain('sm:hidden')
+        ->toContain('sm:inline');
 });
 
 /**
@@ -68,6 +90,25 @@ function homepageModules(): Collection
                     sort_order: 1,
                 ),
             ]),
+        ),
+    ]);
+}
+
+/**
+ * @return Collection<int, PageActionItem>
+ */
+function homepagePageActions(): Collection
+{
+    return collect([
+        new PageActionItem(
+            label: 'Pins',
+            route: 'dashboard.pins.index',
+            icon: '𖤘',
+        ),
+        new PageActionItem(
+            label: 'Search Engines',
+            route: '',
+            icon: '⌕',
         ),
     ]);
 }
