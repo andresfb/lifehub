@@ -31,7 +31,12 @@ Alpine.data('layoutShell', () => ({
         })
         this.$watch('isCommandOpen', (isOpen) => {
             document.body.style.overflow = isOpen ? 'hidden' : ''
-            if (isOpen) this.$nextTick(() => this.$refs.commandInput?.focus())
+            if (!isOpen) return
+            this.$nextTick(() => {
+                const isDesktop = window.matchMedia('(min-width: 768px)').matches
+                const ref = isDesktop ? this.$refs.commandInputDesktop : this.$refs.commandInputMobile
+                ref?.focus()
+            })
         })
     },
 
