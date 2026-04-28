@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Modules\Dashboard\Models;
 
 use App\Contracts\UserModelInterface;
-use App\Enums\ModuleKey;
 use App\Models\Media;
 use App\Models\Tag;
 use App\Models\User;
 use App\Traits\BelongsToUser;
-use App\Traits\SlugOptionable;
+use App\Traits\HasSlug;
 use Carbon\CarbonImmutable;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -28,8 +27,6 @@ use Modules\Dashboard\Http\Resources\Api\V1\HomepageItemResource;
 use Modules\Dashboard\Observers\HomepageItemObserver;
 use Modules\Dashboard\Policies\HomepageItemPolicy;
 use Override;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 use Spatie\Tags\HasTags;
 
 /**
@@ -64,7 +61,6 @@ final class HomepageItem extends Model implements UserModelInterface
     use HasSlug;
     use HasTags;
     use Searchable;
-    use SlugOptionable;
     use SoftDeletes;
 
     protected array $cascadeDeletes = ['tags'];
@@ -83,11 +79,6 @@ final class HomepageItem extends Model implements UserModelInterface
     public function section(): BelongsTo
     {
         return $this->belongsTo(HomepageSection::class, 'section_id');
-    }
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return $this->loadSlugOptions('title', ModuleKey::DASHBOARD->value);
     }
 
     #[Override]

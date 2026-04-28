@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)
                 ->constrained('users')
                 ->cascadeOnDelete();
-            $table->string('slug', 200)->unique();
+            $table->string('slug', 20)->unique();
             $table->string('name');
             $table->string('active')
                 ->default(true)

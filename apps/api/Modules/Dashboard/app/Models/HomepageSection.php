@@ -8,7 +8,7 @@ use App\Contracts\UserModelInterface;
 use App\Enums\ModuleKey;
 use App\Models\User;
 use App\Traits\BelongsToUser;
-use App\Traits\SlugOptionable;
+use App\Traits\HasSlug;
 use Carbon\CarbonImmutable;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -25,8 +25,6 @@ use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionResource;
 use Modules\Dashboard\Observers\HomepageSectionObserver;
 use Modules\Dashboard\Policies\HomepageSectionPolicy;
 use Override;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 
 /**
  * @property-read int $id
@@ -51,7 +49,6 @@ final class HomepageSection extends Model implements UserModelInterface
     use CascadeSoftDeletes;
     use HasFactory;
     use HasSlug;
-    use SlugOptionable;
     use SoftDeletes;
 
     protected array $cascadeDeletes = ['items'];
@@ -82,11 +79,6 @@ final class HomepageSection extends Model implements UserModelInterface
         return $this->hasMany(HomepageItem::class, 'section_id')
             ->where('active', true)
             ->orderBy('order');
-    }
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return $this->loadSlugOptions('name', ModuleKey::DASHBOARD->value);
     }
 
     #[Override]
