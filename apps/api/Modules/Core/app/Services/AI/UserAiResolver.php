@@ -14,6 +14,9 @@ use Modules\Core\Dtos\AI\ResolvedUserAiProvider;
 use Modules\Core\Enums\AiModelFeatures;
 use Modules\Core\Models\AiModel;
 
+use function array_filter;
+use function sprintf;
+
 final class UserAiResolver
 {
     public function resolve(

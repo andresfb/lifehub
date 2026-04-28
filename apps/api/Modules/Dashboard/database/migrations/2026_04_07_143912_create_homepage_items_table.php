@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(HomepageSection::class, 'section_id')
                 ->constrained('dashboard_homepage_sections')
                 ->cascadeOnDelete();
-            $table->string('slug')->unique();
+            $table->string('slug', 20)->unique();
             $table->string('title');
             $table->text('url');
             $table->text('description')->nullable();
