@@ -6,14 +6,14 @@ namespace App\Jobs;
 
 use App\Repository\Manifest\Services\CheckUserManifestService;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Throwable;
 
-final class CheckUserManifestJob implements ShouldQueue
+final class CheckUserManifestJob implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -22,12 +22,9 @@ final class CheckUserManifestJob implements ShouldQueue
 
     public function __construct(private readonly int $userId) {}
 
-    public function middleware(): array
+    public function uniqueId(): string
     {
-        return [
-            new WithoutOverlapping("check-user-manifest-{$this->userId}")
-                ->dontRelease(),
-        ];
+        return "check-user-manifest-{$this->userId}";
     }
 
     /**

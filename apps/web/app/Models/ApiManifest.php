@@ -18,11 +18,11 @@ use Illuminate\Support\Collection;
  * @property-read int $id
  * @property string $user_id
  * @property string $version
- * @property array $payload
+ * @property array<int, array<string, mixed>> $payload
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
- * @property-read Collection<ApiManifestModule> $modules
- * @property-read Collection<ApiManifestEndpoint>|null $endpoints
+ * @property-read Collection<int, ApiManifestModule> $modules
+ * @property-read Collection<int, ApiManifestEndpoint>|null $endpoints
  */
 #[Guarded('id')]
 #[Table(name: 'api_manifest')]
@@ -38,11 +38,17 @@ final class ApiManifest extends Model
             ->first();
     }
 
+    /**
+     * @return HasMany<ApiManifestModule, $this>
+     */
     public function modules(): HasMany
     {
         return $this->hasMany(ApiManifestModule::class);
     }
 
+    /**
+     * @return HasMany<ApiManifestEndpoint, $this>
+     */
     public function endpoints(): HasMany
     {
         return $this->hasMany(ApiManifestEndpoint::class);
@@ -66,6 +72,9 @@ final class ApiManifest extends Model
         return [];
     }
 
+    /**
+     * @param  Builder<ApiManifest>  $query
+     */
     #[Scope]
     protected function withNavigation(Builder $query): void
     {

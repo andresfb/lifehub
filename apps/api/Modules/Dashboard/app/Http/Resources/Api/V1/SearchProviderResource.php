@@ -5,36 +5,25 @@ declare(strict_types=1);
 namespace Modules\Dashboard\Http\Resources\Api\V1;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\JsonApi\JsonApiResource;
-use Modules\Dashboard\Dtos\SearchProviderItem;
-use Override;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Dashboard\Models\SearchProvider;
 
 /**
- * @mixin SearchProviderItem
+ * @mixin SearchProvider
  */
-final class SearchProviderResource extends JsonApiResource
+final class SearchProviderResource extends JsonResource
 {
-    #[Override]
-    public function toId(Request $request): string
-    {
-        return (string) $this->id;
-    }
-
-    #[Override]
-    public function toType(Request $request): string
-    {
-        return 'search-provider';
-    }
-
     /**
      * @return array<string, mixed>
      */
-    #[Override]
-    public function toAttributes(Request $request): array
+    public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'url' => $this->url,
+            'icon' => $this->icon ?? '',
+            'icon_color' => $this->icon_color ?? '',
             'order' => $this->order,
             'default' => $this->default,
         ];

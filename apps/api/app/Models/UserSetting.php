@@ -18,12 +18,12 @@ use Override;
 
 /**
  * @property-read int $id
- * @property-read int $user_id
+ * @property int $user_id
  * @property string $key
  * @property array<string, mixed>|null $payload
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
- * @property-read Collection<AiProvider> $aiProviders
+ * @property-read Collection<int, AiProvider> $aiProviders
  */
 #[UseFactory(UserSettingFactory::class)]
 final class UserSetting extends Model implements UserModelInterface

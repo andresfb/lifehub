@@ -18,6 +18,8 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->string('name');
             $table->text('url');
+            $table->string('icon', 10)->nullable();
+            $table->string('icon_color', 20)->nullable();
             $table->boolean('active')->default(true);
             $table->boolean('default')->default(false);
             $table->smallInteger('order')->default(0);

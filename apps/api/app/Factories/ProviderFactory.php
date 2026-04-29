@@ -21,7 +21,7 @@ final class ProviderFactory
 
         return new ProviderItem(
             lab: $lab,
-            model: (string) collect($provider['models'])->random(),
+            model: (string) collect((array) $provider['models'])->random(),
         );
     }
 
@@ -33,7 +33,7 @@ final class ProviderFactory
 
         return new ProviderItem(
             lab: $lab,
-            model: (string) collect($provider['models'])->random(),
+            model: (string) collect((array) $provider['models'])->random(),
         );
     }
 
@@ -48,10 +48,11 @@ final class ProviderFactory
 
         return new ProviderItem(
             lab: $lab,
-            model: (string) collect($provider['models'])->random(),
+            model: (string) collect((array) $provider['models'])->random(),
         );
     }
 
+    /** @return array<string, string> */
     public static function getList(): array
     {
         $providers = Config::collection('settings.providers');

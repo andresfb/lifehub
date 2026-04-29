@@ -32,11 +32,17 @@ final class ApiManifestCommand extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsTo<ApiManifestModule, $this>
+     */
     public function module(): BelongsTo
     {
         return $this->belongsTo(ApiManifestModule::class, 'api_manifest_module_id');
     }
 
+    /**
+     * @return BelongsTo<ApiManifestEndpoint, $this>
+     */
     public function endpoint(): BelongsTo
     {
         return $this->belongsTo(ApiManifestEndpoint::class, 'api_manifest_endpoint_id');

@@ -1,0 +1,43 @@
+parameters:
+	ignoreErrors:
+		-
+			rawMessage: 'Class App\Models\ApiManifest uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ApiManifest.php
+
+		-
+			rawMessage: 'Class App\Models\ApiManifestAction uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ApiManifestAction.php
+
+		-
+			rawMessage: 'Class App\Models\ApiManifestCommand uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ApiManifestCommand.php
+
+		-
+			rawMessage: 'Class App\Models\ApiManifestEndpoint uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ApiManifestEndpoint.php
+
+		-
+			rawMessage: 'Class App\Models\ApiManifestModule uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ApiManifestModule.php
+
+		-
+			rawMessage: 'Class App\Models\ApiManifestNavigationNode uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ApiManifestNavigationNode.php
+
+		-
+			rawMessage: 'Class App\Models\User uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php

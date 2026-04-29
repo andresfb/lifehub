@@ -1,0 +1,103 @@
+parameters:
+	ignoreErrors:
+		-
+			rawMessage: 'Class Modules\Core\Models\AiModel uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: Modules/Core/app/Models/AiModel.php
+
+		-
+			rawMessage: 'Class Modules\Core\Models\AiProvider uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: Modules/Core/app/Models/AiProvider.php
+
+		-
+			rawMessage: 'Class Modules\Core\Models\Reminder uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: Modules/Core/app/Models/Reminder.php
+
+		-
+			rawMessage: 'Class Modules\Dashboard\Models\HomepageItem uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: Modules/Dashboard/app/Models/HomepageItem.php
+
+		-
+			rawMessage: 'Class Modules\Dashboard\Models\HomepageSection uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: Modules/Dashboard/app/Models/HomepageSection.php
+
+		-
+			rawMessage: 'Class Modules\Dashboard\Models\SearchProvider uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: Modules/Dashboard/app/Models/SearchProvider.php
+
+		-
+			rawMessage: 'Class App\Models\ApiError uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ApiError.php
+
+		-
+			rawMessage: 'Class App\Models\Base\ModelWithMedia uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Base/ModelWithMedia.php
+
+		-
+			rawMessage: 'Class App\Models\EntityLink uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/EntityLink.php
+
+		-
+			rawMessage: 'Class App\Models\GlobalSearch uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/GlobalSearch.php
+
+		-
+			rawMessage: 'Class App\Models\GlobalSearchChunk uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/GlobalSearchChunk.php
+
+		-
+			rawMessage: 'Class App\Models\Invitation uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Invitation.php
+
+		-
+			rawMessage: 'Class App\Models\Media uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Media.php
+
+		-
+			rawMessage: 'Class App\Models\User uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			rawMessage: 'Class App\Models\UserSetting uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/UserSetting.php
+
+		-
+			rawMessage: Trait App\Traits\AiTaskable is used zero times and is not analysed.
+			identifier: trait.unused
+			count: 1
+			path: app/Traits/AiTaskable.php
+
+		-
+			rawMessage: Trait App\Traits\Screenable is used zero times and is not analysed.
+			identifier: trait.unused
+			count: 1
+			path: app/Traits/Screenable.php

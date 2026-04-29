@@ -14,6 +14,7 @@ use Carbon\CarbonImmutable;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Laravel\Scout\Searchable;
+use Modules\Dashboard\Database\Factories\HomepageItemFactory;
 use Modules\Dashboard\Http\Resources\Api\V1\HomepageItemResource;
 use Modules\Dashboard\Observers\HomepageItemObserver;
 use Modules\Dashboard\Policies\HomepageItemPolicy;
@@ -31,8 +33,8 @@ use Spatie\Tags\HasTags;
 
 /**
  * @property-read int $id
- * @property-read int $user_id
- * @property-read int $section_id
+ * @property int $user_id
+ * @property int $section_id
  * @property string $slug
  * @property string $title
  * @property string $url
@@ -46,10 +48,11 @@ use Spatie\Tags\HasTags;
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
  * @property-read HomepageSection $section
- * @property-read Collection<Tag> $tags
- * @property-read Collection<Media> $media
+ * @property-read Collection<int, Tag> $tags
+ * @property-read Collection<int, Media> $media
  */
 #[Table(name: 'dashboard_homepage_items')]
+#[UseFactory(HomepageItemFactory::class)]
 #[ObservedBy([HomepageItemObserver::class])]
 #[UsePolicy(HomepageItemPolicy::class)]
 #[UseResource(HomepageItemResource::class)]
@@ -63,15 +66,8 @@ final class HomepageItem extends Model implements UserModelInterface
     use Searchable;
     use SoftDeletes;
 
+    /** @var array<int, string> */
     protected array $cascadeDeletes = ['tags'];
-
-    /**
-     * @return BelongsTo<User, $this>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     /**
      * @return BelongsTo<HomepageSection, $this>
@@ -87,6 +83,9 @@ final class HomepageItem extends Model implements UserModelInterface
         return 'slug';
     }
 
+    /**
+     * @return array<int, string>|null
+     */
     public function getTags(): ?array
     {
         if (blank($this->tags)) {
@@ -104,6 +103,9 @@ final class HomepageItem extends Model implements UserModelInterface
         return 'home_page_item_index';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toSearchableArray(): array
     {
         $this->load('tags');
@@ -130,6 +132,9 @@ final class HomepageItem extends Model implements UserModelInterface
         });
     }
 
+    /**
+     * @return array<string, string>
+     */
     #[Override]
     protected function casts(): array
     {

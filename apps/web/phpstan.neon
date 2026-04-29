@@ -12,14 +12,6 @@ parameters:
         - bootstrap/app.php
         - public
         - routes
-        - Modules
-
-    excludePaths:
-        - ./Modules/*/config/*.php*
-        - ./Modules/*/database/migrations/*
-        - ./Modules/*/database/seeds/*
-        - ./Modules/*/tests/*
-        - ./app/Domain/*
 
     level: 6
 

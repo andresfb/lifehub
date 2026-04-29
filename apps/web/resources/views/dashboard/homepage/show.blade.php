@@ -37,7 +37,7 @@
                         x-on:click="isEngineDropdownOpen = ! isEngineDropdownOpen"
                         class="flex h-12 cursor-pointer items-center gap-1.5 border-none bg-transparent pr-1 pl-3.5 text-[13px] font-medium text-(--lh-text-sec)"
                     >
-                        <span x-text="selectedEngine.name">{{ $searchEngines[0]['name'] }}</span>
+                        <span x-text="selectedEngine.name">{{ $searchEngines->first()->name }}</span>
                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
                             <path d="M2.5 4L5 6.5 7.5 4"/>
                         </svg>
@@ -51,13 +51,33 @@
                         @foreach($searchEngines as $engine)
                             <button
                                 type="button"
-                                x-on:click="selectEngine({{ Js::from($engine) }})"
-                                x-bind:class="{ 'bg-(--lh-accent-light)': selectedEngine.name === {{ Js::from($engine['name']) }} }"
-                                class="flex w-full cursor-pointer items-center gap-2 rounded-md border-none px-2.5 py-2 text-left text-[13px] text-(--lh-text) transition-colors duration-150 hover:bg-(--lh-hover)"
+                                x-on:click="selectEngine({{ Js::from($engine->toArray()) }})"
+                                x-bind:class="{ 'bg-(--lh-accent-light)': selectedEngine.name === {{ Js::from($engine->name) }} }"
+                                @class([
+                                    'flex',
+                                    'w-full',
+                                    'cursor-pointer',
+                                    'items-center',
+                                    'gap-2',
+                                    'rounded-md',
+                                    'border-none',
+                                    'px-2.5',
+                                    'py-2',
+                                    'text-left',
+                                    'text-[13px]',
+                                    'text-(--lh-text)',
+                                    'transition-colors',
+                                    'duration-150',
+                                    'hover:bg-(--lh-hover)',
+                                ])
                             >
                                 <span
-                                    class="flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] text-[10px] font-bold text-white {{ $engine['colorClass'] }}">{{ $engine['icon'] }}</span>
-                                {{ $engine['name'] }}
+                                    class="flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] text-[10px] font-bold text-white"
+                                    style="background-color: {{ $engine->iconColor() }}"
+                                >
+                                    {{ $engine->iconName() }}
+                                </span>
+                                {{ $engine->name }}
                             </button>
                         @endforeach
                     </div>
@@ -80,7 +100,22 @@
                 <button
                     type="button"
                     x-on:click="doSearch()"
-                    class="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center self-stretch border-none bg-transparent text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-accent)"
+                    @class([
+                        'flex',
+                        'h-12',
+                        'w-12',
+                        'shrink-0',
+                        'cursor-pointer',
+                        'items-center',
+                        'justify-center',
+                        'self-stretch',
+                        'border-none',
+                        'bg-transparent',
+                        'text-(--lh-text-muted)',
+                        'transition-colors',
+                        'duration-150',
+                        'hover:text-(--lh-accent)',
+                    ])
                 >
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                         <circle cx="7.5" cy="7.5" r="5"/>

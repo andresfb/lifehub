@@ -42,6 +42,9 @@ final class Invitation extends Model
         $query->where('token', $token);
     }
 
+    /**
+     * @return array<string, string>
+     */
     #[Override]
     protected function casts(): array
     {

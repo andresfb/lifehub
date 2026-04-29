@@ -22,6 +22,9 @@ final class ProcessApiErrorsJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    /**
+     * @param  Collection<int, ApiErrorItem>|ApiErrorItem  $errors
+     */
     public function __construct(private readonly Collection|ApiErrorItem $errors)
     {
         $this->delay = now()->addSeconds(5);

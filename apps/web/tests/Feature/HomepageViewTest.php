@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Dtos\PageActionItem;
 use App\Repository\Dashboard\Dtos\PinItem;
+use App\Repository\Dashboard\Dtos\SearchProviderItem;
 use App\Repository\Dashboard\Dtos\SectionItem;
 use App\Repository\Manifest\Dtos\ModuleItem;
 use App\Repository\Manifest\Dtos\NavigationItem;
@@ -22,7 +23,17 @@ test('homepage search button keeps its icon centered', function () {
     expect($html)
         ->toContain('Search the web...')
         ->toContain('min-w-0')
+        ->toContain('x-data="webSearch(')
         ->toContain('flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center self-stretch border-none bg-transparent text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-accent)');
+});
+
+test('web search replaces the engine placeholder with the encoded query', function () {
+    $script = file_get_contents(resource_path('js/app.js'));
+
+    expect($script)
+        ->not->toBeFalse()
+        ->toContain("this.selectedEngine.url.replace('%s', encodeURIComponent(query))")
+        ->not->toContain('this.selectedEngine.url + encodeURIComponent(query)');
 });
 
 test('homepage renders responsive page actions menu', function () {
@@ -40,7 +51,7 @@ test('homepage renders responsive page actions menu', function () {
         ->toContain('𖦏')
         ->toContain('Pins')
         ->toContain('Search Engines')
-        ->toContain(route('dashboard.pins.index'))
+        ->toContain('href="dashboard/pins"')
         ->toContain('sm:hidden')
         ->toContain('sm:inline');
 });
@@ -114,16 +125,19 @@ function homepagePageActions(): Collection
 }
 
 /**
- * @return array<int, array{name: string, url: string, icon: string, colorClass: string}>
+ * @return Collection<int, SearchProviderItem>
  */
-function homepageSearchEngines(): array
+function homepageSearchEngines(): Collection
 {
-    return [
-        [
-            'name' => 'DuckDuckGo',
-            'url' => 'https://noai.duckduckgo.com/?ia=web&origin=lifehub&q=',
-            'icon' => 'D',
-            'colorClass' => 'bg-[#DE5833]',
-        ],
-    ];
+    return collect([
+        new SearchProviderItem(
+            id: 1,
+            name: 'DuckDuckGo',
+            url: 'https://noai.duckduckgo.com/?ia=web&origin=lifehub&q=%s',
+            icon: 'D',
+            icon_color: 'bg-[#DE5833]',
+            default: true,
+            order: 1,
+        ),
+    ]);
 }

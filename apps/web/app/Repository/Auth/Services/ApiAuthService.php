@@ -158,6 +158,9 @@ final readonly class ApiAuthService
         return AuthStatus::SUCCESS;
     }
 
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     private function needsTwoFactor(array $payload): bool
     {
         if ($this->apiClient->statusCode !== Response::HTTP_NON_AUTHORITATIVE_INFORMATION) {
@@ -171,6 +174,9 @@ final readonly class ApiAuthService
         return (bool) $payload['two_factor'];
     }
 
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     private function saveAuthInfo(array $payload): void
     {
         $token = $payload['token'] ?? null;

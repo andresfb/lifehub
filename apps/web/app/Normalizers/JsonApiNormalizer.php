@@ -11,6 +11,9 @@ use Spatie\LaravelData\Normalizers\Normalizer;
  */
 final class JsonApiNormalizer implements Normalizer
 {
+    /**
+     * @return array<string, mixed>|null
+     */
     public function normalize(mixed $value): ?array
     {
         if (! is_array($value)) {
@@ -26,6 +29,10 @@ final class JsonApiNormalizer implements Normalizer
         return $this->withAttributes($data);
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     private function withAttributes(array $data): array
     {
         if (! array_key_exists('attributes', $data)) {

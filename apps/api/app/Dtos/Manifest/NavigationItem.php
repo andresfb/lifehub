@@ -14,6 +14,9 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 #[MapName(SnakeCaseMapper::class)]
 final class NavigationItem extends Data
 {
+    /**
+     * @param  Collection<int, NavigationItem>|null  $nodes
+     */
     public function __construct(
         public readonly string $id,
         public readonly ModuleKey $key,

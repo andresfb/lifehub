@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 use UnitEnum;
 
+use function ceil;
+use function hash;
+use function is_string;
+use function sprintf;
+
 final class AuthSession
 {
     public const string API_TOKEN_KEY = 'api_token';
@@ -32,7 +37,7 @@ final class AuthSession
         return request()->hasCookie(self::TOKEN_HASH_KEY);
     }
 
-    public static function get(string $key, $default = null): mixed
+    public static function get(string $key, mixed $default = null): mixed
     {
         if (Session::has($key)) {
             return Session::get($key, $default);
@@ -64,6 +69,9 @@ final class AuthSession
         return true;
     }
 
+    /**
+     * @param  array<int, string>|string|UnitEnum  $keys
+     */
     public static function forget(array|string|UnitEnum $keys): bool
     {
         if (is_string($keys)) {
@@ -138,7 +146,10 @@ final class AuthSession
         Cookie::queue(Cookie::forget(self::TOKEN_HASH_KEY));
     }
 
-    private static function getUser(): array
+    /**
+     * @return array<string, mixed>|null
+     */
+    private static function getUser(): ?array
     {
         $token = self::get(self::API_TOKEN_KEY);
         if (blank($token)) {
@@ -146,10 +157,10 @@ final class AuthSession
         }
 
         if (blank($token)) {
-            return [];
+            return null;
         }
 
-        return Cache::get(md5($token), []);
+        return Cache::get(md5($token));
     }
 
     private static function setUser(mixed $value): bool

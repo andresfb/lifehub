@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Logging;
 
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
 
 final class HostBasedDailyLogger
 {
-    public function __invoke($logger): void
+    public function __invoke(Logger $logger): void
     {
         $hostname = str(gethostname())->kebab()->value();
         $template = "laravel-{$hostname}-{date}";

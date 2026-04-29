@@ -29,6 +29,8 @@ final readonly class ApiManifestService
     }
 
     /**
+     * @return array<string, mixed>
+     *
      * @throws Throwable
      */
     public function loadUserManifest(int $userId): array

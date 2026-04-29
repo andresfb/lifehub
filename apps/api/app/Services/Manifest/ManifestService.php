@@ -60,6 +60,9 @@ final readonly class ManifestService
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function buildForUser(User $user): array
     {
         return Cache::tags(['manifest'])

@@ -5,18 +5,37 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use Laravel\Mcp\Exceptions\NotImplementedException;
 
 final class PinController extends Controller
 {
-    public function index() {}
+    public function index(): never
+    {
+        throw new NotImplementedException('Not implemented yet.');
+    }
 
-    public function create() {}
+    public function create(): never
+    {
+        throw new NotImplementedException('Not implemented yet.');
+    }
 
-    public function store() {}
+    public function store(): never
+    {
+        throw new NotImplementedException('Not implemented yet.');
+    }
 
-    public function edit() {}
+    public function edit(): never
+    {
+        throw new NotImplementedException('Not implemented yet.');
+    }
 
-    public function update() {}
+    public function update(): never
+    {
+        throw new NotImplementedException('Not implemented yet.');
+    }
 
-    public function destroy() {}
+    public function destroy(): never
+    {
+        throw new NotImplementedException('Not implemented yet.');
+    }
 }

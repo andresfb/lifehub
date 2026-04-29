@@ -87,7 +87,6 @@ final readonly class GlobalSearchQueryService implements GlobalSearchQueryServic
                     'is_archived' => (bool) ($top['is_archived'] ?? false),
                     'score' => $top['_rankingScore'] ?? null,
                     'matched_chunks' => $items->take(3)
-                        ->filter(fn ($item): true => is_array($item))
                         ->map(static fn (array $hit): array => [
                             'global_search_chunk_id' => $hit['global_search_chunk_id'] ?? null,
                             'chunk_index' => $hit['chunk_index'] ?? null,

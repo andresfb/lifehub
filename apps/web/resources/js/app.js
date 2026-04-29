@@ -133,7 +133,7 @@ Alpine.data('webSearch', (engines = []) => ({
     query: '',
     selectedEngine: engines[0] ?? {
         name: 'DuckDuckGo',
-        url: 'https://noai.duckduckgo.com/?ia=web&origin=lifehub&q=',
+        url: 'https://noai.duckduckgo.com/?ia=web&origin=lifehub&q=%s',
     },
 
     selectEngine(engine) {
@@ -148,7 +148,9 @@ Alpine.data('webSearch', (engines = []) => ({
             return
         }
 
-        window.open(this.selectedEngine.url + encodeURIComponent(query), '_blank', 'noopener,noreferrer')
+        const searchUrl = this.selectedEngine.url.replace('%s', encodeURIComponent(query))
+
+        window.open(searchUrl, '_blank', 'noopener,noreferrer')
     },
 }))
 

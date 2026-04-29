@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 /**
  * Scopes a model to the authenticated user.
  *
- * Requires a ` user_id ` column on the model's table.
+ * Requires a `user_id` column on the model's table.
  *
  * @mixin Model
  */

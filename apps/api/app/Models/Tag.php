@@ -9,13 +9,12 @@ use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Database\Factories\TagFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Tags\Tag as SpatieTag;
 
 /**
  * @property-read int $id
- * @property-read int $user_id
+ * @property int $user_id
  * @property string $slug
  * @property string $name
  * @property string $type
@@ -29,6 +28,5 @@ use Spatie\Tags\Tag as SpatieTag;
 final class Tag extends SpatieTag implements UserModelInterface
 {
     use BelongsToUser;
-    use HasFactory;
     use SoftDeletes;
 }
