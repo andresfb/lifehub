@@ -41,13 +41,13 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  * @property-read UserSetting $aiSettings
- * @property-read Collection<AiProvider> $aiProviders
- * @property-read Collection<AiModel> $aiModels
+ * @property-read Collection<int, AiProvider> $aiProviders
+ * @property-read Collection<int, AiModel> $aiModels
  */
-#[ObservedBy([UserObserver::class])]
-#[UseFactory(UserFactory::class)]
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
+#[UseFactory(UserFactory::class)]
+#[ObservedBy([UserObserver::class])]
 final class User extends Authenticatable
 {
     use HasApiTokens;

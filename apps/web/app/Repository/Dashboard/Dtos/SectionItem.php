@@ -13,6 +13,9 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 #[MapName(SnakeCaseMapper::class)]
 final class SectionItem extends Data
 {
+    /**
+     * @param  Collection<int, PinItem>  $items
+     */
     public function __construct(
         public readonly int $id,
         public readonly string $slug,

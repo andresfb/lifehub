@@ -26,7 +26,9 @@
       "mcp__jcodemunch-mcp__find_references",
       "Bash(curl -si http://localhost:8000/api/v1/manifesto)",
       "Bash(xargs ls *)",
-      "Bash(xargs cat *)"
+      "Bash(xargs cat *)",
+      "Bash(./vendor/bin/phpstan analyse *)",
+      "Bash(./vendor/bin/phpstan *)"
     ]
   },
   "enableAllProjectMcpServers": true,

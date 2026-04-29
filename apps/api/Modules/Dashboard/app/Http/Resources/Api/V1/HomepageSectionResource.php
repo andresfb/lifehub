@@ -13,6 +13,9 @@ use Modules\Dashboard\Models\HomepageSection;
  */
 final class HomepageSectionResource extends JsonResource
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [

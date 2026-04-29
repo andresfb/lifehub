@@ -7,6 +7,7 @@ namespace App\Repository\Manifest\Services;
 use App\Models\ApiManifest;
 use App\Models\ApiManifestAction;
 use App\Models\ApiManifestCommand;
+use App\Models\ApiManifestEndpoint;
 use App\Models\ApiManifestModule;
 use App\Models\ApiManifestNavigationNode;
 use Illuminate\Support\Arr;
@@ -17,6 +18,8 @@ use Throwable;
 final class ImportApiCatalogService
 {
     /**
+     * @param  array<string, mixed>  $payload
+     *
      * @throws Throwable
      */
     public function execute(array $payload, int $userId): void
@@ -37,6 +40,7 @@ final class ImportApiCatalogService
             $modules = Arr::get($payload, 'modules', []);
 
             foreach ($modules as $moduleIndex => $modulePayload) {
+                /** @var ApiManifestModule $module */
                 $module = $manifest->modules()
                     ->create([
                         'key' => $modulePayload['key'],
@@ -108,6 +112,7 @@ final class ImportApiCatalogService
             return $endpointIds[$signature];
         }
 
+        /** @var ApiManifestEndpoint $endpoint */
         $endpoint = $manifest->endpoints()->create([
             'route_name' => $endpointPayload['route_name'] ?? null,
             'method' => $endpointPayload['method'] ?? null,

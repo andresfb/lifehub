@@ -19,10 +19,10 @@ use Override;
 
 /**
  * @property-read int $id
- * @property-read string $creator_id
- * @property-read int $user_id
- * @property-read string $entity_type
- * @property-read int $entity_id
+ * @property string $creator_id
+ * @property int $user_id
+ * @property string $entity_type
+ * @property int $entity_id
  * @property string $module
  * @property string $title
  * @property string $body
@@ -78,6 +78,9 @@ final class GlobalSearch extends Model implements UserModelInterface
         return $this->hasMany(GlobalSearchChunk::class);
     }
 
+    /**
+     * @return array<string, string>
+     */
     #[Override]
     protected function casts(): array
     {

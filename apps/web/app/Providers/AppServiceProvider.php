@@ -53,7 +53,7 @@ final class AppServiceProvider extends ServiceProvider
         );
 
         RedirectResponse::macro('announce', function ($text, $type = 'ghost'): object {
-            $this->session->push('announcements', [
+            $this->getSession()->push('announcements', [
                 'id' => uniqid(Config::string('app.name'), true),
                 'type' => $type,
                 'content' => $text,

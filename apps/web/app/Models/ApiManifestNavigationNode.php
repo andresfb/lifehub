@@ -29,7 +29,7 @@ use Illuminate\Support\Collection;
  * @property-read CarbonImmutable|null $updated_at
  * @property-read ApiManifestModule $module
  * @property-read ApiManifestNavigationNode|null $parent
- * @property-read Collection<ApiManifestNavigationNode>|null $children
+ * @property-read Collection<int, ApiManifestNavigationNode>|null $children
  */
 #[Guarded('id')]
 #[Table(name: 'api_manifest_navigation_node')]
@@ -37,21 +37,33 @@ final class ApiManifestNavigationNode extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsTo<ApiManifestModule, $this>
+     */
     public function module(): BelongsTo
     {
         return $this->belongsTo(ApiManifestModule::class, 'api_manifest_module_id');
     }
 
+    /**
+     * @return BelongsTo<ApiManifestNavigationNode, $this>
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
+    /**
+     * @return HasMany<ApiManifestNavigationNode, $this>
+     */
     public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

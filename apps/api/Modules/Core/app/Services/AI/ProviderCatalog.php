@@ -33,7 +33,7 @@ use Laravel\Ai\Providers\XaiProvider;
 final class ProviderCatalog
 {
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, array{code: string, name: string, allowed_fields: array<int, string>, required_fields: array<int, string>, supports: array<string, bool>}>
      */
     public function all(): Collection
     {

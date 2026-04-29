@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
 use Exception;
@@ -35,13 +37,13 @@ trait HasSlug
             return $slug;
         }
 
-        throw new RuntimeException("Failed to generate unique slug after $maxAttempts attempts");
+        throw new RuntimeException("Failed to generate unique slug after {$maxAttempts} attempts");
     }
 
     protected static function base62Encode(string $input): string
     {
         $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $base = strlen($chars);
+        $base = mb_strlen($chars);
         $result = '';
 
         $num = gmp_init(bin2hex($input), 16);
@@ -50,7 +52,7 @@ trait HasSlug
             $result .= $chars[gmp_intval($rem)];
         }
 
-        return str_pad($result, 11, '0', STR_PAD_LEFT);
+        return mb_str_pad($result, 11, '0', STR_PAD_LEFT);
     }
 
     protected static function getFieldName(): string

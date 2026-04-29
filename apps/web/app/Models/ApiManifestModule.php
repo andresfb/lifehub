@@ -24,9 +24,9 @@ use Illuminate\Support\Collection;
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  * @property-read ApiManifest $manifest
- * @property-read Collection<ApiManifestNavigationNode>|null $navigationNodes
- * @property-read Collection<ApiManifestCommand>|null $commands
- * @property-read Collection<ApiManifestAction>|null $actions
+ * @property-read Collection<int, ApiManifestNavigationNode>|null $navigationNodes
+ * @property-read Collection<int, ApiManifestCommand>|null $commands
+ * @property-read Collection<int, ApiManifestAction>|null $actions
  */
 #[Guarded('id')]
 #[Table(name: 'api_manifest_module')]
@@ -34,26 +34,41 @@ final class ApiManifestModule extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsTo<ApiManifest, $this>
+     */
     public function manifest(): BelongsTo
     {
         return $this->belongsTo(ApiManifest::class, 'api_manifest_id');
     }
 
+    /**
+     * @return HasMany<ApiManifestNavigationNode, $this>
+     */
     public function navigation(): HasMany
     {
         return $this->hasMany(ApiManifestNavigationNode::class, 'api_manifest_module_id');
     }
 
+    /**
+     * @return HasMany<ApiManifestCommand, $this>
+     */
     public function commands(): HasMany
     {
         return $this->hasMany(ApiManifestCommand::class, 'api_manifest_module_id');
     }
 
+    /**
+     * @return HasMany<ApiManifestAction, $this>
+     */
     public function actions(): HasMany
     {
         return $this->hasMany(ApiManifestAction::class, 'api_manifest_module_id');
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

@@ -12,7 +12,7 @@ use App\Repository\Manifest\Enums\ManifestModule;
 use App\Repository\Manifest\Libraries\ManifestActionsLibrary;
 use Throwable;
 
-final readonly class ApiPinsService
+final readonly class ApiSearchProviderService
 {
     public function __construct(
         private ApiClient $apiClient,
@@ -23,12 +23,12 @@ final readonly class ApiPinsService
      *
      * @throws Throwable
      */
-    public function getUserPins(int $userId): array
+    public function getProviders(int $userId): array
     {
         $endpoint = ManifestActionsLibrary::getEndpoint(
             $userId,
             ManifestModule::DASHBOARD,
-            ManifestActionOwner::PINS,
+            ManifestActionOwner::SEARCH,
             ManifestAction::LIST,
             ManifestMethod::GET,
         );

@@ -7,7 +7,9 @@ namespace App\Services\Search\Embeddings;
 use App\Contracts\Search\GlobalSearchEmbeddingServiceInterface;
 use App\Exceptions\UserAiConfigurationException;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Embeddings;
 use Laravel\Ai\Exceptions\FailoverableException;
 use Modules\Core\Dtos\AI\ResolvedUserAiProvider;
@@ -33,8 +35,6 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
 
     /**
      * @return array<int, array<int, float>>
-     *
-     * @throws FailoverableException
      */
     public function embed(User $user, array $inputs, ?ResolvedUserAiProvider $resolved = null, bool $cache = false): array
     {
@@ -56,10 +56,16 @@ final readonly class GlobalSearchEmbeddingService implements GlobalSearchEmbeddi
             $embedder = $embedder->cache();
         }
 
-        $embeddings = $embedder->generate(
-            $resolved->code,
-            $resolved->model
-        )->embeddings;
+        try {
+            $embeddings = $embedder->generate(
+                $resolved->code,
+                $resolved->model
+            )->embeddings;
+        } catch (FailoverableException|Exception $e) {
+            Log::error($e->getMessage());
+
+            return [];
+        }
 
         $normalized = [];
 

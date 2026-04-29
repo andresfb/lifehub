@@ -7,7 +7,7 @@ namespace App\Http\Middleware;
 use App\Services\Modules\ModuleAccessService;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Response;
 
 final readonly class EnsureModuleEnabledMiddleware
 {
@@ -23,7 +23,7 @@ final readonly class EnsureModuleEnabledMiddleware
     ): Response {
         $user = $request->user();
 
-        abort_unless($user, 403);
+        abort_unless(blank($user), 403);
 
         $canAccess = match ($requiredLevel) {
             'read' => $this->moduleAccess->canRead($user, $moduleKey),

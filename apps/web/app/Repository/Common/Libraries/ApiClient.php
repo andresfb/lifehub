@@ -42,6 +42,9 @@ final class ApiClient
     }
 
     /**
+     * @param  array<string, mixed>  $query
+     * @return array<string, mixed>
+     *
      * @throws Exception
      */
     public function get(string $uri, array $query = []): array
@@ -52,6 +55,9 @@ final class ApiClient
     }
 
     /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     *
      * @throws Exception
      */
     public function request(string $method, string $uri, array $data = []): array
@@ -64,6 +70,9 @@ final class ApiClient
     }
 
     /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     *
      * @throws Exception
      */
     public function post(string $uri, array $data = []): array
@@ -100,6 +109,9 @@ final class ApiClient
         return $this->token;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function parseResponse(LazyPromise|PromiseInterface|Response $response): array
     {
         if ($response->unauthorized()) {
@@ -120,7 +132,7 @@ final class ApiClient
             throw new RuntimeException("Request failed: {$result['message']}");
         }
 
-        $this->statusCode = $response->getStatusCode();
+        $this->statusCode = $response->status();
 
         return array_key_exists('data', $result)
             ? $result['data']

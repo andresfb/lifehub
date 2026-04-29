@@ -13,10 +13,12 @@ use Carbon\CarbonImmutable;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Core\Database\Factories\ReminderFactory;
 use Modules\Core\Enums\MorphTypes;
 use Modules\Core\Observers\ReminderObserver;
 use Override;
@@ -24,20 +26,22 @@ use Spatie\Tags\HasTags;
 
 /**
  * @property-read int $id
- * @property-read int $user_id
- * @property-read int $remindable_id
- * @property-read string $remindable_type
+ * @property int $user_id
+ * @property int $remindable_id
+ * @property string $remindable_type
  * @property string $title
  * @property string|null $notes
  * @property CarbonImmutable $due_at
  * @property CarbonImmutable|null $completed_at
  * @property CarbonImmutable|null $snoozed_until
+ * @property CarbonImmutable|null $deleted_at
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
- * @property-read Collection<Tag> $tags
+ * @property-read Collection<int, Tag> $tags
  */
 #[Table(name: 'core_reminders')]
+#[UseFactory(ReminderFactory::class)]
 #[ObservedBy([ReminderObserver::class])]
 final class Reminder extends Model implements GlobalSearchInterface, UserModelInterface
 {
@@ -47,6 +51,7 @@ final class Reminder extends Model implements GlobalSearchInterface, UserModelIn
     use HasTags;
     use SoftDeletes;
 
+    /** @var array<int, string> */
     protected array $cascadeDeletes = ['tags'];
 
     public function getIdentifier(): string
@@ -54,6 +59,9 @@ final class Reminder extends Model implements GlobalSearchInterface, UserModelIn
         return "reminder:{$this->id}";
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function buildGlobalSearch(): array
     {
         return [
@@ -64,7 +72,7 @@ final class Reminder extends Model implements GlobalSearchInterface, UserModelIn
             'module' => 'CORE',
             'title' => $this->title,
             'body' => $this->notes ?? '',
-            'tags' => $this->tags?->pluck('name')->values()->all() ?? [],
+            'tags' => $this->tags->pluck('name')->values()->all() ?? [],
             'keywords' => [],
             'metadata' => [
                 'icon' => 'note',
@@ -78,6 +86,9 @@ final class Reminder extends Model implements GlobalSearchInterface, UserModelIn
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     #[Override]
     protected function casts(): array
     {

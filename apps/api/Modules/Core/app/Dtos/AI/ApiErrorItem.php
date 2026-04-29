@@ -11,6 +11,9 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 #[MapName(SnakeCaseMapper::class)]
 final class ApiErrorItem extends Data
 {
+    /**
+     * @param  array<int, mixed>  $data
+     */
     public function __construct(
         public readonly int $userId,
         public readonly string $sourceId,

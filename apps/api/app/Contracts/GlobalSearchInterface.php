@@ -8,5 +8,8 @@ interface GlobalSearchInterface
 {
     public function getIdentifier(): string;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function buildGlobalSearch(): array;
 }

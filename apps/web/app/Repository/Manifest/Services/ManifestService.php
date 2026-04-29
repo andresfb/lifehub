@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Repository\Manifest\Services;
 
 use App\Models\ApiManifest;
-use App\Models\ApiManifestModule;
 use App\Repository\Manifest\Dtos\ModuleItem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -19,7 +18,7 @@ final readonly class ManifestService
     ) {}
 
     /**
-     * @return Collection<ApiManifestModule>
+     * @return Collection<int, ModuleItem>
      *
      * @throws Throwable
      */
@@ -53,7 +52,7 @@ final readonly class ManifestService
     }
 
     /**
-     * @return array<int, ApiManifestModule>|null
+     * @return array<int, mixed>|null
      */
     private function loadNavigation(int $userId): ?array
     {

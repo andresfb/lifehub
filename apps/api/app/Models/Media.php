@@ -16,9 +16,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
 /**
  * @property-read int $id
- * @property-read int $user_id
- * @property-read int $model_id
- * @property-read string $model_type
+ * @property int $user_id
+ * @property int $model_id
+ * @property string $model_type
  * @property string $collection_name
  * @property string $name
  * @property string $file_name
@@ -26,13 +26,13 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
  * @property string $disk
  * @property string $conversions_disk
  * @property int $size
- * @property array $manipulations
- * @property array $custom_properties
- * @property array $generated_conversions
- * @property array $responsive_images
+ * @property array<int, mixed> $manipulations
+ * @property array<int, mixed> $custom_properties
+ * @property array<int, mixed> $generated_conversions
+ * @property array<int, mixed> $responsive_images
  * @property int $order_column
  * @property bool $is_encrypted
- * @property array $encryption_metadata
+ * @property array<int, mixed> $encryption_metadata
  * @property-read CarbonImmutable|null $deleted_at
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
@@ -50,6 +50,9 @@ final class Media extends SpatieMedia implements UserModelInterface
         return $this->is_encrypted;
     }
 
+    /**
+     * @return array<string, string>
+     */
     #[Override]
     protected function casts(): array
     {

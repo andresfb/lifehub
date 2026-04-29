@@ -9,6 +9,8 @@ use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
+use function sprintf;
+
 #[MapName(SnakeCaseMapper::class)]
 final class EndpointItem extends Data
 {
@@ -21,10 +23,15 @@ final class EndpointItem extends Data
 
     public function getUri(): string
     {
+        $path = str($this->path);
+        if ($path->contains('{') || $path->contains('}')) {
+            $path = $path->dirname();
+        }
+
         return sprintf(
             '%s%s',
             Config::string('services.backend.host'),
-            $this->path
+            $path->value(),
         );
     }
 }

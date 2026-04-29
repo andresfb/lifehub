@@ -10,6 +10,9 @@ use Modules\Core\Dtos\AI\ApiErrorItem;
 
 final class ProcessApiErrorsService
 {
+    /**
+     * @param  Collection<int, ApiErrorItem>|ApiErrorItem  $errors
+     */
     public function execute(Collection|ApiErrorItem $errors): void
     {
         if ($errors instanceof ApiErrorItem) {

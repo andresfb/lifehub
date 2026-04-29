@@ -38,7 +38,7 @@ use Override;
  * @property-read CarbonImmutable|null $created_at
  * @property-read CarbonImmutable|null $updated_at
  * @property-read UserSetting $userSetting
- * @property-read Collection<AiModel> $models
+ * @property-read Collection<int, AiModel> $models
  */
 #[Table(name: 'core_ai_providers')]
 #[UseFactory(AiProviderFactory::class)]

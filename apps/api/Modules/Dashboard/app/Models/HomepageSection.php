@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Dashboard\Models;
 
 use App\Contracts\UserModelInterface;
-use App\Enums\ModuleKey;
 use App\Models\User;
 use App\Traits\BelongsToUser;
 use App\Traits\HasSlug;
@@ -13,14 +12,15 @@ use Carbon\CarbonImmutable;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Modules\Dashboard\Database\Factories\HomepageSectionFactory;
 use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionResource;
 use Modules\Dashboard\Observers\HomepageSectionObserver;
 use Modules\Dashboard\Policies\HomepageSectionPolicy;
@@ -28,7 +28,7 @@ use Override;
 
 /**
  * @property-read int $id
- * @property-read int $user_id
+ * @property int $user_id
  * @property string $slug
  * @property string $name
  * @property bool $active
@@ -37,9 +37,10 @@ use Override;
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
- * @property-read Collection<HomepageItem> $items
+ * @property-read Collection<int, HomepageItem> $items
  */
 #[Table(name: 'dashboard_homepage_sections')]
+#[UseFactory(HomepageSectionFactory::class)]
 #[ObservedBy(HomepageSectionObserver::class)]
 #[UsePolicy(HomepageSectionPolicy::class)]
 #[UseResource(HomepageSectionResource::class)]
@@ -51,8 +52,12 @@ final class HomepageSection extends Model implements UserModelInterface
     use HasSlug;
     use SoftDeletes;
 
+    /** @var array<int, string> */
     protected array $cascadeDeletes = ['items'];
 
+    /**
+     * @return Collection<int, HomepageSection>
+     */
     public static function getUserSections(int $userId): Collection
     {
         return self::query()
@@ -61,14 +66,6 @@ final class HomepageSection extends Model implements UserModelInterface
             ->with('items.tags')
             ->orderBy('order')
             ->get();
-    }
-
-    /**
-     * @return BelongsTo<User, $this>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     /**
@@ -87,6 +84,9 @@ final class HomepageSection extends Model implements UserModelInterface
         return 'slug';
     }
 
+    /**
+     * @return array<string, string>
+     */
     #[Override]
     protected function casts(): array
     {

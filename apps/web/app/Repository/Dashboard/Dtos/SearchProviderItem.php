@@ -8,25 +8,21 @@ use Spatie\LaravelData\Data;
 
 use function mb_strtoupper;
 
-final class PinItem extends Data
+final class SearchProviderItem extends Data
 {
-    /**
-     * @param  array<int, string>  $tags
-     */
     public function __construct(
-        public readonly string $slug,
-        public readonly string $title,
+        public readonly int $id,
+        public readonly string $name,
         public readonly string $url,
-        public readonly string $order,
+        public readonly bool $default,
+        public readonly int $order = 0,
         public readonly ?string $icon = null,
         public readonly ?string $icon_color = null,
-        public readonly ?string $description = null,
-        public readonly array $tags = [],
     ) {}
 
     public function iconName(): string
     {
-        return $this->icon ?? mb_strtoupper($this->title[0]);
+        return $this->icon ?? mb_strtoupper($this->name[0]);
     }
 
     public function iconColor(): string
