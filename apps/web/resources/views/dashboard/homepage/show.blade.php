@@ -159,7 +159,7 @@
                             ])
                         >
                             <span
-                                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-display text-[14px] font-bold text-white"
+                                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg font-display text-[18px] font-bold text-white"
                                 style="background-color: {{ $bookmark->iconColor() }}"
                             >{{ $bookmark->iconName() }}</span>
                             <span class="text-[13px] font-medium text-(--lh-text)">

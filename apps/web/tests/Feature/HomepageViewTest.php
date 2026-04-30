@@ -134,10 +134,10 @@ function homepageSearchEngines(): Collection
             id: 1,
             name: 'DuckDuckGo',
             url: 'https://noai.duckduckgo.com/?ia=web&origin=lifehub&q=%s',
-            icon: 'D',
-            icon_color: 'bg-[#DE5833]',
             default: true,
             order: 1,
+            icon: 'D',
+            icon_color: 'bg-[#DE5833]',
         ),
     ]);
 }

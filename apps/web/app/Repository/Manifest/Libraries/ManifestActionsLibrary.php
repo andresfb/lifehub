@@ -12,32 +12,44 @@ use App\Repository\Manifest\Enums\ManifestMethod;
 use App\Repository\Manifest\Enums\ManifestModule;
 use App\Repository\Manifest\Services\ApiManifestService;
 use Illuminate\Support\Facades\Cache;
-use RuntimeException;
 use Throwable;
 
 final class ManifestActionsLibrary
 {
-    /**
-     * @throws Throwable
-     */
     public static function getEndpoint(
         int $userId,
         ManifestModule $module,
         ManifestActionOwner $owner,
         ManifestAction $action,
         ManifestMethod $method
-    ): EndpointItem {
-        $cached = self::getCached($userId, $module, $owner, $action, $method);
-        if (blank($cached)) {
-            resolve(ApiManifestService::class)->loadUserManifest($userId);
-        }
+    ): ?EndpointItem {
+        try {
+            $cached = self::getCached($userId, $module, $owner, $action, $method);
+            if (blank($cached)) {
+                resolve(ApiManifestService::class)->loadUserManifest($userId);
+            }
 
-        $cached = self::getCached($userId, $module, $owner, $action, $method);
-        if (blank($cached)) {
-            throw new RuntimeException('Endpoint not found');
-        }
+            $cached = self::getCached($userId, $module, $owner, $action, $method);
+            if (blank($cached)) {
+                return null;
+            }
 
-        return EndpointItem::from($cached);
+            return EndpointItem::from($cached);
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    public static function canAccess(
+        int $userId,
+        ManifestModule $module,
+        ManifestActionOwner $owner,
+        ManifestAction $action,
+        ManifestMethod $method
+    ): bool {
+        $endpoint = self::getEndpoint($userId, $module, $owner, $action, $method);
+
+        return filled($endpoint);
     }
 
     /**

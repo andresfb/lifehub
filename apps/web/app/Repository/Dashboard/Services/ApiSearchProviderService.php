@@ -10,6 +10,7 @@ use App\Repository\Manifest\Enums\ManifestActionOwner;
 use App\Repository\Manifest\Enums\ManifestMethod;
 use App\Repository\Manifest\Enums\ManifestModule;
 use App\Repository\Manifest\Libraries\ManifestActionsLibrary;
+use RuntimeException;
 use Throwable;
 
 final readonly class ApiSearchProviderService
@@ -32,6 +33,10 @@ final readonly class ApiSearchProviderService
             ManifestAction::LIST,
             ManifestMethod::GET,
         );
+
+        if (blank($endpoint)) {
+            throw new RuntimeException('Endpoint not found');
+        }
 
         return $this->apiClient
             ->setUserId($userId)
