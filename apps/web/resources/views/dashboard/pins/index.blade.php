@@ -202,7 +202,7 @@
                         </select>
                     </div>
 
-                    <div>
+                    <div class="md:col-span-2">
                         <label for="pin-title-desktop" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
                             Title
                         </label>
@@ -210,18 +210,6 @@
                             id="pin-title-desktop"
                             x-ref="pinModalPrimaryInput"
                             x-model="form.title"
-                            type="text"
-                            class="h-11 w-full rounded-[10px] border border-(--lh-border) bg-(--lh-input) px-3.5 text-[14px] text-(--lh-text) transition-[border-color,box-shadow] duration-200 focus:border-(--lh-accent) focus:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.12)]"
-                        />
-                    </div>
-
-                    <div>
-                        <label for="pin-order-desktop" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
-                            Order
-                        </label>
-                        <input
-                            id="pin-order-desktop"
-                            x-model="form.order"
                             type="text"
                             class="h-11 w-full rounded-[10px] border border-(--lh-border) bg-(--lh-input) px-3.5 text-[14px] text-(--lh-text) transition-[border-color,box-shadow] duration-200 focus:border-(--lh-accent) focus:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.12)]"
                         />
@@ -275,6 +263,18 @@
                         ></textarea>
                     </div>
 
+                    <div class="md:col-span-2" x-show="mode === 'edit'">
+                        <label for="pin-order-desktop" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
+                            Order
+                        </label>
+                        <input
+                            id="pin-order-desktop"
+                            x-model="form.order"
+                            type="text"
+                            class="h-11 w-full rounded-[10px] border border-(--lh-border) bg-(--lh-input) px-3.5 text-[14px] text-(--lh-text) transition-[border-color,box-shadow] duration-200 focus:border-(--lh-accent) focus:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.12)]"
+                        />
+                    </div>
+
                     <div class="md:col-span-2">
                         <label for="pin-tags-desktop" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
                             Tags
@@ -288,11 +288,7 @@
                     </div>
                 </form>
 
-                <div class="flex items-center justify-between gap-3 border-t border-(--lh-border-light) px-6 py-4">
-                    <div class="text-[12px] text-(--lh-text-muted)">
-                        Route:
-                        <span x-text="form.routeName" class="font-medium text-(--lh-text-sec)"></span>
-                    </div>
+                <div class="flex items-center justify-end gap-3 border-t border-(--lh-border-light) px-6 py-4">
                     <div class="flex items-center gap-2">
                         <button
                             type="button"
@@ -371,18 +367,6 @@
                 </div>
 
                 <div>
-                    <label for="pin-order-mobile" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
-                        Order
-                    </label>
-                    <input
-                        id="pin-order-mobile"
-                        x-model="form.order"
-                        type="text"
-                        class="h-11 w-full rounded-[10px] border border-(--lh-border) bg-(--lh-input) px-3.5 text-[14px] text-(--lh-text) transition-[border-color,box-shadow] duration-200 focus:border-(--lh-accent) focus:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.12)]"
-                    />
-                </div>
-
-                <div>
                     <label for="pin-url-mobile" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
                         URL
                     </label>
@@ -430,6 +414,18 @@
                     ></textarea>
                 </div>
 
+                <div x-show="mode === 'edit'">
+                    <label for="pin-order-mobile" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
+                        Order
+                    </label>
+                    <input
+                        id="pin-order-mobile"
+                        x-model="form.order"
+                        type="text"
+                        class="h-11 w-full rounded-[10px] border border-(--lh-border) bg-(--lh-input) px-3.5 text-[14px] text-(--lh-text) transition-[border-color,box-shadow] duration-200 focus:border-(--lh-accent) focus:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.12)]"
+                    />
+                </div>
+
                 <div>
                     <label for="pin-tags-mobile" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
                         Tags
@@ -443,11 +439,7 @@
                 </div>
             </form>
 
-            <div class="flex items-center justify-between gap-3 border-t border-(--lh-border-light) px-5 py-4">
-                <div class="text-[12px] text-(--lh-text-muted)">
-                    Route:
-                    <span x-text="form.routeName" class="font-medium text-(--lh-text-sec)"></span>
-                </div>
+            <div class="flex items-center justify-end gap-3 border-t border-(--lh-border-light) px-5 py-4">
                 <div class="flex items-center gap-2">
                     <button
                         type="button"

@@ -7,7 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\PinController;
-use App\Http\Controllers\SearchTagController;
+use App\Http\Controllers\Tags\SearchTagController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
