@@ -104,6 +104,7 @@ final class ImportApiCatalogService
         $signature = json_encode([
             $endpointPayload['route_name'] ?? null,
             $endpointPayload['method'] ?? null,
+            $endpointPayload['type'] ?? null,
             $endpointPayload['path'] ?? null,
             $endpointPayload['operation_id'] ?? null,
         ], JSON_THROW_ON_ERROR);
@@ -115,6 +116,7 @@ final class ImportApiCatalogService
         /** @var ApiManifestEndpoint $endpoint */
         $endpoint = $manifest->endpoints()->create([
             'route_name' => $endpointPayload['route_name'] ?? null,
+            'type' => $endpointPayload['type'] ?? null,
             'method' => $endpointPayload['method'] ?? null,
             'path' => $endpointPayload['path'] ?? null,
             'operation_id' => $endpointPayload['operation_id'] ?? null,

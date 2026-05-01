@@ -32,5 +32,6 @@ final class PinIndexItem extends Data
         public readonly string $createRouteName,
         public readonly string $updateRouteName,
         public readonly string $deleteRouteName,
+        public readonly string $searchTagsRouteName,
     ) {}
 }

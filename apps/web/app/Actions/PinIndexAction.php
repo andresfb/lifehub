@@ -58,6 +58,7 @@ final readonly class PinIndexAction
             createRouteName: 'dashboard.pins.create',
             updateRouteName: 'dashboard.pins.update',
             deleteRouteName: 'dashboard.pins.destroy',
+            searchTagsRouteName: 'search.tags',
         );
     }
 }

@@ -10,6 +10,7 @@ use Carbon\CarbonImmutable;
 use Database\Factories\TagFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use Spatie\Tags\Tag as SpatieTag;
 
 /**
@@ -29,4 +30,24 @@ final class Tag extends SpatieTag implements UserModelInterface
 {
     use BelongsToUser;
     use SoftDeletes;
+    use Searchable;
+
+    public function searchableAs(): string
+    {
+        return 'user_tags_index';
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'slug' => $this->slug,
+            'name' => $this->name,
+            'created_at' => $this->created_at,
+        ];
+    }
 }

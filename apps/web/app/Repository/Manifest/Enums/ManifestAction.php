@@ -11,4 +11,5 @@ enum ManifestAction: string
     case SAVE = 'save';
     case UPDATE = 'update';
     case DELETE = 'delete';
+    case SEARCH = 'search';
 }

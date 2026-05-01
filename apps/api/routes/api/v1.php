@@ -5,9 +5,9 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\GlobalSearchController;
 use App\Http\Controllers\Api\V1\ManifestController;
+use App\Http\Controllers\Api\V1\SearchTagController;
 use Illuminate\Support\Facades\Route;
 use Spatie\ResponseCache\Middlewares\CacheResponse;
-
 use function Illuminate\Support\hours;
 
 /*
@@ -52,6 +52,9 @@ Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function ()
 
     Route::get('search', GlobalSearchController::class)
         ->name('api.v1.search');
+
+    Route::get('search/tags', SearchTagController::class)
+        ->name('api.v1.search.tags');
 
     Route::post('logout', [AuthController::class, 'logout'])
         ->name('api.v1.logout');

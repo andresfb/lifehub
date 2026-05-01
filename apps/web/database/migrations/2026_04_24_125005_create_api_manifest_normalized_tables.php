@@ -30,12 +30,13 @@ return new class extends Migration
                 ->constrained(table: 'api_manifest')
                 ->cascadeOnDelete();
             $table->string('route_name')->nullable();
+            $table->string('type')->nullable();
             $table->string('method')->nullable();
             $table->string('path')->nullable();
             $table->string('operation_id')->nullable();
             $table->timestamps();
             $table->unique(
-                ['api_manifest_id', 'route_name', 'method', 'path', 'operation_id'],
+                ['api_manifest_id', 'route_name', 'type', 'method', 'path', 'operation_id'],
                 'api_manifest_endpoint_identity_unique'
             );
         });

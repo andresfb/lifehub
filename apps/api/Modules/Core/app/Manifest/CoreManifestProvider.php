@@ -10,6 +10,7 @@ use App\Dtos\Manifest\ModuleActionItem;
 use App\Dtos\Manifest\ModuleCommandItem;
 use App\Dtos\Manifest\NavigationItem;
 use App\Enums\ModuleAccessLevel;
+use App\Enums\ModuleEndpointType;
 use App\Enums\ModuleKey;
 use App\Services\Modules\ModuleAccessService;
 use Illuminate\Support\Collection;
@@ -86,7 +87,10 @@ final readonly class CoreManifestProvider implements ManifestProviderInterface
                 code: 'glob',
                 name: 'Global Search',
                 requiredAccess: ModuleAccessLevel::READ,
-                endpoint: new EndpointBinding(routeName: 'api.v1.search'),
+                endpoint: new EndpointBinding(
+                    routeName: 'v1.search',
+                    type: ModuleEndpointType::COMMAND,
+                ),
                 shortcut: 'CTR+ALT+G',
             ),
         ]);
@@ -98,6 +102,18 @@ final readonly class CoreManifestProvider implements ManifestProviderInterface
     public function actions(): Collection
     {
         return collect([
+            new ModuleActionItem(
+                owner: 'global.search',
+                name: 'search',
+                requiredAccess: ModuleAccessLevel::READ,
+                endpoint: new EndpointBinding(routeName: 'v1.search'),
+            ),
+            new ModuleActionItem(
+                owner: 'search.tags',
+                name: 'search',
+                requiredAccess: ModuleAccessLevel::READ,
+                endpoint: new EndpointBinding(routeName: 'v1.search.tags'),
+            ),
             new ModuleActionItem(
                 owner: 'ai.providers',
                 name: 'list',

@@ -16,6 +16,7 @@ final class EndpointItem extends Data
 {
     public function __construct(
         public readonly string $routeName,
+        public readonly string $type,
         public readonly ?string $method = null,
         public readonly ?string $path = null,
         public readonly ?string $operationId = null,
