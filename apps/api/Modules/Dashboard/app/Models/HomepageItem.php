@@ -69,6 +69,15 @@ final class HomepageItem extends Model implements UserModelInterface
     /** @var array<int, string> */
     protected array $cascadeDeletes = ['tags'];
 
+    public static function found(int $userId, string $url, int $sectionId): bool
+    {
+        return self::query()
+            ->where('user_id', $userId)
+            ->where('section_id', $sectionId)
+            ->where('url', $url)
+            ->exists();
+    }
+
     /**
      * @return BelongsTo<HomepageSection, $this>
      */

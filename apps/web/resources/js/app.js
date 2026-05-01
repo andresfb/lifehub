@@ -156,6 +156,104 @@ Alpine.data('webSearch', (engines = []) => ({
     },
 }))
 
+Alpine.data('pinsModal', (config = {}) => ({
+    createRouteName: config.createRouteName ?? '',
+    updateRouteName: config.updateRouteName ?? '',
+    isOpen: false,
+    mode: 'create',
+    sections: Object.entries(config.sections ?? {}).map(([slug, name]) => ({ slug, name })),
+    form: {
+        routeName: '',
+        slug: '',
+        sectionSlug: '',
+        sectionName: '',
+        title: '',
+        url: '',
+        order: '',
+        icon: '',
+        iconColor: '',
+        description: '',
+        tagsText: '',
+    },
+
+    init() {
+        this.$watch('isOpen', (isOpen) => {
+            document.body.style.overflow = isOpen ? 'hidden' : ''
+            if (!isOpen) {
+                return
+            }
+
+            this.$nextTick(() => {
+                const selector = window.matchMedia('(min-width: 768px)').matches
+                    ? '#pin-title-desktop'
+                    : '#pin-title-mobile'
+
+                this.$root.querySelector(selector)?.focus()
+            })
+        })
+    },
+
+    get modalTitle() {
+        return this.mode === 'edit' ? 'Edit Pin' : 'New Pin'
+    },
+
+    get modalDescription() {
+        if (this.form.sectionName) {
+            return `Section: ${this.form.sectionName}`
+        }
+
+        return 'Choose a section and fill in the pin details.'
+    },
+
+    openCreatePin() {
+        const firstSection = this.sections[0] ?? { slug: '', name: '' }
+
+        this.mode = 'create'
+        this.form = {
+            routeName: this.createRouteName,
+            slug: '',
+            sectionSlug: firstSection.slug,
+            sectionName: firstSection.name,
+            title: '',
+            url: '',
+            order: '',
+            icon: '',
+            iconColor: '',
+            description: '',
+            tagsText: '',
+        }
+        this.isOpen = true
+    },
+
+    openEditPin(pin) {
+        this.mode = 'edit'
+        this.form = {
+            routeName: this.updateRouteName,
+            slug: pin.slug ?? '',
+            sectionSlug: pin.sectionSlug ?? '',
+            sectionName: pin.sectionName ?? '',
+            title: pin.title ?? '',
+            url: pin.url ?? '',
+            order: pin.order ?? '',
+            icon: pin.icon ?? '',
+            iconColor: pin.iconColor ?? '',
+            description: pin.description ?? '',
+            tagsText: pin.tagsText ?? '',
+        }
+        this.isOpen = true
+    },
+
+    syncSectionName() {
+        const activeSection = this.sections.find((section) => section.slug === this.form.sectionSlug)
+
+        this.form.sectionName = activeSection?.name ?? ''
+    },
+
+    close() {
+        this.isOpen = false
+    },
+}))
+
 Alpine.data('twoFactorCountdown', (totalSeconds) => ({
     circumference: 213.6,
     interval: null,

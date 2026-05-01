@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace App\Policies;
+namespace Modules\Dashboard\Policies;
 
 use App\Contracts\UserModelInterface;
 use App\Enums\ModuleAccessLevel;
@@ -21,29 +19,29 @@ abstract class BasePolicy
 
     public function viewAny(User $user): bool
     {
-        return $this->accessService->canUse($user, ModuleKey::BOOKMARKS);
+        return $this->accessService->canUse($user, ModuleKey::DASHBOARD);
     }
 
     public function view(User $user, UserModelInterface $model): bool
     {
         return $model->getUserId() === $user->id
-            && $this->accessService->canUse($user, ModuleKey::BOOKMARKS);
+            && $this->accessService->canUse($user, ModuleKey::DASHBOARD);
     }
 
     public function create(User $user): bool
     {
-        return $this->accessService->canUse($user, ModuleKey::BOOKMARKS, ModuleAccessLevel::WRITE);
+        return $this->accessService->canUse($user, ModuleKey::DASHBOARD, ModuleAccessLevel::WRITE);
     }
 
     public function update(User $user, UserModelInterface $model): bool
     {
         return $model->getUserId() === $user->id
-            && $this->accessService->canUse($user, ModuleKey::BOOKMARKS, ModuleAccessLevel::WRITE);
+            && $this->accessService->canUse($user, ModuleKey::DASHBOARD, ModuleAccessLevel::WRITE);
     }
 
     public function delete(User $user, UserModelInterface $model): bool
     {
         return $model->getUserId() === $user->id
-            && $this->accessService->canUse($user, ModuleKey::BOOKMARKS, ModuleAccessLevel::WRITE);
+            && $this->accessService->canUse($user, ModuleKey::DASHBOARD, ModuleAccessLevel::WRITE);
     }
 }

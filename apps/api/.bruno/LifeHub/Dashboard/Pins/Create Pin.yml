@@ -1,0 +1,32 @@
+info:
+  name: Create Pin
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{process.env.API_URL}}/dashboard/pins"
+  body:
+    type: json
+    data: |-
+      {
+        "section_slug": "external-sites-dashboard-afyvcg",
+        "title": "Ollama",
+        "url": "https://ollama.com",
+        "description": "Ollama is the easiest way to automate your work using open models, while keeping your data safe",
+        "icon": "O",
+        "icon_color": "#000000",
+        "tags": [
+            "ollama",
+            "llm",
+            "local",
+            "inferance"
+        ]  
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
