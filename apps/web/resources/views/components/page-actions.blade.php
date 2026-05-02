@@ -3,15 +3,20 @@
 ])
 
 <div
-    x-data="{ isOpen: false }"
-    x-on:keydown.escape.window="isOpen = false"
-    x-on:click.outside="isOpen = false"
+    x-data="pageActionsMenu()"
+    x-on:keydown.escape.window="close()"
+    x-on:keydown.down="handleArrowKey($event, 1)"
+    x-on:keydown.up="handleArrowKey($event, -1)"
+    x-on:keydown.enter="handleEnterKey($event)"
+    x-on:click.outside="close()"
+    x-on:page-actions:toggle="toggleFromShortcut()"
     {{ $attributes->class(['tooltip tooltip-right md:tooltip-left relative inline-flex']) }}
+    data-page-actions-root
     data-tip="Manage"
 >
     <button
         type="button"
-        x-on:click="isOpen = ! isOpen"
+        x-on:click="toggle()"
         class="btn btn-circle btn-sm sm:btn-md border-base-300 bg-base-100 shadow-sm"
         x-bind:aria-expanded="isOpen.toString()"
         aria-haspopup="true"
@@ -33,10 +38,16 @@
         class="absolute top-full left-0 z-40 mt-2 min-w-56 rounded-box border border-base-300 bg-base-100 p-2 shadow-xl sm:right-0 sm:left-auto"
     >
         <ul class="menu menu-sm w-full gap-1">
+        @php($enabledActionIndex = -1)
         @foreach($pageActions as $pageAction)
             @if(filled($pageAction->route))
+                @php($enabledActionIndex++)
                 <li>
-                    <a href="{{ resolve_route($pageAction->route) }}">
+                    <a
+                        href="{{ resolve_route($pageAction->route) }}"
+                        x-bind:class="{ 'active': activeIndex === {{ $enabledActionIndex }} }"
+                        data-page-action-item="enabled"
+                    >
                         <span class="w-5 text-center text-lg leading-none" aria-hidden="true">{{ $pageAction->icon }}</span>
                         <span>{{ $pageAction->label }}</span>
                     </a>

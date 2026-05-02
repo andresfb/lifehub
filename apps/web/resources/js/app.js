@@ -62,6 +62,24 @@ Alpine.data('layoutShell', () => ({
         this.closeProfileMenus()
     },
 
+    togglePageActionsFromShortcut(event) {
+        if (!event.metaKey || event.key !== '2' || this.isEditableTarget(event.target)) {
+            return
+        }
+
+        const pageActionsRoot = this.findVisiblePageActionsRoot()
+        if (!pageActionsRoot) {
+            return
+        }
+
+        event.preventDefault()
+
+        pageActionsRoot.dispatchEvent(new CustomEvent('page-actions:toggle'))
+        this.closeSidebar()
+        this.closeProfileMenus()
+        this.isCommandOpen = false
+    },
+
     toggleCommand(event) {
         const hasModifier = event.metaKey || event.ctrlKey
         if (!hasModifier || event.key !== '/') {
@@ -114,10 +132,106 @@ Alpine.data('layoutShell', () => ({
             && (target.isContentEditable || target.closest('input, textarea, select, [contenteditable="true"]') !== null)
     },
 
+    findVisiblePageActionsRoot() {
+        return Array.from(document.querySelectorAll('[data-page-actions-root]'))
+            .find((element) => element instanceof HTMLElement && element.getClientRects().length > 0)
+    },
+
     closeOpenMenus() {
         this.closeSidebar()
         this.closeProfileMenus()
         this.isCommandOpen = false
+    },
+}))
+
+Alpine.data('pageActionsMenu', () => ({
+    isOpen: false,
+    activeIndex: -1,
+
+    toggle() {
+        if (this.isOpen) {
+            this.close()
+
+            return
+        }
+
+        this.open()
+    },
+
+    toggleFromShortcut() {
+        if (this.isOpen) {
+            this.close()
+
+            return
+        }
+
+        this.open(true)
+    },
+
+    open(shouldFocusFirstAction = false) {
+        this.isOpen = true
+        this.activeIndex = shouldFocusFirstAction ? this.firstActionIndex() : this.activeIndex
+
+        this.$nextTick(() => {
+            if (shouldFocusFirstAction) {
+                this.focusActiveAction()
+            }
+        })
+    },
+
+    close() {
+        this.isOpen = false
+        this.activeIndex = -1
+    },
+
+    handleArrowKey(event, step) {
+        if (!this.isOpen) {
+            return
+        }
+
+        const items = this.actionItems()
+        if (!items.length) {
+            return
+        }
+
+        event.preventDefault()
+
+        if (this.activeIndex === -1) {
+            this.activeIndex = step > 0 ? 0 : items.length - 1
+            this.focusActiveAction()
+
+            return
+        }
+
+        this.activeIndex = (this.activeIndex + step + items.length) % items.length
+        this.focusActiveAction()
+    },
+
+    handleEnterKey(event) {
+        if (!this.isOpen) {
+            return
+        }
+
+        const item = this.actionItems()[this.activeIndex] ?? this.actionItems()[0]
+        if (!item) {
+            return
+        }
+
+        event.preventDefault()
+        item.click()
+    },
+
+    actionItems() {
+        return Array.from(this.$root.querySelectorAll('[data-page-action-item="enabled"]'))
+    },
+
+    firstActionIndex() {
+        return this.actionItems().length ? 0 : -1
+    },
+
+    focusActiveAction() {
+        const activeAction = this.actionItems()[this.activeIndex]
+        activeAction?.focus()
     },
 }))
 

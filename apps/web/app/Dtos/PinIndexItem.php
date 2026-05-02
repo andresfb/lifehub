@@ -17,7 +17,7 @@ final class PinIndexItem extends Data
 {
     /**
      * @param  array<string, string>  $sections
-     * @param  Collection<int, SectionItem>  $bookmarks
+     * @param  Collection<string, SectionItem>  $bookmarks
      * @param  Collection<int, ModuleItem>  $modules
      */
     public function __construct(

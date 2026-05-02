@@ -58,7 +58,12 @@ test('layout wires the sidebar keyboard shortcut', function () {
 
     expect($html)
         ->toContain('x-data="layoutShell()"')
-        ->toContain('x-on:keydown.window="toggleSidebarFromShortcut($event); toggleCommand($event)"');
+        ->toContain('x-on:keydown.window="toggleSidebarFromShortcut($event); togglePageActionsFromShortcut($event); toggleCommand($event)"');
+
+    expect(file_get_contents(resource_path('js/app.js')))
+        ->toContain("!event.metaKey || event.key !== '2'")
+        ->toContain("document.querySelectorAll('[data-page-actions-root]')")
+        ->toContain("new CustomEvent('page-actions:toggle')");
 });
 
 test('layout renders a header button that opens the command window', function () {
@@ -80,7 +85,7 @@ test('layout renders a header button that opens the command window', function ()
         ->toContain('this.closeProfileMenus()');
 });
 
-test('layout renders the sidebar profile access menu', function () {
+test('layout renders the header profile access menu', function () {
     $this->withoutVite();
 
     $html = (string) $this->blade(
@@ -89,10 +94,8 @@ test('layout renders the sidebar profile access menu', function () {
     );
 
     expect($html)
-        ->toContain('Open profile menu')
-        ->toContain('x-show="isSidebarProfileMenuOpen"')
-        ->toContain('min-h-0 flex-1 overflow-y-auto')
-        ->toContain('max-h-[calc(100vh-7rem)] overflow-y-auto')
+        ->toContain('x-on:click="toggleHeaderProfileMenu()"')
+        ->toContain('x-show="isProfileMenuOpen"')
         ->toContain('<li><a href="#">Profile</a></li>')
         ->toContain('<li><a href="#">Settings</a></li>')
         ->toContain('action="'.route('logout').'"');
@@ -108,9 +111,7 @@ test('layout shell closes both profile menus together', function () {
 
     expect($html)
         ->toContain('x-show="isProfileMenuOpen"')
-        ->toContain('x-show="isSidebarProfileMenuOpen"')
-        ->toContain('x-on:click="toggleHeaderProfileMenu()"')
-        ->toContain('x-on:click="toggleSidebarProfileMenu()"');
+        ->toContain('x-on:click="toggleHeaderProfileMenu()"');
 
     expect(file_get_contents(resource_path('js/app.js')))
         ->toContain('isSidebarProfileMenuOpen: false')

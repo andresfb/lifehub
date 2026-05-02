@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Common\Services;
 
 use App\Repository\Common\Dtos\TagItem;
@@ -20,6 +22,7 @@ final readonly class ApiSearchTagsService
     ) {}
 
     /**
+     * @return Collection<string, TagItem>
      * @throws Exception
      */
     public function getUseTags(int $userId, string $query): Collection
@@ -41,7 +44,7 @@ final readonly class ApiSearchTagsService
             ->request(
                 $endpoint->method,
                 $endpoint->getUri(),
-                ['q' => trim($query)],
+                ['q' => mb_trim($query)],
             );
 
         if (blank($result)) {

@@ -21,11 +21,11 @@ test('homepage search button keeps its icon centered', function () {
     ]);
 
     expect($html)
-        ->toContain('Search the web...')
+        ->toContain('Search the web..')
         ->toContain('x-data="webSearch(')
         ->toContain('class="card border border-base-300 bg-base-100 shadow-lg"')
         ->toContain('class="input input-bordered flex h-12 flex-1 items-center gap-3"')
-        ->toContain('class="btn btn-primary h-12 px-5"');
+        ->toContain('class="btn btn-primary h-8 md:h-12 px-5"');
 });
 
 test('web search replaces the engine placeholder with the encoded query', function () {
@@ -53,8 +53,15 @@ test('homepage renders responsive page actions menu', function () {
         ->toContain('Pins')
         ->toContain('Search Engines')
         ->toContain('href="dashboard/pins"')
-        ->toContain('tooltip tooltip-left relative inline-flex')
-        ->toContain('menu menu-sm gap-1');
+        ->toContain('x-data="pageActionsMenu()"')
+        ->toContain('x-on:page-actions:toggle="toggleFromShortcut()"')
+        ->toContain('x-on:keydown.down="handleArrowKey($event, 1)"')
+        ->toContain('x-on:keydown.up="handleArrowKey($event, -1)"')
+        ->toContain('x-on:keydown.enter="handleEnterKey($event)"')
+        ->toContain('data-page-actions-root')
+        ->toContain('data-page-action-item="enabled"')
+        ->toContain('tooltip tooltip-right md:tooltip-left relative inline-flex')
+        ->toContain('menu menu-sm w-full gap-1');
 });
 
 /**

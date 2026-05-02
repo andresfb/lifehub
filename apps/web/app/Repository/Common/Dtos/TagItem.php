@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository\Common\Dtos;
 
 use Spatie\LaravelData\Data;
 
-class TagItem extends Data
+final class TagItem extends Data
 {
     public function __construct(
         public readonly int $id,

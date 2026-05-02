@@ -69,7 +69,7 @@ final class ManifestActionsLibrary
         return Cache::tags(['manifest'])
             ->remember(
                 md5(sprintf(
-                    "manifest-endpoint:%s:%s:%s:%s:%s",
+                    'manifest-endpoint:%s:%s:%s:%s:%s',
                     $module->name,
                     $owner->name,
                     $action->name,

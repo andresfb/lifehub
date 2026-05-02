@@ -78,7 +78,6 @@ Route::middleware(['auth'])->group(function () {
                 ->name('dashboard.pins.show');
         });
 
-
     });
 
     Route::delete('/logout', [LoginController::class, 'destroy'])
