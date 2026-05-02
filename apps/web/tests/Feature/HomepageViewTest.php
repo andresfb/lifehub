@@ -22,9 +22,10 @@ test('homepage search button keeps its icon centered', function () {
 
     expect($html)
         ->toContain('Search the web...')
-        ->toContain('min-w-0')
         ->toContain('x-data="webSearch(')
-        ->toContain('flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center self-stretch border-none bg-transparent text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-accent)');
+        ->toContain('class="card border border-base-300 bg-base-100 shadow-lg"')
+        ->toContain('class="input input-bordered flex h-12 flex-1 items-center gap-3"')
+        ->toContain('class="btn btn-primary h-12 px-5"');
 });
 
 test('web search replaces the engine placeholder with the encoded query', function () {
@@ -52,8 +53,8 @@ test('homepage renders responsive page actions menu', function () {
         ->toContain('Pins')
         ->toContain('Search Engines')
         ->toContain('href="dashboard/pins"')
-        ->toContain('sm:hidden')
-        ->toContain('sm:inline');
+        ->toContain('tooltip tooltip-left relative inline-flex')
+        ->toContain('menu menu-sm gap-1');
 });
 
 /**

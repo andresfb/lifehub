@@ -1,9 +1,9 @@
 <div>
-    <ul>
+    <div class="flex flex-wrap gap-2">
     @forelse($tags as $tag)
-        <li>{{ $tag->name }}</li>
+        <span class="badge badge-soft badge-primary">{{ $tag->name }}</span>
     @empty
-        <li><span class="text-muted">No tags</span></li>
+        <span class="text-sm text-base-content/60">No tags</span>
     @endforelse
-    </ul>
+    </div>
 </div>

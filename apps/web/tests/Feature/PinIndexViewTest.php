@@ -19,7 +19,8 @@ test('pins page renders modal triggers and pin payload metadata', function () {
     expect($html)
         ->toContain('New Section')
         ->toContain('New Pin')
-        ->toContain('mb-2 flex items-center justify-end gap-2 md:mb-0')
+        ->toContain('btn btn-primary btn-sm')
+        ->toContain('table table-zebra')
         ->toContain('x-data="pinsModal(')
         ->toContain('x-on:click="openCreatePin()"')
         ->toContain("createRouteName: 'dashboard.pins.create'")
@@ -40,6 +41,7 @@ test('pins page renders modal triggers and pin payload metadata', function () {
         ->toContain('x-bind:data-pin-slug="form.slug"')
         ->toContain('id="pin-modal-title"')
         ->toContain('id="pin-modal-title-mobile"')
+        ->toContain('badge badge-soft badge-primary')
         ->toContain('Route:');
 });
 
@@ -82,6 +84,7 @@ function pinIndexData(): PinIndexItem
         createRouteName: 'dashboard.pins.create',
         updateRouteName: 'dashboard.pins.update',
         deleteRouteName: 'dashboard.pins.destroy',
+        searchTagsRouteName: 'dashboard.tags.search',
     );
 }
 

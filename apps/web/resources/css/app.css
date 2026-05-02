@@ -8,7 +8,7 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
-@custom-variant dark (&:is(.dark, .dark *));
+@custom-variant dark (&:where([data-theme=forest], [data-theme=forest] *));
 
 [x-cloak] {
     display: none !important;
@@ -20,46 +20,78 @@
     --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
-/* ── Design Tokens ── */
-:root {
-    --lh-bg:           #f6f5f2;
-    --lh-card:         #ffffff;
-    --lh-hover:        #f0efec;
-    --lh-input:        #ffffff;
-    --lh-border:       #e8e5df;
-    --lh-border-light: #f0ede8;
-    --lh-text:         #1a1a1f;
-    --lh-text-sec:     #6b6b76;
-    --lh-text-muted:   #9a9aa3;
-    --lh-accent:       oklch(0.65 0.15 175);
-    --lh-accent-light: oklch(0.92 0.04 175);
-    --lh-accent-text:  oklch(0.45 0.15 175);
-    --lh-shadow:       0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
-    --lh-shadow-lg:    0 4px 24px rgba(0,0,0,0.08);
-    --lh-header-bg:    rgba(246,245,242,0.85);
-    --lh-sidebar-bg:   #ffffff;
-    --lh-overlay-bg:   rgba(0,0,0,0.25);
+
+@plugin "daisyui/theme" {
+    name: "emerald";
+    default: false;
+    prefersdark: false;
+    color-scheme: "light";
+    --color-base-100: oklch(100% 0 0);
+    --color-base-200: oklch(93% 0 0);
+    --color-base-300: oklch(86% 0 0);
+    --color-base-content: oklch(35.519% 0.032 262.988);
+    --color-primary: oklch(76.662% 0.135 153.45);
+    --color-primary-content: oklch(33.387% 0.04 162.24);
+    --color-secondary: oklch(61.302% 0.202 261.294);
+    --color-secondary-content: oklch(100% 0 0);
+    --color-accent: oklch(72.772% 0.149 33.2);
+    --color-accent-content: oklch(0% 0 0);
+    --color-neutral: oklch(35.519% 0.032 262.988);
+    --color-neutral-content: oklch(98.462% 0.001 247.838);
+    --color-info: oklch(72.06% 0.191 231.6);
+    --color-info-content: oklch(0% 0 0);
+    --color-success: oklch(64.8% 0.15 160);
+    --color-success-content: oklch(0% 0 0);
+    --color-warning: oklch(84.71% 0.199 83.87);
+    --color-warning-content: oklch(0% 0 0);
+    --color-error: oklch(71.76% 0.221 22.18);
+    --color-error-content: oklch(0% 0 0);
+    --radius-selector: 1rem;
+    --radius-field: 0.5rem;
+    --radius-box: 1rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 0;
+    --noise: 0;
 }
 
-.dark {
-    --lh-bg:           #131316;
-    --lh-card:         #1c1c21;
-    --lh-hover:        #25252b;
-    --lh-input:        #1c1c21;
-    --lh-border:       #2a2a32;
-    --lh-border-light: #222228;
-    --lh-text:         #e8e8ec;
-    --lh-text-sec:     #9a9aab;
-    --lh-text-muted:   #6a6a7a;
-    --lh-accent:       oklch(0.65 0.15 175);
-    --lh-accent-light: oklch(0.25 0.06 175);
-    --lh-accent-text:  oklch(0.65 0.15 175);
-    --lh-shadow:       0 2px 12px rgba(0,0,0,0.4);
-    --lh-shadow-lg:    0 8px 32px rgba(0,0,0,0.5);
-    --lh-header-bg:    rgba(19,19,22,0.85);
-    --lh-sidebar-bg:   #18181c;
-    --lh-overlay-bg:   rgba(0,0,0,0.6);
+
+@plugin "daisyui/theme" {
+    name: "forest";
+    default: false;
+    prefersdark: false;
+    color-scheme: "dark";
+    --color-base-100: oklch(20.84% 0.008 17.911);
+    --color-base-200: oklch(18.522% 0.007 17.911);
+    --color-base-300: oklch(16.203% 0.007 17.911);
+    --color-base-content: oklch(83.768% 0.001 17.911);
+    --color-primary: oklch(68.628% 0.185 148.958);
+    --color-primary-content: oklch(0% 0 0);
+    --color-secondary: oklch(69.776% 0.135 168.327);
+    --color-secondary-content: oklch(13.955% 0.027 168.327);
+    --color-accent: oklch(70.628% 0.119 185.713);
+    --color-accent-content: oklch(14.125% 0.023 185.713);
+    --color-neutral: oklch(30.698% 0.039 171.364);
+    --color-neutral-content: oklch(86.139% 0.007 171.364);
+    --color-info: oklch(72.06% 0.191 231.6);
+    --color-info-content: oklch(0% 0 0);
+    --color-success: oklch(64.8% 0.15 160);
+    --color-success-content: oklch(0% 0 0);
+    --color-warning: oklch(84.71% 0.199 83.87);
+    --color-warning-content: oklch(0% 0 0);
+    --color-error: oklch(71.76% 0.221 22.18);
+    --color-error-content: oklch(0% 0 0);
+    --radius-selector: 1rem;
+    --radius-field: 2rem;
+    --radius-box: 1rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 0;
+    --noise: 0;
 }
+
 
 /* ── Base ── */
 html, body {
@@ -68,7 +100,7 @@ html, body {
 }
 
 ::selection {
-    background: oklch(0.65 0.15 175 / 0.3);
+    background: color-mix(in oklab, var(--color-primary) 28%, transparent);
 }
 
 input:focus {

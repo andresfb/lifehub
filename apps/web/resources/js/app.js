@@ -18,7 +18,7 @@ Alpine.store('theme', {
     },
 
     apply() {
-        document.documentElement.classList.toggle('dark', this.isDark)
+        document.documentElement.dataset.theme = this.isDark ? 'forest' : 'emerald'
     },
 })
 

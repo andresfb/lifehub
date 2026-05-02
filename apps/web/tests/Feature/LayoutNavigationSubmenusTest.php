@@ -45,7 +45,7 @@ test('layout opens a parent submenu when a child path is active', function () {
     expect($html)
         ->toContain('x-data="navigationGroup(true)"')
         ->toContain('x-bind:aria-expanded="isExpanded.toString()"')
-        ->toMatch('/id="navigation-reports-reports"\s+x-show="isExpanded"\s+class="mt-1 space-y-px"/');
+        ->toMatch('/id="navigation-reports-reports"\s+x-show="isExpanded"\s+class="mt-2 space-y-1"/');
 });
 
 test('layout wires the sidebar keyboard shortcut', function () {
@@ -72,7 +72,7 @@ test('layout renders a header button that opens the command window', function ()
     expect($html)
         ->toContain('aria-label="Open command window"')
         ->toContain('x-on:click="openCommand()"')
-        ->toContain('>𖦏</button>');
+        ->toContain('>⌘/</button>');
 
     expect(file_get_contents(resource_path('js/app.js')))
         ->toContain('openCommand()')
@@ -93,8 +93,8 @@ test('layout renders the sidebar profile access menu', function () {
         ->toContain('x-show="isSidebarProfileMenuOpen"')
         ->toContain('min-h-0 flex-1 overflow-y-auto')
         ->toContain('max-h-[calc(100vh-7rem)] overflow-y-auto')
-        ->toContain('>Profile</a>')
-        ->toContain('>Settings</a>')
+        ->toContain('<li><a href="#">Profile</a></li>')
+        ->toContain('<li><a href="#">Settings</a></li>')
         ->toContain('action="'.route('logout').'"');
 });
 
@@ -127,9 +127,9 @@ test('layout header collapses cleanly on small screens', function () {
     );
 
     expect($html)
-        ->toContain('px-3 backdrop-blur-md sm:gap-4 sm:px-5')
+        ->toContain('navbar sticky top-0 z-50 min-h-16 border-b border-base-300 bg-base-100/85 px-3 shadow-sm backdrop-blur-md sm:px-5')
         ->toContain('flex min-w-0 flex-1 items-center gap-2 sm:gap-3')
-        ->toContain('hidden font-display text-[17px] font-bold tracking-[-0.3px] text-(--lh-text) sm:inline')
+        ->toContain('hidden font-display text-[17px] font-bold tracking-[-0.3px] text-base-content sm:inline')
         ->toContain('pointer-events-none absolute inset-x-0 flex justify-center px-16 sm:px-24')
         ->toContain('flex shrink-0 items-center justify-end gap-2');
 });
