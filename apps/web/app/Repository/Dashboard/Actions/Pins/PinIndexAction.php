@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Actions;
+namespace App\Repository\Dashboard\Actions\Pins;
 
-use App\Dtos\PinIndexItem;
+use App\Repository\Dashboard\Dtos\PinIndexItem;
+use App\Repository\Dashboard\Enums\PinStatus;
 use App\Repository\Manifest\Enums\ManifestAction;
 use App\Repository\Manifest\Enums\ManifestActionOwner;
 use App\Repository\Manifest\Enums\ManifestMethod;
@@ -25,7 +26,7 @@ final readonly class PinIndexAction
      */
     public function handle(int $userId): PinIndexItem
     {
-        $bookmarks = $this->pinsAction->handle($userId);
+        $bookmarks = $this->pinsAction->handle($userId, PinStatus::ALL);
 
         return new PinIndexItem(
             sections: $bookmarks->pluck('name', 'slug')
@@ -55,8 +56,8 @@ final readonly class PinIndexAction
                 ManifestAction::DELETE,
                 ManifestMethod::DELETE,
             ),
-            createRouteName: 'dashboard.pins.create',
-            updateRouteName: 'dashboard.pins.update',
+            storeAction: route('dashboard.pins.store'),
+            updateActionTemplate: route('dashboard.pins.update', ['pin' => '__PIN__']),
             deleteRouteName: 'dashboard.pins.destroy',
             searchTagsRouteName: 'search.tags',
         );

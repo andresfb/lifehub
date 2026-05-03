@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Dtos;
+namespace App\Repository\Dashboard\Dtos;
 
-use App\Repository\Dashboard\Dtos\SectionItem;
 use App\Repository\Manifest\Dtos\ModuleItem;
 use Illuminate\Support\Collection;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
@@ -29,8 +28,8 @@ final class PinIndexItem extends Data
         public readonly bool $canCreate,
         public readonly bool $canEdit,
         public readonly bool $canDelete,
-        public readonly string $createRouteName,
-        public readonly string $updateRouteName,
+        public readonly string $storeAction,
+        public readonly string $updateActionTemplate,
         public readonly string $deleteRouteName,
         public readonly string $searchTagsRouteName,
     ) {}

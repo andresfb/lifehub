@@ -2,8 +2,8 @@
     <div
         x-data="pinsModal({
             sections: {{ Js::from($data->sections) }},
-            createRouteName: {{ Js::from($data->createRouteName) }},
-            updateRouteName: {{ Js::from($data->updateRouteName) }},
+            storeAction: {{ Js::from($data->storeAction) }},
+            updateActionTemplate: {{ Js::from($data->updateActionTemplate) }},
         })"
         x-on:keydown.escape.window="close()"
         class="mx-auto max-w-7xl px-6 pt-5 pb-10"
@@ -47,6 +47,7 @@
                                     <th class="w-66">URL</th>
                                     <th class="w-[34rem]">Description</th>
                                     <th class="w-50">Tags</th>
+                                    <th class="w-28">Active</th>
                                     <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
@@ -69,6 +70,15 @@
                                                 @endforelse
                                             </div>
                                         </td>
+                                        <td class="w-28">
+                                            <span @class([
+                                                'badge badge-sm',
+                                                'badge-secondary badge-soft' => $pin->active,
+                                                'badge-ghost' => ! $pin->active,
+                                            ])>
+                                                {{ $pin->active ? 'Active' : 'Inactive' }}
+                                            </span>
+                                        </td>
                                         <td>
                                             <div class="flex justify-end gap-2">
                                                 @if($data->canEdit)
@@ -81,6 +91,7 @@
                                                             'title' => $pin->title,
                                                             'url' => $pin->url,
                                                             'order' => $pin->order,
+                                                            'active' => $pin->active,
                                                             'icon' => $pin->icon,
                                                             'iconColor' => $pin->icon_color,
                                                             'description' => $pin->description,
@@ -101,7 +112,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="py-8 text-center text-sm text-base-content/60">No Pins in this section.</td>
+                                        <td colspan="6" class="py-8 text-center text-sm text-base-content/60">No Pins in this section.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -116,7 +127,7 @@
                                 <div class="flex items-start justify-between gap-3">
                                     <div>
                                         <h3 class="card-title text-base">{{ $pin->title }}</h3>
-                                        <a href="{{ $pin->url }}" target="_blank" rel="noopener noreferrer" class="link link-primary break-all text-sm">
+                                        <a href="{{ $pin->url }}" target="_blank" rel="noopener noreferrer" class="mt-2 link link-success break-all text-sm">
                                             {{ $pin->url }}
                                         </a>
                                     </div>
@@ -127,7 +138,7 @@
 
                                 <div class="flex flex-wrap gap-1.5">
                                     @forelse($pin->tags as $tag)
-                                        <span class="badge badge-soft badge-primary">{{ $tag }}</span>
+                                        <span class="badge badge-soft badge-info">{{ $tag }}</span>
                                     @empty
                                         <span class="text-xs text-base-content/50">No tags</span>
                                     @endforelse
@@ -144,12 +155,13 @@
                                                 'title' => $pin->title,
                                                 'url' => $pin->url,
                                                 'order' => $pin->order,
+                                                'active' => $pin->active,
                                                 'icon' => $pin->icon,
                                                 'iconColor' => $pin->icon_color,
                                                 'description' => $pin->description,
                                                 'tagsText' => implode(', ', $pin->tags),
                                             ]) }})"
-                                            class="btn btn-outline btn-sm"
+                                            class="btn btn-success btn-soft btn-sm"
                                         >
                                             Edit
                                         </button>
@@ -220,12 +232,21 @@
                     </button>
                 </div>
 
-                <form x-bind:data-route-name="form.routeName" x-bind:data-pin-slug="form.slug" class="grid grid-cols-1 gap-4 px-6 py-5 md:grid-cols-2">
+                <form id="pin-form-desktop" method="POST" x-bind:action="form.action" class="grid grid-cols-1 gap-4 px-6 py-5 md:grid-cols-2">
+                    @csrf
+                    <template x-if="form.method !== 'POST'">
+                        <input type="hidden" name="_method" x-bind:value="form.method" />
+                    </template>
                     <div class="md:col-span-2">
                         <label for="pin-section-desktop" class="label px-0">
                             <span class="label-text font-medium">Section</span>
                         </label>
-                        <select id="pin-section-desktop" x-model="form.sectionSlug" x-on:change="syncSectionName()" class="select select-bordered w-full">
+                        <select id="pin-section-desktop"
+                                name="section_slug"
+                                x-model="form.sectionSlug"
+                                x-on:change="syncSectionName()"
+                                class="select select-bordered w-full"
+                        >
                             <template x-for="section in sections" :key="section.slug">
                                 <option :value="section.slug" x-text="section.name"></option>
                             </template>
@@ -236,56 +257,115 @@
                         <label for="pin-title-desktop" class="label px-0">
                             <span class="label-text font-medium">Title</span>
                         </label>
-                        <input id="pin-title-desktop" x-ref="pinModalPrimaryInput" x-model="form.title" type="text" class="input input-bordered w-full" />
+                        <input id="pin-title-desktop"
+                               name="title"
+                               value="{{ old('title') }}"
+                               x-ref="pinModalPrimaryInput"
+                               x-model="form.title"
+                               type="text"
+                               class="input input-bordered w-full"
+                               required
+                               minlength="3"
+                               maxlength="255"/>
                     </div>
 
                     <div class="md:col-span-2">
                         <label for="pin-url-desktop" class="label px-0">
                             <span class="label-text font-medium">URL</span>
                         </label>
-                        <input id="pin-url-desktop" x-model="form.url" type="url" class="input input-bordered w-full" />
+                        <input id="pin-url-desktop"
+                               name="url"
+                               value="{{ old('url') }}"
+                               x-model="form.url"
+                               type="url"
+                               class="input input-bordered w-full"/>
                     </div>
 
                     <div>
                         <label for="pin-icon-desktop" class="label px-0">
                             <span class="label-text font-medium">Icon</span>
                         </label>
-                        <input id="pin-icon-desktop" x-model="form.icon" type="text" class="input input-bordered w-full" />
+                        <input id="pin-icon-desktop"
+                               name="icon"
+                               value="{{ old('icon') }}"
+                               x-model="form.icon"
+                               type="text"
+                               class="input input-bordered w-full"
+                               maxlength="10"/>
                     </div>
 
                     <div>
                         <label for="pin-icon-color-desktop" class="label px-0">
                             <span class="label-text font-medium">Icon Color</span>
                         </label>
-                        <input id="pin-icon-color-desktop" x-model="form.iconColor" type="text" class="input input-bordered w-full" />
+                        <input id="pin-icon-color-desktop"
+                               name="icon_color"
+                               value="{{ old('icon_color') }}"
+                               x-model="form.iconColor"
+                               type="text"
+                               class="input input-bordered w-full"
+                               maxlength="20"/>
                     </div>
 
                     <div class="md:col-span-2">
                         <label for="pin-description-desktop" class="label px-0">
                             <span class="label-text font-medium">Description</span>
                         </label>
-                        <textarea id="pin-description-desktop" x-model="form.description" rows="4" class="textarea textarea-bordered w-full"></textarea>
+                        <textarea id="pin-description-desktop"
+                                  name="description"
+                                  x-model="form.description"
+                                  rows="4"
+                                  class="textarea textarea-bordered w-full"
+                        >
+                            {{ old('description') }}
+                        </textarea>
                     </div>
 
-                    <div class="md:col-span-2" x-show="mode === 'edit'">
-                        <label for="pin-order-desktop" class="label px-0">
-                            <span class="label-text font-medium">Order</span>
-                        </label>
-                        <input id="pin-order-desktop" x-model="form.order" type="text" class="input input-bordered w-full" />
+                    <div class="grid gap-6 md:col-span-2 md:grid-cols-2" x-show="mode === 'edit'">
+                        <div>
+                            <label for="pin-active-desktop" class="label">
+                                <span class="label-text font-medium">Active</span>
+                            </label>
+                            <label for="pin-active-desktop" class="flex cursor-pointer items-center justify-between px-1 py-2">
+                                <input id="pin-active-desktop"
+                                       x-model="form.active"
+                                       type="checkbox"
+                                       class="toggle toggle-success"/>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label for="pin-order-desktop" class="label px-0">
+                                <span class="label-text font-medium">Order</span>
+                            </label>
+                            <input id="pin-order-desktop"
+                                   name="order"
+                                   value="{{ old('order') }}"
+                                   x-model="form.order"
+                                   type="number"
+                                   class="input input-bordered w-full"/>
+                        </div>
                     </div>
 
                     <div class="md:col-span-2">
                         <label for="pin-tags-desktop" class="label px-0">
                             <span class="label-text font-medium">Tags</span>
                         </label>
-                        <input id="pin-tags-desktop" x-model="form.tagsText" type="text" class="input input-bordered w-full" />
+                        <input id="pin-tags-desktop"
+                               x-model="form.tagsText"
+                               value="{{ old('tags') }}"
+                               type="text"
+                               class="input input-bordered w-full"/>
+                        <template x-for="(tag, index) in parsedTags" :key="`desktop-tag-${index}-${tag}`">
+                            <input type="hidden" name="tags[]" x-bind:value="tag" />
+                        </template>
                     </div>
                 </form>
 
                 <div class="flex items-center justify-end border-t border-base-300 bg-base-200/60 px-6 py-4 text-xs text-base-content/60">
                     <div class="flex items-center gap-2">
                         <button type="button" x-on:click="close()" class="btn btn-ghost btn-sm">Cancel</button>
-                        <button type="button" class="btn btn-primary btn-sm">
+                        <button type="submit" form="pin-form-desktop" class="btn btn-primary btn-sm">
                             <span x-text="mode === 'edit' ? 'Update Pin' : 'Create Pin'"></span>
                         </button>
                     </div>
@@ -313,12 +393,21 @@
                 </button>
             </div>
 
-            <form x-bind:data-route-name="form.routeName" x-bind:data-pin-slug="form.slug" class="grid grid-cols-1 gap-4 overflow-y-auto px-5 py-4">
+            <form id="pin-form-mobile" method="POST" x-bind:action="form.action" class="grid grid-cols-1 gap-4 overflow-y-auto px-5 py-4">
+                @csrf
+                <template x-if="form.method !== 'POST'">
+                    <input type="hidden" name="_method" x-bind:value="form.method" />
+                </template>
                 <div>
                     <label for="pin-section-mobile" class="label px-0">
                         <span class="label-text font-medium">Section</span>
                     </label>
-                    <select id="pin-section-mobile" x-model="form.sectionSlug" x-on:change="syncSectionName()" class="select select-bordered w-full">
+                    <select id="pin-section-mobile"
+                            name="section_slug"
+                            x-model="form.sectionSlug"
+                            x-on:change="syncSectionName()"
+                            class="select select-bordered w-full"
+                    >
                         <template x-for="section in sections" :key="section.slug">
                             <option :value="section.slug" x-text="section.name"></option>
                         </template>
@@ -329,56 +418,114 @@
                     <label for="pin-title-mobile" class="label px-0">
                         <span class="label-text font-medium">Title</span>
                     </label>
-                    <input id="pin-title-mobile" x-model="form.title" type="text" class="input input-bordered w-full" />
+                    <input id="pin-title-mobile"
+                           name="title"
+                           value="{{ old('title') }}"
+                           x-model="form.title"
+                           type="text"
+                           class="input input-bordered w-full"
+                           required
+                           minlength="3"
+                           maxlength="255"/>
                 </div>
 
                 <div>
                     <label for="pin-url-mobile" class="label px-0">
                         <span class="label-text font-medium">URL</span>
                     </label>
-                    <input id="pin-url-mobile" x-model="form.url" type="url" class="input input-bordered w-full" />
+                    <input id="pin-url-mobile"
+                           name="url"
+                           value="{{ old('url') }}"
+                           x-model="form.url"
+                           type="url"
+                           class="input input-bordered w-full"/>
                 </div>
 
                 <div>
                     <label for="pin-icon-mobile" class="label px-0">
                         <span class="label-text font-medium">Icon</span>
                     </label>
-                    <input id="pin-icon-mobile" x-model="form.icon" type="text" class="input input-bordered w-full" />
+                    <input id="pin-icon-mobile"
+                           name="icon"
+                           value="{{ old('icon') }}"
+                           x-model="form.icon"
+                           type="text"
+                           class="input input-bordered w-full"
+                           maxlength="10"/>
                 </div>
 
                 <div>
                     <label for="pin-icon-color-mobile" class="label px-0">
                         <span class="label-text font-medium">Icon Color</span>
                     </label>
-                    <input id="pin-icon-color-mobile" x-model="form.iconColor" type="text" class="input input-bordered w-full" />
+                    <input id="pin-icon-color-mobile"
+                           name="icon_color"
+                           value="{{ old('icon_color') }}"
+                           x-model="form.iconColor"
+                           type="text"
+                           class="input input-bordered w-full"
+                           maxlength="20"/>
                 </div>
 
                 <div>
                     <label for="pin-description-mobile" class="label px-0">
                         <span class="label-text font-medium">Description</span>
                     </label>
-                    <textarea id="pin-description-mobile" x-model="form.description" rows="4" class="textarea textarea-bordered w-full"></textarea>
+                    <textarea id="pin-description-mobile"
+                              name="description"
+                              x-model="form.description"
+                              rows="4"
+                              class="textarea textarea-bordered w-full"
+                    >
+                        {{ old('icon_color') }}
+                    </textarea>
                 </div>
 
-                <div x-show="mode === 'edit'">
-                    <label for="pin-order-mobile" class="label px-0">
-                        <span class="label-text font-medium">Order</span>
-                    </label>
-                    <input id="pin-order-mobile" x-model="form.order" type="text" class="input input-bordered w-full" />
+                <div class="grid gap-4" x-show="mode === 'edit'">
+                    <div>
+                        <label for="pin-active-mobile" class="label px-0">
+                            <span class="label-text font-medium">Active</span>
+                        </label>
+                        <label for="pin-active-mobile" class="flex min-h-12 cursor-pointer items-center justify-between px-1 py-2">
+                            <input id="pin-active-mobile"
+                                   x-model="form.active"
+                                   type="checkbox"
+                                   class="toggle toggle-success"/>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label for="pin-order-mobile" class="label px-0">
+                            <span class="label-text font-medium">Order</span>
+                        </label>
+                        <input id="pin-order-mobile"
+                               name="order"
+                               value="{{ old('order') }}"
+                               x-model="form.order"
+                               type="number"
+                               class="input input-bordered w-full"/>
+                    </div>
                 </div>
 
                 <div>
                     <label for="pin-tags-mobile" class="label px-0">
                         <span class="label-text font-medium">Tags</span>
                     </label>
-                    <input id="pin-tags-mobile" x-model="form.tagsText" type="text" class="input input-bordered w-full" />
+                    <input id="pin-tags-mobile"
+                           x-model="form.tagsText"
+                           value="{{ old('tags') }}"
+                           type="text"
+                           class="input input-bordered w-full"/>
+                    <template x-for="(tag, index) in parsedTags" :key="`mobile-tag-${index}-${tag}`">
+                        <input type="hidden" name="tags[]" x-bind:value="tag" />
+                    </template>
                 </div>
             </form>
 
             <div class="flex items-center justify-end border-t border-base-300 bg-base-200/60 px-5 py-4 text-xs text-base-content/60">
                 <div class="flex items-center gap-2">
                     <button type="button" x-on:click="close()" class="btn btn-ghost btn-sm">Cancel</button>
-                    <button type="button" class="btn btn-primary btn-sm">
+                    <button type="submit" form="pin-form-mobile" class="btn btn-primary btn-sm">
                         <span x-text="mode === 'edit' ? 'Update Pin' : 'Create Pin'"></span>
                     </button>
                 </div>

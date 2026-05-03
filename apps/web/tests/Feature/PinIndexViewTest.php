@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Dtos\PinIndexItem;
+use App\Repository\Dashboard\Dtos\PinIndexItem;
 use App\Repository\Dashboard\Dtos\PinItem;
 use App\Repository\Dashboard\Dtos\SectionItem;
 use App\Repository\Manifest\Dtos\ModuleItem;
@@ -21,10 +21,12 @@ test('pins page renders modal triggers and pin payload metadata', function () {
         ->toContain('New Pin')
         ->toContain('btn btn-primary btn-sm')
         ->toContain('table table-zebra')
+        ->toContain('>Active<')
+        ->toContain('badge-secondary badge-soft')
         ->toContain('x-data="pinsModal(')
         ->toContain('x-on:click="openCreatePin()"')
-        ->toContain("createRouteName: 'dashboard.pins.create'")
-        ->toContain("updateRouteName: 'dashboard.pins.update'")
+        ->toContain("storeAction: '".str_replace('/', '\\/', route('dashboard.pins.store'))."'")
+        ->toContain("updateActionTemplate: '".str_replace('/', '\\/', route('dashboard.pins.update', ['pin' => '__PIN__']))."'")
         ->toContain('x-on:click="openEditPin(')
         ->toContain('\u0022slug\u0022:\u0022lifehub\u0022')
         ->toContain('\u0022sectionSlug\u0022:\u0022favorites\u0022')
@@ -32,17 +34,30 @@ test('pins page renders modal triggers and pin payload metadata', function () {
         ->toContain('\u0022title\u0022:\u0022LifeHub\u0022')
         ->toContain('\u0022url\u0022:')
         ->toContain('example.com')
-        ->toContain('\u0022order\u0022:\u00221\u0022')
+        ->toContain('\u0022order\u0022:1')
+        ->toContain('\u0022active\u0022:true')
         ->toContain('\u0022icon\u0022:\u0022LH\u0022')
         ->toContain('\u0022iconColor\u0022:\u0022#10b981\u0022')
         ->toContain('\u0022description\u0022:\u0022Pinned link\u0022')
         ->toContain('\u0022tagsText\u0022:\u0022docs, tools\u0022')
-        ->toContain('x-bind:data-route-name="form.routeName"')
-        ->toContain('x-bind:data-pin-slug="form.slug"')
+        ->toContain('id="pin-form-desktop"')
+        ->toContain('id="pin-form-mobile"')
+        ->toContain('x-bind:action="form.action"')
+        ->toContain('name="_method"')
+        ->toContain('form="pin-form-desktop"')
+        ->toContain('form="pin-form-mobile"')
+        ->toContain('x-model="form.active"')
+        ->toContain('id="pin-active-desktop"')
+        ->toContain('id="pin-active-mobile"')
+        ->toContain('toggle toggle-success')
+        ->toContain('name="section_slug"')
+        ->toContain('name="title"')
+        ->toContain('name="url"')
+        ->toContain('name="icon_color"')
+        ->toContain('name="description"')
+        ->toContain('name="tags[]"')
         ->toContain('id="pin-modal-title"')
-        ->toContain('id="pin-modal-title-mobile"')
-        ->toContain('badge badge-soft badge-primary')
-        ->toContain('Route:');
+        ->toContain('id="pin-modal-title-mobile"');
 });
 
 /**
@@ -61,11 +76,12 @@ function pinSections(): Collection
                     slug: 'lifehub',
                     title: 'LifeHub',
                     url: 'https://example.com',
-                    order: '1',
+                    active: true,
+                    tags: ['docs', 'tools'],
+                    order: 1,
                     icon: 'LH',
                     icon_color: '#10b981',
                     description: 'Pinned link',
-                    tags: ['docs', 'tools'],
                 ),
             ]),
         ),
@@ -81,8 +97,8 @@ function pinIndexData(): PinIndexItem
         canCreate: true,
         canEdit: true,
         canDelete: true,
-        createRouteName: 'dashboard.pins.create',
-        updateRouteName: 'dashboard.pins.update',
+        storeAction: route('dashboard.pins.store'),
+        updateActionTemplate: route('dashboard.pins.update', ['pin' => '__PIN__']),
         deleteRouteName: 'dashboard.pins.destroy',
         searchTagsRouteName: 'dashboard.tags.search',
     );

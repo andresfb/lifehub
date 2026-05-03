@@ -2,22 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Modules\Dashboard\Http\Requests\Api\V1;
+namespace App\Http\Requests\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\Dashboard\Models\HomepageItem;
 
 final class PinCreateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('create', HomepageItem::class);
+        return true;
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function rules(): array
     {
         return [
-            'section_slug' => ['required', 'exists:dashboard_homepage_sections,slug', 'max:255'],
+            'section_slug' => ['required', 'string', 'max:255'],
             'title' => ['required', 'string', 'min:3', 'max:255'],
             'url' => ['required', 'url'],
             'description' => ['nullable', 'string'],

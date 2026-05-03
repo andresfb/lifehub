@@ -80,6 +80,7 @@ function homepageSections(): Collection
                     slug: 'lifehub',
                     title: 'LifeHub',
                     url: 'https://example.com',
+                    active: true,
                     order: '1',
                 ),
             ]),

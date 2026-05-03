@@ -271,19 +271,21 @@ Alpine.data('webSearch', (engines = []) => ({
 }))
 
 Alpine.data('pinsModal', (config = {}) => ({
-    createRouteName: config.createRouteName ?? '',
-    updateRouteName: config.updateRouteName ?? '',
+    storeAction: config.storeAction ?? '',
+    updateActionTemplate: config.updateActionTemplate ?? '',
     isOpen: false,
     mode: 'create',
     sections: Object.entries(config.sections ?? {}).map(([slug, name]) => ({ slug, name })),
     form: {
-        routeName: '',
+        action: '',
+        method: 'POST',
         slug: '',
         sectionSlug: '',
         sectionName: '',
         title: '',
         url: '',
         order: '',
+        active: false,
         icon: '',
         iconColor: '',
         description: '',
@@ -319,18 +321,27 @@ Alpine.data('pinsModal', (config = {}) => ({
         return 'Choose a section and fill in the pin details.'
     },
 
+    get parsedTags() {
+        return this.form.tagsText
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean)
+    },
+
     openCreatePin() {
         const firstSection = this.sections[0] ?? { slug: '', name: '' }
 
         this.mode = 'create'
         this.form = {
-            routeName: this.createRouteName,
+            action: this.storeAction,
+            method: 'POST',
             slug: '',
             sectionSlug: firstSection.slug,
             sectionName: firstSection.name,
             title: '',
             url: '',
             order: '',
+            active: false,
             icon: '',
             iconColor: '',
             description: '',
@@ -342,19 +353,25 @@ Alpine.data('pinsModal', (config = {}) => ({
     openEditPin(pin) {
         this.mode = 'edit'
         this.form = {
-            routeName: this.updateRouteName,
+            action: this.resolveUpdateAction(pin.slug ?? ''),
+            method: 'PUT',
             slug: pin.slug ?? '',
             sectionSlug: pin.sectionSlug ?? '',
             sectionName: pin.sectionName ?? '',
             title: pin.title ?? '',
             url: pin.url ?? '',
             order: pin.order ?? '',
+            active: pin.active ?? false,
             icon: pin.icon ?? '',
             iconColor: pin.iconColor ?? '',
             description: pin.description ?? '',
             tagsText: pin.tagsText ?? '',
         }
         this.isOpen = true
+    },
+
+    resolveUpdateAction(slug) {
+        return this.updateActionTemplate.replace('__PIN__', slug)
     },
 
     syncSectionName() {

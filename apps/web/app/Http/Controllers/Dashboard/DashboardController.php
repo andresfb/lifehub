@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Actions\LoadUserPinsAction;
-use App\Actions\LoadUserSearchProvidersAction;
 use App\Dtos\PageActionItem;
 use App\Http\Controllers\PageBaseController;
+use App\Repository\Dashboard\Actions\Pins\LoadUserPinsAction;
+use App\Repository\Dashboard\Actions\SearchProviders\LoadUserSearchProvidersAction;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;

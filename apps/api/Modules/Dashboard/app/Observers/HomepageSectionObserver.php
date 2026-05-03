@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Observers;
 
-use Illuminate\Support\Facades\Cache;
 use Modules\Dashboard\Models\HomepageSection;
 use Spatie\ResponseCache\Facades\ResponseCache;
 
@@ -19,10 +18,8 @@ final class HomepageSectionObserver
         $section->order = HomepageSection::query()->max('order') + 1;
     }
 
-    public function saved(HomepageSection $section): void
+    public function saved(): void
     {
-        Cache::tags("homepage:{$section->user_id}")->flush();
-
         ResponseCache::clear(['dashboard']);
     }
 }

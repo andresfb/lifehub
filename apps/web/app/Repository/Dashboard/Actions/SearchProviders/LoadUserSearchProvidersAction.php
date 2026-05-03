@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Actions;
+namespace App\Repository\Dashboard\Actions\SearchProviders;
 
 use App\Repository\Dashboard\Dtos\SearchProviderItem;
 use App\Repository\Dashboard\Services\ApiSearchProviderService;

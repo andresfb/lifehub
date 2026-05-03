@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -58,12 +59,12 @@ final class HomepageSection extends Model implements UserModelInterface
     /**
      * @return Collection<int, HomepageSection>
      */
-    public static function getUserSections(int $userId): Collection
+    public static function getUserSections(int $userId, int $status): Collection
     {
         return self::query()
             ->where('user_id', $userId)
             ->where('active', true)
-            ->with('items.tags')
+            ->withItemsByStatus($status)
             ->orderBy('order')
             ->get();
     }
@@ -74,7 +75,6 @@ final class HomepageSection extends Model implements UserModelInterface
     public function items(): HasMany
     {
         return $this->hasMany(HomepageItem::class, 'section_id')
-            ->where('active', true)
             ->orderBy('order');
     }
 
@@ -82,6 +82,20 @@ final class HomepageSection extends Model implements UserModelInterface
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     */
+    protected function scopeWithItemsByStatus(Builder $query, int $status): void
+    {
+        $query->withWhereHas('items', function ($items) use ($status): void {
+            if ($status !== -1) {
+                $items->where('active', (bool) $status);
+            }
+
+            $items->with('tags');
+        });
     }
 
     /**

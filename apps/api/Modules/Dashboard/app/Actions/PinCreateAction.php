@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Dashboard\Actions;
 
 use Illuminate\Support\Facades\DB;
@@ -9,7 +11,7 @@ use Modules\Dashboard\Models\HomepageSection;
 use RuntimeException;
 use Throwable;
 
-class PinCreateAction
+final class PinCreateAction
 {
     /**
      * @throws Throwable
@@ -26,7 +28,7 @@ class PinCreateAction
                 throw new RuntimeException('Pin already exists');
             }
 
-            $item = $section->items()
+            $homePageItem = $section->items()
                 ->create(
                     array_merge(
                         $item->except('sectionSlug', 'tags', 'url')->toArray(),
@@ -34,13 +36,22 @@ class PinCreateAction
                             'user_id' => $userId,
                             'section_id' => $section->id,
                             'url' => $item->getUrl(),
+                            'active' => true,
                         ],
                     )
                 );
 
-            $item->tags()->attach($item->tags);
+            if (blank($item->tags)) {
+                return $homePageItem->slug;
+            }
 
-            return $item->slug;
+            $homePageItem->tags()->attach(
+                collect($item->tags)
+                    ->map(static fn (string $tag) => str($tag)->trim()->lower()->value())
+                    ->all()
+            );
+
+            return $homePageItem->slug;
         });
     }
 }

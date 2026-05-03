@@ -23,6 +23,7 @@ final readonly class ApiSearchTagsService
 
     /**
      * @return Collection<string, TagItem>
+     *
      * @throws Exception
      */
     public function getUseTags(int $userId, string $query): Collection

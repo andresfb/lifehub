@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Actions\PinIndexAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\PinCreateRequest;
+use App\Repository\Dashboard\Actions\Pins\PinIndexAction;
+use App\Repository\Dashboard\Dtos\PinCreateItem;
+use App\Repository\Dashboard\Services\ApiPinsService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Laravel\Mcp\Exceptions\NotImplementedException;
@@ -13,6 +17,10 @@ use Throwable;
 
 final class PinController extends Controller
 {
+    public function __construct(
+        private readonly ApiPinsService $pinsService,
+    ) {}
+
     /**
      * @throws Throwable
      */
@@ -31,9 +39,20 @@ final class PinController extends Controller
         throw new NotImplementedException('Not implemented yet.');
     }
 
-    public function store(): never
+    public function store(PinCreateRequest $request): RedirectResponse
     {
-        throw new NotImplementedException('Not implemented yet.');
+        try {
+            $this->pinsService->createPin(
+                (int) Auth::id(),
+                PinCreateItem::from($request->validated())
+            );
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        session()->flash('success', 'Pin created successfully.');
+
+        return to_route('dashboard.pins.index');
     }
 
     public function edit(): never

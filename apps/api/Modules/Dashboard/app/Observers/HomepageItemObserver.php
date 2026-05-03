@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Dashboard\Observers;
 
 use Modules\Dashboard\Models\HomepageItem;
+use Spatie\ResponseCache\Facades\ResponseCache;
 
 final class HomepageItemObserver
 {
@@ -15,5 +16,10 @@ final class HomepageItemObserver
         }
 
         $item->order = HomepageItem::query()->max('order') + 1;
+    }
+
+    public function saved(): void
+    {
+        ResponseCache::clear(['dashboard']);
     }
 }
