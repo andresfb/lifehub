@@ -68,12 +68,6 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/pins/{pin}', 'update')
                 ->name('dashboard.pins.update');
 
-            Route::get('/pins/{pin}/edit', 'edit')
-                ->name('dashboard.pins.edit');
-
-            Route::get('/pins/create', 'create')
-                ->name('dashboard.pins.create');
-
             Route::get('/pins/{pin}', 'show')
                 ->name('dashboard.pins.show');
         });

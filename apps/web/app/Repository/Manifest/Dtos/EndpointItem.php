@@ -22,10 +22,13 @@ final class EndpointItem extends Data
         public readonly ?string $operationId = null,
     ) {}
 
-    public function getUri(): string
+    public function getUri(string $identifier = ''): string
     {
         $path = str($this->path);
-        if ($path->contains('{') || $path->contains('}')) {
+
+        if (filled($identifier)) {
+            $path = $path->replaceMatches('/\{[^}]+}/', $identifier);
+        } elseif ($path->contains('{') || $path->contains('}')) {
             $path = $path->dirname();
         }
 

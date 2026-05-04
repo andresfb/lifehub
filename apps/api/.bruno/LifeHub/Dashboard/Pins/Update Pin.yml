@@ -1,0 +1,34 @@
+info:
+  name: Update Pin
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: "{{process.env.API_URL}}/dashboard/pins/mVzuHBwueGl"
+  body:
+    type: json
+    data: |-
+      {
+        "section_slug": "external-sites-dashboard-afyvcg",
+        "title": "Ollama",
+        "url": "https://ollama.com",
+        "description": "Ollama is the easiest way to automate your work using open models, while keeping your data safe",
+        "icon": "O",
+        "icon_color": "#000000",
+        "order": 47,
+        "active": true,
+        "tags": [
+            "ollama",
+            "llm",
+            "local",
+            "inferance"
+        ]  
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

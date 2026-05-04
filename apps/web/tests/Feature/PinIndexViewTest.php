@@ -98,7 +98,7 @@ function pinIndexData(): PinIndexItem
         canEdit: true,
         canDelete: true,
         storeAction: route('dashboard.pins.store'),
-        updateActionTemplate: route('dashboard.pins.update', ['pin' => '__PIN__']),
+        updateAction: route('dashboard.pins.update', ['pin' => '__PIN__']),
         deleteRouteName: 'dashboard.pins.destroy',
         searchTagsRouteName: 'dashboard.tags.search',
     );

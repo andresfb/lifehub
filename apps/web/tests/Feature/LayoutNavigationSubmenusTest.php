@@ -135,6 +135,94 @@ test('layout header collapses cleanly on small screens', function () {
         ->toContain('flex shrink-0 items-center justify-end gap-2');
 });
 
+test('layout renders success warning and error alerts from direct variables', function () {
+    $this->withoutVite();
+
+    $html = (string) $this->blade(
+        '<x-layouts.app module-name="reports" :modules="$modules" :message="$message" :warning="$warning" :error="$error">Content</x-layouts.app>',
+        [
+            'modules' => layoutNavigationSubmenuModules(),
+            'message' => 'Profile updated.',
+            'warning' => 'Storage is almost full.',
+            'error' => 'Profile could not be updated.',
+        ]
+    );
+
+    expect($html)
+        ->toContain('Profile updated.')
+        ->toContain('Storage is almost full.')
+        ->toContain('Profile could not be updated.')
+        ->toContain('alert alert-success alert-soft')
+        ->toContain('alert alert-warning alert-soft')
+        ->toContain('alert alert-error alert-soft')
+        ->toContain('x-data="dismissibleAlert({ timeout: 5000 })"')
+        ->toContain('aria-label="Dismiss alert"');
+});
+
+test('layout falls back to flashed session alerts when direct variables are absent', function () {
+    $this->withoutVite();
+
+    session()->flash('message', 'Saved from session.');
+    session()->flash('warning', 'Session warning.');
+    session()->flash('error', 'Session error.');
+
+    $html = (string) $this->blade(
+        '<x-layouts.app module-name="reports" :modules="$modules">Content</x-layouts.app>',
+        ['modules' => layoutNavigationSubmenuModules()]
+    );
+
+    expect($html)
+        ->toContain('Saved from session.')
+        ->toContain('Session warning.')
+        ->toContain('Session error.');
+});
+
+test('layout direct alert variables override flashed session alerts of the same type', function () {
+    $this->withoutVite();
+
+    session()->flash('message', 'Session success.');
+    session()->flash('warning', 'Session warning.');
+    session()->flash('error', 'Session error.');
+
+    $html = (string) $this->blade(
+        '<x-layouts.app module-name="reports" :modules="$modules" :message="$message" :warning="$warning" :error="$error">Content</x-layouts.app>',
+        [
+            'modules' => layoutNavigationSubmenuModules(),
+            'message' => 'Direct success.',
+            'warning' => 'Direct warning.',
+            'error' => 'Direct error.',
+        ]
+    );
+
+    expect($html)
+        ->toContain('Direct success.')
+        ->toContain('Direct warning.')
+        ->toContain('Direct error.')
+        ->not->toContain('Session success.')
+        ->not->toContain('Session warning.')
+        ->not->toContain('Session error.');
+});
+
+test('layout does not render the alert container when no alerts are present', function () {
+    $this->withoutVite();
+
+    $html = (string) $this->blade(
+        '<x-layouts.app module-name="reports" :modules="$modules">Content</x-layouts.app>',
+        ['modules' => layoutNavigationSubmenuModules()]
+    );
+
+    expect($html)
+        ->not->toContain('x-data="dismissibleAlert({ timeout: 5000 })"')
+        ->not->toContain('aria-label="Dismiss alert"');
+});
+
+test('dismissible alert alpine helper clears the timeout when dismissed', function () {
+    expect(file_get_contents(resource_path('js/app.js')))
+        ->toContain("Alpine.data('dismissibleAlert'")
+        ->toContain('window.setTimeout(() => {')
+        ->toContain('window.clearTimeout(this.timeoutId)');
+});
+
 /**
  * @return Collection<int, ModuleItem>
  */

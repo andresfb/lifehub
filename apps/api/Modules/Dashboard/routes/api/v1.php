@@ -33,7 +33,6 @@ Route::middleware([
             ->names([
                 'index' => 'v1.dashboard.pins.index',
                 'store' => 'v1.dashboard.pins.store',
-                'show' => 'v1.dashboard.pins.show',
                 'update' => 'v1.dashboard.pins.update',
                 'destroy' => 'v1.dashboard.pins.destroy',
             ]);

@@ -6,14 +6,16 @@ namespace Modules\Dashboard\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Mcp\Exceptions\NotImplementedException;
 use Modules\Dashboard\Actions\PinCreateAction;
 use Modules\Dashboard\Actions\PinsAction;
+use Modules\Dashboard\Actions\PinUpdateAction;
 use Modules\Dashboard\Dtos\PinCreateItem;
+use Modules\Dashboard\Dtos\PinUpdateItem;
 use Modules\Dashboard\Http\Requests\Api\V1\PinCreateRequest;
 use Modules\Dashboard\Http\Requests\Api\V1\PinListRequest;
+use Modules\Dashboard\Http\Requests\Api\V1\PinUpdateRequest;
 use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionCollection;
 use Modules\Dashboard\Models\HomepageItem;
 use Throwable;
@@ -47,17 +49,21 @@ final class PinController extends ApiController
         );
     }
 
-    public function show(HomepageItem $bookmark): never
+    public function update(PinUpdateRequest $request, HomepageItem $pin, PinUpdateAction $action): JsonResponse
     {
-        throw new NotImplementedException('show action not implemented');
+        try {
+            $action->handle(
+                pin: $pin,
+                item: PinUpdateItem::from($request->validated()),
+            );
+        } catch (Throwable $e) {
+            return $this->error($e->getMessage());
+        }
+
+        return $this->success(message: 'Pin updated successfully');
     }
 
-    public function update(Request $request, HomepageItem $bookmark): never
-    {
-        throw new NotImplementedException('update action not implemented');
-    }
-
-    public function destroy(HomepageItem $bookmark): never
+    public function destroy(HomepageItem $pin): never
     {
         throw new NotImplementedException('destroy action not implemented');
     }

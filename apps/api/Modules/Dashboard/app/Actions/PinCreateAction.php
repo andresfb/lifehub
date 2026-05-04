@@ -45,7 +45,7 @@ final class PinCreateAction
                 return $homePageItem->slug;
             }
 
-            $homePageItem->tags()->attach(
+            $homePageItem->attachTags(
                 collect($item->tags)
                     ->map(static fn (string $tag) => str($tag)->trim()->lower()->value())
                     ->all()

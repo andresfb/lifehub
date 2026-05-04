@@ -144,6 +144,30 @@ Alpine.data('layoutShell', () => ({
     },
 }))
 
+Alpine.data('dismissibleAlert', ({ timeout = 5000 } = {}) => ({
+    isVisible: true,
+    timeoutId: null,
+
+    init() {
+        if (timeout <= 0) {
+            return
+        }
+
+        this.timeoutId = window.setTimeout(() => {
+            this.dismiss()
+        }, timeout)
+    },
+
+    dismiss() {
+        this.isVisible = false
+
+        if (this.timeoutId !== null) {
+            window.clearTimeout(this.timeoutId)
+            this.timeoutId = null
+        }
+    },
+}))
+
 Alpine.data('pageActionsMenu', () => ({
     isOpen: false,
     activeIndex: -1,
@@ -272,7 +296,7 @@ Alpine.data('webSearch', (engines = []) => ({
 
 Alpine.data('pinsModal', (config = {}) => ({
     storeAction: config.storeAction ?? '',
-    updateActionTemplate: config.updateActionTemplate ?? '',
+    updateAction: config.updateAction ?? '',
     isOpen: false,
     mode: 'create',
     sections: Object.entries(config.sections ?? {}).map(([slug, name]) => ({ slug, name })),
@@ -371,7 +395,7 @@ Alpine.data('pinsModal', (config = {}) => ({
     },
 
     resolveUpdateAction(slug) {
-        return this.updateActionTemplate.replace('__PIN__', slug)
+        return this.updateAction.replace('__PIN__', slug)
     },
 
     syncSectionName() {

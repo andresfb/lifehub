@@ -3,7 +3,7 @@
         x-data="pinsModal({
             sections: {{ Js::from($data->sections) }},
             storeAction: {{ Js::from($data->storeAction) }},
-            updateActionTemplate: {{ Js::from($data->updateActionTemplate) }},
+            updateAction: {{ Js::from($data->updateAction) }},
         })"
         x-on:keydown.escape.window="close()"
         class="mx-auto max-w-7xl px-6 pt-5 pb-10"
@@ -17,13 +17,15 @@
                 <div class="flex items-center justify-end gap-2">
                     <button type="button" class="btn btn-secondary btn-soft btn-sm border-base-300">
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-                            <line x1="7" y1="1" x2="7" y2="13"/><line x1="1" y1="7" x2="13" y2="7"/>
+                            <line x1="7" y1="1" x2="7" y2="13"/>
+                            <line x1="1" y1="7" x2="13" y2="7"/>
                         </svg>
                         New Section
                     </button>
                     <button type="button" x-on:click="openCreatePin()" class="btn btn-primary btn-sm">
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-                            <line x1="7" y1="1" x2="7" y2="13"/><line x1="1" y1="7" x2="13" y2="7"/>
+                            <line x1="7" y1="1" x2="7" y2="13"/>
+                            <line x1="1" y1="7" x2="13" y2="7"/>
                         </svg>
                         New Pin
                     </button>
@@ -42,35 +44,35 @@
                     <div class="overflow-x-auto">
                         <table class="table table-zebra">
                             <thead>
-                                <tr>
-                                    <th class="w-44">Title</th>
-                                    <th class="w-66">URL</th>
-                                    <th class="w-[34rem]">Description</th>
-                                    <th class="w-50">Tags</th>
-                                    <th class="w-28">Active</th>
-                                    <th class="text-right">Actions</th>
-                                </tr>
+                            <tr>
+                                <th class="w-44">Title</th>
+                                <th class="w-66">URL</th>
+                                <th class="w-[34rem]">Description</th>
+                                <th class="w-50">Tags</th>
+                                <th class="w-28">Active</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                @forelse($section->items as $pin)
-                                    <tr class="align-top">
-                                        <td class="w-44 font-medium text-base-content">{{ $pin->title }}</td>
-                                        <td class="w-66">
-                                            <a href="{{ $pin->url }}" target="_blank" rel="noopener noreferrer" class="link link-success break-all text-sm">
-                                                {{ $pin->url }}
-                                            </a>
-                                        </td>
-                                        <td class="w-[34rem] max-w-[34rem] text-sm text-base-content/70">{{ $pin->description }}</td>
-                                        <td class="w-50 max-w-44">
-                                            <div class="flex max-w-44 flex-wrap gap-1.5">
-                                                @forelse($pin->tags as $tag)
-                                                    <span class="badge badge-soft badge-info">{{ $tag }}</span>
-                                                @empty
-                                                    <span class="text-xs text-base-content/50">No tags</span>
-                                                @endforelse
-                                            </div>
-                                        </td>
-                                        <td class="w-28">
+                            @forelse($section->items as $pin)
+                                <tr class="align-top">
+                                    <td class="w-44 font-medium text-base-content">{{ $pin->title }}</td>
+                                    <td class="w-66">
+                                        <a href="{{ $pin->url }}" target="_blank" rel="noopener noreferrer" class="link link-success break-all text-sm">
+                                            {{ $pin->url }}
+                                        </a>
+                                    </td>
+                                    <td class="w-[34rem] max-w-[34rem] text-sm text-base-content/70">{{ $pin->description }}</td>
+                                    <td class="w-50 max-w-44">
+                                        <div class="flex max-w-44 flex-wrap gap-1.5">
+                                            @forelse($pin->tags as $tag)
+                                                <span class="badge badge-soft badge-info">{{ $tag }}</span>
+                                            @empty
+                                                <span class="text-xs text-base-content/50">No tags</span>
+                                            @endforelse
+                                        </div>
+                                    </td>
+                                    <td class="w-28">
                                             <span @class([
                                                 'badge badge-sm',
                                                 'badge-secondary badge-soft' => $pin->active,
@@ -78,13 +80,13 @@
                                             ])>
                                                 {{ $pin->active ? 'Active' : 'Inactive' }}
                                             </span>
-                                        </td>
-                                        <td>
-                                            <div class="flex justify-end gap-2">
-                                                @if($data->canEdit)
-                                                    <button
-                                                        type="button"
-                                                        x-on:click="openEditPin({{ Js::from([
+                                    </td>
+                                    <td>
+                                        <div class="flex justify-end gap-2">
+                                            @if($data->canEdit)
+                                                <button
+                                                    type="button"
+                                                    x-on:click="openEditPin({{ Js::from([
                                                             'slug' => $pin->slug,
                                                             'sectionSlug' => $section->slug,
                                                             'sectionName' => $section->name,
@@ -97,24 +99,24 @@
                                                             'description' => $pin->description,
                                                             'tagsText' => implode(', ', $pin->tags),
                                                         ]) }})"
-                                                        class="btn btn-success btn-soft btn-sm"
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                @endif
-                                                @if($data->canDelete)
-                                                    <button type="button" class="btn btn-error btn-soft btn-sm">
-                                                        Delete
-                                                    </button>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="py-8 text-center text-sm text-base-content/60">No Pins in this section.</td>
-                                    </tr>
-                                @endforelse
+                                                    class="btn btn-success btn-soft btn-sm"
+                                                >
+                                                    Edit
+                                                </button>
+                                            @endif
+                                            @if($data->canDelete)
+                                                <button type="button" class="btn btn-error btn-soft btn-sm">
+                                                    Delete
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="py-8 text-center text-sm text-base-content/60">No Pins in this section.</td>
+                                </tr>
+                            @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -227,7 +229,8 @@
                     </div>
                     <button type="button" x-on:click="close()" class="btn btn-ghost btn-sm btn-square" aria-label="Close pin modal">
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-                            <line x1="3" y1="3" x2="11" y2="11"/><line x1="11" y1="3" x2="3" y2="11"/>
+                            <line x1="3" y1="3" x2="11" y2="11"/>
+                            <line x1="11" y1="3" x2="3" y2="11"/>
                         </svg>
                     </button>
                 </div>
@@ -235,7 +238,7 @@
                 <form id="pin-form-desktop" method="POST" x-bind:action="form.action" class="grid grid-cols-1 gap-4 px-6 py-5 md:grid-cols-2">
                     @csrf
                     <template x-if="form.method !== 'POST'">
-                        <input type="hidden" name="_method" x-bind:value="form.method" />
+                        <input type="hidden" name="_method" x-bind:value="form.method"/>
                     </template>
                     <div class="md:col-span-2">
                         <label for="pin-section-desktop" class="label px-0">
@@ -328,9 +331,12 @@
                             </label>
                             <label for="pin-active-desktop" class="flex cursor-pointer items-center justify-between px-1 py-2">
                                 <input id="pin-active-desktop"
+                                       name="active"
+                                       value="{{ $pin->active }}"
                                        x-model="form.active"
                                        type="checkbox"
-                                       class="toggle toggle-success"/>
+                                       class="toggle toggle-success"
+                                       required />
                             </label>
                         </div>
 
@@ -343,7 +349,9 @@
                                    value="{{ old('order') }}"
                                    x-model="form.order"
                                    type="number"
-                                   class="input input-bordered w-full"/>
+                                   min="1"
+                                   class="input input-bordered w-full"
+                                   required />
                         </div>
                     </div>
 
@@ -353,11 +361,10 @@
                         </label>
                         <input id="pin-tags-desktop"
                                x-model="form.tagsText"
-                               value="{{ old('tags') }}"
                                type="text"
                                class="input input-bordered w-full"/>
                         <template x-for="(tag, index) in parsedTags" :key="`desktop-tag-${index}-${tag}`">
-                            <input type="hidden" name="tags[]" x-bind:value="tag" />
+                            <input type="hidden" name="tags[]" x-bind:value="tag"/>
                         </template>
                     </div>
                 </form>
@@ -388,7 +395,8 @@
                 </div>
                 <button type="button" x-on:click="close()" class="btn btn-ghost btn-sm btn-square" aria-label="Close pin modal">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-                        <line x1="3" y1="3" x2="11" y2="11"/><line x1="11" y1="3" x2="3" y2="11"/>
+                        <line x1="3" y1="3" x2="11" y2="11"/>
+                        <line x1="11" y1="3" x2="3" y2="11"/>
                     </svg>
                 </button>
             </div>
@@ -396,7 +404,7 @@
             <form id="pin-form-mobile" method="POST" x-bind:action="form.action" class="grid grid-cols-1 gap-4 overflow-y-auto px-5 py-4">
                 @csrf
                 <template x-if="form.method !== 'POST'">
-                    <input type="hidden" name="_method" x-bind:value="form.method" />
+                    <input type="hidden" name="_method" x-bind:value="form.method"/>
                 </template>
                 <div>
                     <label for="pin-section-mobile" class="label px-0">
@@ -488,9 +496,12 @@
                         </label>
                         <label for="pin-active-mobile" class="flex min-h-12 cursor-pointer items-center justify-between px-1 py-2">
                             <input id="pin-active-mobile"
+                                   name="active"
+                                   value="{{ $pin->active }}"
                                    x-model="form.active"
                                    type="checkbox"
-                                   class="toggle toggle-success"/>
+                                   class="toggle toggle-success"
+                                   required />
                         </label>
                     </div>
 
@@ -503,7 +514,9 @@
                                value="{{ old('order') }}"
                                x-model="form.order"
                                type="number"
-                               class="input input-bordered w-full"/>
+                               class="input input-bordered w-full"
+                               min="1"
+                               required />
                     </div>
                 </div>
 
@@ -513,11 +526,10 @@
                     </label>
                     <input id="pin-tags-mobile"
                            x-model="form.tagsText"
-                           value="{{ old('tags') }}"
                            type="text"
                            class="input input-bordered w-full"/>
                     <template x-for="(tag, index) in parsedTags" :key="`mobile-tag-${index}-${tag}`">
-                        <input type="hidden" name="tags[]" x-bind:value="tag" />
+                        <input type="hidden" name="tags[]" x-bind:value="tag"/>
                     </template>
                 </div>
             </form>

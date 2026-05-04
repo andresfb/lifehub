@@ -1,6 +1,9 @@
 @props([
     'moduleName' => 'Dashboard',
-    'modules'
+    'modules',
+    'message' => null,
+    'warning' => null,
+    'error' => null,
 ])
 
 @php
@@ -12,6 +15,11 @@
     $firstInitial = \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($nameParts[0] ?? 'U', 0, 1));
     $lastInitial = \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($nameParts[count($nameParts) > 1 ? count($nameParts) - 1 : 0] ?? '', 0, 1));
     $userInitials = $firstInitial.$lastInitial;
+    $alerts = collect([
+        ['type' => 'success', 'message' => $message ?? session('success')],
+        ['type' => 'warning', 'message' => $warning ?? session('warning')],
+        ['type' => 'error', 'message' => $error ?? session('error')],
+    ])->filter(fn (array $alert): bool => filled($alert['message']))->values();
 @endphp
 
 <!DOCTYPE html>
@@ -239,6 +247,14 @@
     </header>
 
     <main>
+        @if($alerts->isNotEmpty())
+            <div class="mx-auto flex max-w-7xl flex-col gap-3 px-5 pt-4 sm:px-6">
+                @foreach($alerts as $alert)
+                    <x-alert :type="$alert['type']" :message="$alert['message']" />
+                @endforeach
+            </div>
+        @endif
+
         {{ $slot }}
     </main>
 

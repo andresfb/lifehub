@@ -29,7 +29,7 @@ final class PinIndexItem extends Data
         public readonly bool $canEdit,
         public readonly bool $canDelete,
         public readonly string $storeAction,
-        public readonly string $updateActionTemplate,
+        public readonly string $updateAction,
         public readonly string $deleteRouteName,
         public readonly string $searchTagsRouteName,
     ) {}

@@ -6,6 +6,7 @@ namespace App\Repository\Dashboard\Services;
 
 use App\Repository\Common\Libraries\ApiClient;
 use App\Repository\Dashboard\Dtos\PinCreateItem;
+use App\Repository\Dashboard\Dtos\PinUpdateItem;
 use App\Repository\Dashboard\Enums\PinStatus;
 use App\Repository\Manifest\Enums\ManifestAction;
 use App\Repository\Manifest\Enums\ManifestActionOwner;
@@ -73,6 +74,34 @@ final readonly class ApiPinsService
             ->request(
                 $endpoint->method,
                 $endpoint->getUri(),
+                $item->toArray(),
+            );
+
+        Cache::tags(['pins'])->flush();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function updatePin(int $userId, string $pinSlug, PinUpdateItem $item): void
+    {
+        $endpoint = ManifestActionsLibrary::getEndpoint(
+            userId: $userId,
+            module: ManifestModule::DASHBOARD,
+            owner: ManifestActionOwner::PINS,
+            action: ManifestAction::UPDATE,
+            method: ManifestMethod::PUT,
+        );
+
+        if (blank($endpoint)) {
+            throw new RuntimeException('Endpoint not found');
+        }
+
+        $this->apiClient
+            ->setUserId($userId)
+            ->request(
+                $endpoint->method,
+                $endpoint->getUri($pinSlug),
                 $item->toArray(),
             );
 

@@ -40,6 +40,9 @@ final readonly class ApiSearchProviderService
 
         return $this->apiClient
             ->setUserId($userId)
-            ->request($endpoint->method, $endpoint->getUri());
+            ->request(
+                $endpoint->method,
+                $endpoint->getUri()
+            );
     }
 }

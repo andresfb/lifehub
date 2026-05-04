@@ -48,3 +48,6 @@ approval_mode = "approve"
 
 [mcp_servers.jcodemunch.tools.index_folder]
 approval_mode = "approve"
+
+[mcp_servers.jcodemunch.tools.jcodemunch_guide]
+approval_mode = "approve"

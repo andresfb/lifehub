@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\PinCreateRequest;
+use App\Http\Requests\Dashboard\PinUpdateRequest;
 use App\Repository\Dashboard\Actions\Pins\PinIndexAction;
 use App\Repository\Dashboard\Dtos\PinCreateItem;
+use App\Repository\Dashboard\Dtos\PinUpdateItem;
 use App\Repository\Dashboard\Services\ApiPinsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -34,17 +36,12 @@ final class PinController extends Controller
         );
     }
 
-    public function create(): never
-    {
-        throw new NotImplementedException('Not implemented yet.');
-    }
-
     public function store(PinCreateRequest $request): RedirectResponse
     {
         try {
             $this->pinsService->createPin(
-                (int) Auth::id(),
-                PinCreateItem::from($request->validated())
+                userId: (int) Auth::id(),
+                item: PinCreateItem::from($request->validated())
             );
         } catch (Throwable $e) {
             return back()->with('error', $e->getMessage());
@@ -55,14 +52,21 @@ final class PinController extends Controller
         return to_route('dashboard.pins.index');
     }
 
-    public function edit(): never
+    public function update(PinUpdateRequest $request, string $pin): RedirectResponse
     {
-        throw new NotImplementedException('Not implemented yet.');
-    }
+        try {
+            $this->pinsService->updatePin(
+                userId: (int) Auth::id(),
+                pinSlug: $pin,
+                item: PinUpdateItem::from($request->validated())
+            );
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
-    public function update(): never
-    {
-        throw new NotImplementedException('Not implemented yet.');
+        session()->flash('success', 'Pin updated successfully.');
+
+        return to_route('dashboard.pins.index');
     }
 
     public function destroy(): never

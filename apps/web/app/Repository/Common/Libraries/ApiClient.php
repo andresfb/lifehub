@@ -65,6 +65,7 @@ final class ApiClient
         return match (mb_strtoupper($method)) {
             'GET' => $this->get($uri, $data),
             'POST' => $this->post($uri, $data),
+            'PUT' => $this->put($uri, $data),
             default => throw new RuntimeException("Unsupported method: {$method}"),
         };
     }
@@ -78,6 +79,19 @@ final class ApiClient
     public function post(string $uri, array $data = []): array
     {
         $response = $this->client()->post($uri, $data);
+
+        return $this->parseResponse($response);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    public function put(string $uri, array $data = []): array
+    {
+        $response = $this->client()->put($uri, $data);
 
         return $this->parseResponse($response);
     }
@@ -114,6 +128,8 @@ final class ApiClient
      */
     private function parseResponse(LazyPromise|PromiseInterface|Response $response): array
     {
+        $this->statusCode = $response->status();
+
         if ($response->unauthorized()) {
             AuthSession::forget(['api_token', 'auth_user']);
         }
@@ -127,15 +143,18 @@ final class ApiClient
         }
 
         $result = $response->json();
+        if (blank($result)) {
+            return [];
+        }
 
         if ($result['success'] === false) {
             throw new RuntimeException("Request failed: {$result['message']}");
         }
 
-        $this->statusCode = $response->status();
-
-        return array_key_exists('data', $result)
+        $data = array_key_exists('data', $result)
             ? $result['data']
             : $result;
+
+        return $data ?? [];
     }
 }

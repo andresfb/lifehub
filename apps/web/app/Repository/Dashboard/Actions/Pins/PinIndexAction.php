@@ -57,7 +57,7 @@ final readonly class PinIndexAction
                 ManifestMethod::DELETE,
             ),
             storeAction: route('dashboard.pins.store'),
-            updateActionTemplate: route('dashboard.pins.update', ['pin' => '__PIN__']),
+            updateAction: route('dashboard.pins.update', ['pin' => '__PIN__']),
             deleteRouteName: 'dashboard.pins.destroy',
             searchTagsRouteName: 'search.tags',
         );
