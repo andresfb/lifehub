@@ -19,6 +19,6 @@ if (! function_exists('resolve_route')) {
             return $webPath;
         }
 
-        return $route->uri();
+        return "/{$route->uri()}";
     }
 }

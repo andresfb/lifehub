@@ -24,6 +24,7 @@ final class EndpointResolver
 
         return new EndpointBinding(
             routeName: $binding->routeName,
+            type: $binding->type,
             method: $method,
             path: $path,
             operationId: $this->deriveOperationId($binding->routeName),

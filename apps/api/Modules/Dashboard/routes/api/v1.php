@@ -24,7 +24,7 @@ Route::middleware([
 
         Route::apiResource('/pins', PinController::class)
             ->middlewareFor(
-                ['index', 'show'],
+                ['index'],
                 CacheResponse::for(
                     lifetime: hours(8),
                     tags: ['dashboard']
@@ -33,7 +33,6 @@ Route::middleware([
             ->names([
                 'index' => 'v1.dashboard.pins.index',
                 'store' => 'v1.dashboard.pins.store',
-                'show' => 'v1.dashboard.pins.show',
                 'update' => 'v1.dashboard.pins.update',
                 'destroy' => 'v1.dashboard.pins.destroy',
             ]);

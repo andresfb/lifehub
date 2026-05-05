@@ -21,10 +21,11 @@ test('homepage search button keeps its icon centered', function () {
     ]);
 
     expect($html)
-        ->toContain('Search the web...')
-        ->toContain('min-w-0')
+        ->toContain('Search the web..')
         ->toContain('x-data="webSearch(')
-        ->toContain('flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center self-stretch border-none bg-transparent text-(--lh-text-muted) transition-colors duration-150 hover:text-(--lh-accent)');
+        ->toContain('class="card border border-base-300 bg-base-100 shadow-lg"')
+        ->toContain('class="input input-bordered flex h-12 flex-1 items-center gap-3"')
+        ->toContain('class="btn btn-primary h-8 md:h-12 px-5"');
 });
 
 test('web search replaces the engine placeholder with the encoded query', function () {
@@ -52,8 +53,15 @@ test('homepage renders responsive page actions menu', function () {
         ->toContain('Pins')
         ->toContain('Search Engines')
         ->toContain('href="dashboard/pins"')
-        ->toContain('sm:hidden')
-        ->toContain('sm:inline');
+        ->toContain('x-data="pageActionsMenu()"')
+        ->toContain('x-on:page-actions:toggle="toggleFromShortcut()"')
+        ->toContain('x-on:keydown.down="handleArrowKey($event, 1)"')
+        ->toContain('x-on:keydown.up="handleArrowKey($event, -1)"')
+        ->toContain('x-on:keydown.enter="handleEnterKey($event)"')
+        ->toContain('data-page-actions-root')
+        ->toContain('data-page-action-item="enabled"')
+        ->toContain('tooltip tooltip-right md:tooltip-left relative inline-flex')
+        ->toContain('menu menu-sm w-full gap-1');
 });
 
 /**
@@ -72,6 +80,7 @@ function homepageSections(): Collection
                     slug: 'lifehub',
                     title: 'LifeHub',
                     url: 'https://example.com',
+                    active: true,
                     order: '1',
                 ),
             ]),
@@ -134,10 +143,10 @@ function homepageSearchEngines(): Collection
             id: 1,
             name: 'DuckDuckGo',
             url: 'https://noai.duckduckgo.com/?ia=web&origin=lifehub&q=%s',
-            icon: 'D',
-            icon_color: 'bg-[#DE5833]',
             default: true,
             order: 1,
+            icon: 'D',
+            icon_color: 'bg-[#DE5833]',
         ),
     ]);
 }

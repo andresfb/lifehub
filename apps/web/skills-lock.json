@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "daisyui": {
+      "source": "jream/ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/daisyui/SKILL.md",
+      "computedHash": "582c32b31d967aabbea747d75c054935f12e10c41bb65cd665270761802958d6"
+    }
+  }
+}

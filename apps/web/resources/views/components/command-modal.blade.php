@@ -13,7 +13,7 @@
     x-transition:leave="transition duration-100 ease-in"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
-    class="hidden md:flex fixed inset-0 z-300 items-start justify-center bg-(--lh-overlay-bg) backdrop-blur-lg pt-[15vh]"
+    class="fixed inset-0 z-300 hidden items-start justify-center bg-base-content/30 pt-[15vh] backdrop-blur-lg md:flex"
     role="dialog"
     aria-modal="true"
     aria-label="Command window"
@@ -34,11 +34,11 @@
             'h-[30vh]',
             'flex-col',
             'overflow-hidden',
-            'rounded-2xl',
+            'rounded-box',
             'border',
-            'border-(--lh-border)',
-            'bg-(--lh-card)',
-            'shadow-[0_24px_80px_rgba(0,0,0,0.3)]',
+            'border-base-300',
+            'bg-base-100',
+            'shadow-2xl',
         ])
     >
         <x-command-input inputName="commandInputDesktop" />
@@ -57,7 +57,7 @@
     x-transition:leave="transition duration-150 ease-in"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
-    class="md:hidden fixed top-0 left-0 w-screen h-screen z-200 bg-(--lh-overlay-bg)"
+    class="fixed top-0 left-0 z-200 h-screen w-screen bg-base-content/30 md:hidden"
     aria-hidden="true"
 ></div>
 
@@ -77,9 +77,9 @@
         'flex-col',
         'overflow-hidden',
         'border-t',
-        'border-(--lh-border)',
-        'bg-(--lh-card)',
-        'shadow-[0_-12px_40px_rgba(0,0,0,0.3)]',
+        'border-base-300',
+        'bg-base-100',
+        'shadow-2xl',
         'transition-transform',
         'duration-250',
         'ease-in-out',

@@ -19,6 +19,48 @@ Apply these rules to every response. No exceptions.
 - Do not echo back parameters the user already passed.
 - Omit empty fields, null values, and derived counts from structured output.
 
+## Code Exploration Policy
+
+Always use jCodemunch-MCP tools for code navigation. Never fall back to Read, Grep, Glob, or Bash for code exploration.
+
+**Start any session:**
+1. `resolve_repo { "path": "." }` — confirm the project is indexed. If not: `index_folder { "path": "." }`
+2. `suggest_queries` — when the repo is unfamiliar
+
+**Finding code:**
+- symbol by name → `search_symbols` (add `kind=`, `language=`, `file_pattern=` to narrow)
+- string, comment, config value → `search_text` (supports regex, `context_lines`)
+- database columns (dbt/SQLMesh) → `search_columns`
+
+**Reading code:**
+- before opening any file → `get_file_outline` first
+- one or more symbols → `get_symbol_source` (single ID → flat object; array → batch)
+- symbol + its imports → `get_context_bundle`
+- specific line range only → `get_file_content` (last resort)
+
+**Repo structure:**
+- `get_repo_outline` → dirs, languages, symbol counts
+- `get_file_tree` → file layout, filter with `path_prefix`
+
+**Relationships & impact:**
+- what imports this file → `find_importers`
+- where is this name used → `find_references`
+- is this identifier used anywhere → `check_references`
+- file dependency graph → `get_dependency_graph`
+- what breaks if I change X → `get_blast_radius` (add `include_depth_scores=true` for layered risk)
+- what symbols actually changed since last commit → `get_changed_symbols`
+- find unreachable/dead code → `find_dead_code`
+- most important symbols by architecture → `get_symbol_importance`
+- class hierarchy → `get_class_hierarchy`
+- related symbols → `get_related_symbols`
+- diff two snapshots → `get_symbol_diff`
+
+**Retrieval with token budget:**
+- best-fit context for a task → `get_ranked_context` (query + token_budget)
+- bounded symbol bundle → `get_context_bundle` (add token_budget= to cap size)
+
+**After editing a file:** `index_file { "path": "/abs/path/to/file" }` to keep the index fresh.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
@@ -46,11 +88,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 ## Skills Activation
 
-This project has domain-specific skills available. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
-
-- `laravel-best-practices` — Apply this skill whenever writing, reviewing, or refactoring Laravel PHP code. This includes creating or modifying controllers, models, migrations, form requests, policies, jobs, scheduled commands, service classes, and Eloquent queries. Triggers for N+1 and query performance issues, caching strategies, authorization and security patterns, validation, error handling, queue and job configuration, route definitions, and architectural decisions. Also use for Laravel code reviews and refactoring existing Laravel code to follow best practices. Covers any task involving Laravel backend PHP code patterns.
-- `pest-testing` — Use this skill for Pest PHP testing in Laravel projects only. Trigger whenever any test is being written, edited, fixed, or refactored — including fixing tests that broke after a code change, adding assertions, converting PHPUnit to Pest, adding datasets, and TDD workflows. Always activate when the user asks how to write something in Pest, mentions test files or directories (tests/Feature, tests/Unit, tests/Browser), or needs browser testing, smoke testing multiple pages for JS errors, or architecture tests. Covers: test()/it()/expect() syntax, datasets, mocking, browser testing (visit/click/fill), smoke testing, arch(), Livewire component tests, RefreshDatabase, and all Pest 4 features. Do not use for factories, seeders, migrations, controllers, models, or non-test PHP code.
-- `tailwindcss-development` — Always invoke when the user's message includes 'tailwind' in any form. Also invoke for: building responsive grid layouts (multi-column card grids, product grids), flex/grid page structures (dashboards with sidebars, fixed topbars, mobile-toggle navs), styling UI components (cards, tables, navbars, pricing sections, forms, inputs, badges), adding dark mode variants, fixing spacing or typography, and Tailwind v3/v4 work. The core use case: writing or fixing Tailwind utility classes in HTML templates (Blade, JSX, Vue). Skip for backend PHP logic, database queries, API routes, JavaScript with no HTML/CSS component, CSS file audits, build tool configuration, and vanilla CSS.
+This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
 
 ## Conventions
 
@@ -125,7 +163,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 - Always use curly braces for control structures, even for single-line bodies.
 - Use PHP 8 constructor property promotion: `public function __construct(public GitHub $github) { }`. Do not leave empty zero-parameter `__construct()` methods unless the constructor is private.
 - Use explicit return type declarations and type hints for all method parameters: `function isAccessible(User $user, ?string $path = null): bool`
-- Use TitleCase for Enum keys: `FavoritePerson`, `BestLake`, `Monthly`.
+- Follow existing application Enum naming conventions.
 - Prefer PHPDoc blocks over inline comments. Only add inline comments for exceptionally complex logic.
 - Use array shape type definitions in PHPDoc blocks.
 
@@ -184,6 +222,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 ## Pest
 
 - This project uses Pest for testing. Create tests: `php artisan make:test --pest {name}`.
+- The `{name}` argument should not include the test suite directory. Use `php artisan make:test --pest SomeFeatureTest` instead of `php artisan make:test --pest Feature/SomeFeatureTest`.
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
 

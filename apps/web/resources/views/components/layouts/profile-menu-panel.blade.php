@@ -5,20 +5,20 @@
 ])
 
 @if($showUserSummary)
-    <div class="border-b border-(--lh-border) px-3.5 py-2.5">
-        <div class="text-[14px] font-semibold text-(--lh-text)">{{ $userName }}</div>
-        <div class="mt-0.5 text-[12px] text-(--lh-text-muted)">{{ $userEmail }}</div>
+    <div class="border-b border-base-300 px-4 py-3">
+        <div class="text-sm font-semibold text-base-content">{{ $userName }}</div>
+        <div class="mt-0.5 text-xs text-base-content/70">{{ $userEmail }}</div>
     </div>
 @endif
 
-<a href="#" class="block w-full rounded-md px-3.5 py-2 text-[13px] text-(--lh-text) no-underline hover:bg-(--lh-hover)"
->Profile</a>
-<a href="#" class="block w-full rounded-md px-3.5 py-2 text-[13px] text-(--lh-text) no-underline hover:bg-(--lh-hover)"
->Settings</a>
+<ul class="menu menu-sm w-full gap-1 p-2">
+    <li><a href="#">Profile</a></li>
+    <li><a href="#">Settings</a></li>
+</ul>
 <form method="POST" action="{{ route('logout') }}">
     @csrf
     @method('DELETE')
-    <button type="submit"
-        class="block w-full cursor-pointer rounded-md border-none bg-transparent px-3.5 py-2 text-left font-[inherit] text-[13px] text-[#e54] transition-colors duration-150 hover:bg-(--lh-hover)"
-    >Logout</button>
+    <div class="px-2 pb-2">
+        <button type="submit" class="btn btn-error btn-soft btn-sm w-full justify-start">Logout</button>
+    </div>
 </form>

@@ -37,7 +37,7 @@ final readonly class CheckUserManifestService
             Cache::put(
                 md5("USER:MANIFEST:VERSION:{$userId}"),
                 $userId,
-                now()->addHours(8)
+                now()->addHours(12)
             );
         }
     }

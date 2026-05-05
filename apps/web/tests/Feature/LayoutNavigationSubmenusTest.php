@@ -45,7 +45,7 @@ test('layout opens a parent submenu when a child path is active', function () {
     expect($html)
         ->toContain('x-data="navigationGroup(true)"')
         ->toContain('x-bind:aria-expanded="isExpanded.toString()"')
-        ->toMatch('/id="navigation-reports-reports"\s+x-show="isExpanded"\s+class="mt-1 space-y-px"/');
+        ->toMatch('/id="navigation-reports-reports"\s+x-show="isExpanded"\s+class="mt-2 space-y-1"/');
 });
 
 test('layout wires the sidebar keyboard shortcut', function () {
@@ -58,7 +58,12 @@ test('layout wires the sidebar keyboard shortcut', function () {
 
     expect($html)
         ->toContain('x-data="layoutShell()"')
-        ->toContain('x-on:keydown.window="toggleSidebarFromShortcut($event); toggleCommand($event)"');
+        ->toContain('x-on:keydown.window="toggleSidebarFromShortcut($event); togglePageActionsFromShortcut($event); toggleCommand($event)"');
+
+    expect(file_get_contents(resource_path('js/app.js')))
+        ->toContain("!event.metaKey || event.key !== '2'")
+        ->toContain("document.querySelectorAll('[data-page-actions-root]')")
+        ->toContain("new CustomEvent('page-actions:toggle')");
 });
 
 test('layout renders a header button that opens the command window', function () {
@@ -72,7 +77,7 @@ test('layout renders a header button that opens the command window', function ()
     expect($html)
         ->toContain('aria-label="Open command window"')
         ->toContain('x-on:click="openCommand()"')
-        ->toContain('>𖦏</button>');
+        ->toContain('>⌘/</button>');
 
     expect(file_get_contents(resource_path('js/app.js')))
         ->toContain('openCommand()')
@@ -80,7 +85,7 @@ test('layout renders a header button that opens the command window', function ()
         ->toContain('this.closeProfileMenus()');
 });
 
-test('layout renders the sidebar profile access menu', function () {
+test('layout renders the header profile access menu', function () {
     $this->withoutVite();
 
     $html = (string) $this->blade(
@@ -89,12 +94,10 @@ test('layout renders the sidebar profile access menu', function () {
     );
 
     expect($html)
-        ->toContain('Open profile menu')
-        ->toContain('x-show="isSidebarProfileMenuOpen"')
-        ->toContain('min-h-0 flex-1 overflow-y-auto')
-        ->toContain('max-h-[calc(100vh-7rem)] overflow-y-auto')
-        ->toContain('>Profile</a>')
-        ->toContain('>Settings</a>')
+        ->toContain('x-on:click="toggleHeaderProfileMenu()"')
+        ->toContain('x-show="isProfileMenuOpen"')
+        ->toContain('<li><a href="#">Profile</a></li>')
+        ->toContain('<li><a href="#">Settings</a></li>')
         ->toContain('action="'.route('logout').'"');
 });
 
@@ -108,9 +111,7 @@ test('layout shell closes both profile menus together', function () {
 
     expect($html)
         ->toContain('x-show="isProfileMenuOpen"')
-        ->toContain('x-show="isSidebarProfileMenuOpen"')
-        ->toContain('x-on:click="toggleHeaderProfileMenu()"')
-        ->toContain('x-on:click="toggleSidebarProfileMenu()"');
+        ->toContain('x-on:click="toggleHeaderProfileMenu()"');
 
     expect(file_get_contents(resource_path('js/app.js')))
         ->toContain('isSidebarProfileMenuOpen: false')
@@ -127,11 +128,99 @@ test('layout header collapses cleanly on small screens', function () {
     );
 
     expect($html)
-        ->toContain('px-3 backdrop-blur-md sm:gap-4 sm:px-5')
+        ->toContain('navbar sticky top-0 z-50 min-h-16 border-b border-base-300 bg-base-100/85 px-3 shadow-sm backdrop-blur-md sm:px-5')
         ->toContain('flex min-w-0 flex-1 items-center gap-2 sm:gap-3')
-        ->toContain('hidden font-display text-[17px] font-bold tracking-[-0.3px] text-(--lh-text) sm:inline')
+        ->toContain('hidden font-display text-[17px] font-bold tracking-[-0.3px] text-base-content sm:inline')
         ->toContain('pointer-events-none absolute inset-x-0 flex justify-center px-16 sm:px-24')
         ->toContain('flex shrink-0 items-center justify-end gap-2');
+});
+
+test('layout renders success warning and error alerts from direct variables', function () {
+    $this->withoutVite();
+
+    $html = (string) $this->blade(
+        '<x-layouts.app module-name="reports" :modules="$modules" :message="$message" :warning="$warning" :error="$error">Content</x-layouts.app>',
+        [
+            'modules' => layoutNavigationSubmenuModules(),
+            'message' => 'Profile updated.',
+            'warning' => 'Storage is almost full.',
+            'error' => 'Profile could not be updated.',
+        ]
+    );
+
+    expect($html)
+        ->toContain('Profile updated.')
+        ->toContain('Storage is almost full.')
+        ->toContain('Profile could not be updated.')
+        ->toContain('alert alert-success alert-soft')
+        ->toContain('alert alert-warning alert-soft')
+        ->toContain('alert alert-error alert-soft')
+        ->toContain('x-data="dismissibleAlert({ timeout: 5000 })"')
+        ->toContain('aria-label="Dismiss alert"');
+});
+
+test('layout falls back to flashed session alerts when direct variables are absent', function () {
+    $this->withoutVite();
+
+    session()->flash('message', 'Saved from session.');
+    session()->flash('warning', 'Session warning.');
+    session()->flash('error', 'Session error.');
+
+    $html = (string) $this->blade(
+        '<x-layouts.app module-name="reports" :modules="$modules">Content</x-layouts.app>',
+        ['modules' => layoutNavigationSubmenuModules()]
+    );
+
+    expect($html)
+        ->toContain('Saved from session.')
+        ->toContain('Session warning.')
+        ->toContain('Session error.');
+});
+
+test('layout direct alert variables override flashed session alerts of the same type', function () {
+    $this->withoutVite();
+
+    session()->flash('message', 'Session success.');
+    session()->flash('warning', 'Session warning.');
+    session()->flash('error', 'Session error.');
+
+    $html = (string) $this->blade(
+        '<x-layouts.app module-name="reports" :modules="$modules" :message="$message" :warning="$warning" :error="$error">Content</x-layouts.app>',
+        [
+            'modules' => layoutNavigationSubmenuModules(),
+            'message' => 'Direct success.',
+            'warning' => 'Direct warning.',
+            'error' => 'Direct error.',
+        ]
+    );
+
+    expect($html)
+        ->toContain('Direct success.')
+        ->toContain('Direct warning.')
+        ->toContain('Direct error.')
+        ->not->toContain('Session success.')
+        ->not->toContain('Session warning.')
+        ->not->toContain('Session error.');
+});
+
+test('layout does not render the alert container when no alerts are present', function () {
+    $this->withoutVite();
+
+    $html = (string) $this->blade(
+        '<x-layouts.app module-name="reports" :modules="$modules">Content</x-layouts.app>',
+        ['modules' => layoutNavigationSubmenuModules()]
+    );
+
+    expect($html)
+        ->not->toContain('x-data="dismissibleAlert({ timeout: 5000 })"')
+        ->not->toContain('aria-label="Dismiss alert"');
+});
+
+test('dismissible alert alpine helper clears the timeout when dismissed', function () {
+    expect(file_get_contents(resource_path('js/app.js')))
+        ->toContain("Alpine.data('dismissibleAlert'")
+        ->toContain('window.setTimeout(() => {')
+        ->toContain('window.clearTimeout(this.timeoutId)');
 });
 
 /**

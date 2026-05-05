@@ -19,6 +19,8 @@
     "require-dev": {
         "driftingly/rector-laravel": "^2.3",
         "fakerphp/faker": "^1.23",
+        "laradumps/laradumps": "^5.3",
+        "laradumps/laradumps-core": "^4.0",
         "larastan/larastan": "^3.9",
         "laravel/boost": "*",
         "laravel/pail": "^1.2.5",

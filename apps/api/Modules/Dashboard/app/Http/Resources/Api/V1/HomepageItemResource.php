@@ -26,6 +26,7 @@ final class HomepageItemResource extends JsonResource
             'icon_color' => $this->icon_color,
             'description' => $this->description ?? '',
             'order' => $this->order,
+            'active' => $this->active,
             'tags' => $this->getTags(),
         ];
     }

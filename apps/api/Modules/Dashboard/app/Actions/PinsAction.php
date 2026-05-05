@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Actions;
 
-use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionCollection;
+use Illuminate\Support\Collection;
 use Modules\Dashboard\Models\HomepageSection;
 
 final class PinsAction
 {
-    public function handle(int $userId): HomepageSectionCollection
+    /**
+     * @return Collection<int, HomepageSection>
+     */
+    public function handle(int $userId, int $status): Collection
     {
-        return new HomepageSectionCollection(
-            HomepageSection::getUserSections($userId)
-        );
+        return HomepageSection::getUserSections($userId, $status);
     }
 }

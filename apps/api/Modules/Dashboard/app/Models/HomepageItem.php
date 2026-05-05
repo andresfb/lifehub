@@ -69,6 +69,15 @@ final class HomepageItem extends Model implements UserModelInterface
     /** @var array<int, string> */
     protected array $cascadeDeletes = ['tags'];
 
+    public static function found(int $userId, string $url, int $sectionId): bool
+    {
+        return self::query()
+            ->where('user_id', $userId)
+            ->where('section_id', $sectionId)
+            ->where('url', $url)
+            ->exists();
+    }
+
     /**
      * @return BelongsTo<HomepageSection, $this>
      */
@@ -84,17 +93,18 @@ final class HomepageItem extends Model implements UserModelInterface
     }
 
     /**
-     * @return array<int, string>|null
+     * @return array<int, string>
      */
-    public function getTags(): ?array
+    public function getTags(): array
     {
         if (blank($this->tags)) {
-            return null;
+            return [];
         }
 
         return $this->tags
             ->pluck('name')
             ->values()
+            ->map(fn (string $name): string => str($name)->lower()->value())
             ->all();
     }
 

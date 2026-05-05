@@ -1,13 +1,11 @@
 <x-layouts.auth description="{{ __('Sign in to your account') }}">
 
     @if(session('message'))
-        <p class="mb-4 text-center text-[13px] font-medium text-(--lh-accent-text)">
-            {{ session('message') }}
-        </p>
+        <div class="alert alert-success alert-soft text-sm">{{ session('message') }}</div>
     @endif
 
     @if(session('error'))
-        <p class="mb-4 text-center text-[13px] text-[#e54]">{{ session('error') }}</p>
+        <div class="alert alert-error alert-soft text-sm">{{ session('error') }}</div>
     @endif
 
     <form method="POST" action="{{ route('login.store') }}" class="space-y-4">
@@ -15,8 +13,8 @@
 
         {{-- Email --}}
         <div>
-            <label for="email" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
-                {{ __('Email') }}
+            <label for="email" class="label px-0">
+                <span class="label-text font-medium">{{ __('Email') }}</span>
             </label>
             <input
                 id="email"
@@ -27,17 +25,17 @@
                 autofocus
                 autocomplete="email"
                 placeholder="you@example.com"
-                class="lh-input h-11 w-full rounded-[10px] border border-(--lh-border) bg-(--lh-input) px-3.5 text-[14px] text-(--lh-text) transition-[border-color,box-shadow] duration-200 focus:border-(--lh-accent) focus:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.12)]"
+                class="input input-bordered w-full"
             />
             @error('email')
-                <p class="mt-1 text-[12px] text-[#e54]">{{ $message }}</p>
+                <p class="mt-1 text-xs text-error">{{ $message }}</p>
             @enderror
         </div>
 
         {{-- Password --}}
         <div>
-            <label for="password" class="mb-1.5 block text-[13px] font-medium text-(--lh-text-sec)">
-                {{ __('Password') }}
+            <label for="password" class="label px-0">
+                <span class="label-text font-medium">{{ __('Password') }}</span>
             </label>
             <input
                 id="password"
@@ -46,16 +44,16 @@
                 required
                 autocomplete="current-password"
                 placeholder="••••••••"
-                class="h-11 w-full rounded-[10px] border border-(--lh-border) bg-(--lh-input) px-3.5 text-[14px] text-(--lh-text) transition-[border-color,box-shadow] duration-200 focus:border-(--lh-accent) focus:shadow-[0_0_0_3px_oklch(0.65_0.15_175/0.12)]"
+                class="input input-bordered w-full"
             />
             @error('password')
-                <p class="mt-1 text-[12px] text-[#e54]">{{ $message }}</p>
+                <p class="mt-1 text-xs text-error">{{ $message }}</p>
             @enderror
         </div>
 
         {{-- Forgot password --}}
         <div class="flex justify-end">
-            <button type="button" class="cursor-pointer border-none bg-transparent text-[13px] font-medium text-(--lh-accent-text)">
+            <button type="button" class="link link-hover link-primary text-sm font-medium">
                 {{ __('Forgot password?') }}
             </button>
         </div>
@@ -63,7 +61,7 @@
         {{-- Submit --}}
         <button
             type="submit"
-            class="h-11 w-full cursor-pointer rounded-[10px] border-none bg-(--lh-accent) text-[15px] font-semibold text-white transition-[opacity,transform] duration-150 hover:opacity-90 active:scale-[0.98]"
+            class="btn btn-primary w-full"
         >
             {{ __('Sign In') }}
         </button>
@@ -71,7 +69,7 @@
 
     <x-slot:footer>
         {{ __("Don't have an account?") }}
-        <a href="{{ route('register') }}" class="font-semibold text-(--lh-accent-text) no-underline">
+        <a href="{{ route('register') }}" class="link link-hover link-primary font-semibold no-underline">
             {{ __('Create one') }}
         </a>
     </x-slot:footer>

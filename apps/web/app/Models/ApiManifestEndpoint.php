@@ -19,6 +19,7 @@ use Illuminate\Support\Collection;
  * @property-read int $id
  * @property int $api_manifest_id
  * @property string $route_name
+ * @property string $type
  * @property string $method
  * @property string $path
  * @property string $operation_id
@@ -68,7 +69,8 @@ final class ApiManifestEndpoint extends Model
         string $method,
         string $actionOwner,
         string $actionName,
-        string $moduleKey
+        string $moduleKey,
+        string $type,
     ): void {
         $query->select('api_manifest_endpoint.*')
             ->join('api_manifest_action', 'api_manifest_action.api_manifest_endpoint_id', '=', 'api_manifest_endpoint.id')
@@ -78,6 +80,7 @@ final class ApiManifestEndpoint extends Model
             ->where('api_manifest_module.key', $moduleKey)
             ->where('api_manifest_action.owner', $actionOwner)
             ->where('api_manifest_action.name', $actionName)
-            ->where('api_manifest_endpoint.method', $method);
+            ->where('api_manifest_endpoint.method', $method)
+            ->where('api_manifest_endpoint.type', $type);
     }
 }

@@ -1,0 +1,19 @@
+info:
+  name: Search Tags
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{process.env.API_URL}}/search/tags?q=syno"
+  params:
+    - name: q
+      value: syno
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

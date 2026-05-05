@@ -5,41 +5,69 @@ declare(strict_types=1);
 namespace Modules\Dashboard\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Mcp\Exceptions\NotImplementedException;
+use Modules\Dashboard\Actions\PinCreateAction;
 use Modules\Dashboard\Actions\PinsAction;
+use Modules\Dashboard\Actions\PinUpdateAction;
+use Modules\Dashboard\Dtos\PinCreateItem;
+use Modules\Dashboard\Dtos\PinUpdateItem;
+use Modules\Dashboard\Http\Requests\Api\V1\PinCreateRequest;
+use Modules\Dashboard\Http\Requests\Api\V1\PinListRequest;
+use Modules\Dashboard\Http\Requests\Api\V1\PinUpdateRequest;
 use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionCollection;
 use Modules\Dashboard\Models\HomepageItem;
 use Throwable;
 
 final class PinController extends ApiController
 {
-    /**
-     * @throws Throwable
-     */
-    public function index(PinsAction $homeAction): HomepageSectionCollection
+    public function index(PinListRequest $request, PinsAction $homeAction): HomepageSectionCollection
     {
-        return $homeAction->handle(Auth::id());
+        return new HomepageSectionCollection(
+            $homeAction->handle(
+                Auth::id(),
+                (int) $request->validated('status', 1)
+            )
+        );
     }
 
-    public function store(Request $request): never
+    public function store(PinCreateRequest $request, PinCreateAction $action): JsonResponse
     {
-        throw new NotImplementedException('store action not implemented');
+        try {
+            $slug = $action->handle(
+                Auth::id(),
+                PinCreateItem::from($request->validated())
+            );
+        } catch (Throwable $e) {
+            return $this->error($e->getMessage());
+        }
+
+        return $this->created(
+            data: ['slug' => $slug],
+            message: 'Pin created successfully'
+        );
     }
 
-    public function show(HomepageItem $bookmark): never
+    public function update(PinUpdateRequest $request, HomepageItem $pin, PinUpdateAction $action): JsonResponse
     {
-        throw new NotImplementedException('show action not implemented');
+        try {
+            $action->handle(
+                pin: $pin,
+                item: PinUpdateItem::from($request->validated()),
+            );
+        } catch (Throwable $e) {
+            return $this->error($e->getMessage());
+        }
+
+        return $this->success(message: 'Pin updated successfully');
     }
 
-    public function update(Request $request, HomepageItem $bookmark): never
+    public function destroy(HomepageItem $pin): JsonResponse
     {
-        throw new NotImplementedException('update action not implemented');
-    }
+        $this->authorize('delete', $pin);
 
-    public function destroy(HomepageItem $bookmark): never
-    {
-        throw new NotImplementedException('destroy action not implemented');
+        $pin->delete();
+
+        return $this->noContent();
     }
 }

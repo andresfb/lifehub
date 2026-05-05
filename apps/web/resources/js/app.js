@@ -1,4 +1,6 @@
+import 'htmx.org';
 import Alpine from 'alpinejs'
+
 window.Alpine = Alpine
 
 Alpine.store('theme', {
@@ -16,7 +18,7 @@ Alpine.store('theme', {
     },
 
     apply() {
-        document.documentElement.classList.toggle('dark', this.isDark)
+        document.documentElement.dataset.theme = this.isDark ? 'forest' : 'emerald'
     },
 })
 
@@ -58,6 +60,24 @@ Alpine.data('layoutShell', () => ({
 
         this.isSidebarOpen = !this.isSidebarOpen
         this.closeProfileMenus()
+    },
+
+    togglePageActionsFromShortcut(event) {
+        if (!event.metaKey || event.key !== '2' || this.isEditableTarget(event.target)) {
+            return
+        }
+
+        const pageActionsRoot = this.findVisiblePageActionsRoot()
+        if (!pageActionsRoot) {
+            return
+        }
+
+        event.preventDefault()
+
+        pageActionsRoot.dispatchEvent(new CustomEvent('page-actions:toggle'))
+        this.closeSidebar()
+        this.closeProfileMenus()
+        this.isCommandOpen = false
     },
 
     toggleCommand(event) {
@@ -112,10 +132,130 @@ Alpine.data('layoutShell', () => ({
             && (target.isContentEditable || target.closest('input, textarea, select, [contenteditable="true"]') !== null)
     },
 
+    findVisiblePageActionsRoot() {
+        return Array.from(document.querySelectorAll('[data-page-actions-root]'))
+            .find((element) => element instanceof HTMLElement && element.getClientRects().length > 0)
+    },
+
     closeOpenMenus() {
         this.closeSidebar()
         this.closeProfileMenus()
         this.isCommandOpen = false
+    },
+}))
+
+Alpine.data('dismissibleAlert', ({ timeout = 5000 } = {}) => ({
+    isVisible: true,
+    timeoutId: null,
+
+    init() {
+        if (timeout <= 0) {
+            return
+        }
+
+        this.timeoutId = window.setTimeout(() => {
+            this.dismiss()
+        }, timeout)
+    },
+
+    dismiss() {
+        this.isVisible = false
+
+        if (this.timeoutId !== null) {
+            window.clearTimeout(this.timeoutId)
+            this.timeoutId = null
+        }
+    },
+}))
+
+Alpine.data('pageActionsMenu', () => ({
+    isOpen: false,
+    activeIndex: -1,
+
+    toggle() {
+        if (this.isOpen) {
+            this.close()
+
+            return
+        }
+
+        this.open()
+    },
+
+    toggleFromShortcut() {
+        if (this.isOpen) {
+            this.close()
+
+            return
+        }
+
+        this.open(true)
+    },
+
+    open(shouldFocusFirstAction = false) {
+        this.isOpen = true
+        this.activeIndex = shouldFocusFirstAction ? this.firstActionIndex() : this.activeIndex
+
+        this.$nextTick(() => {
+            if (shouldFocusFirstAction) {
+                this.focusActiveAction()
+            }
+        })
+    },
+
+    close() {
+        this.isOpen = false
+        this.activeIndex = -1
+    },
+
+    handleArrowKey(event, step) {
+        if (!this.isOpen) {
+            return
+        }
+
+        const items = this.actionItems()
+        if (!items.length) {
+            return
+        }
+
+        event.preventDefault()
+
+        if (this.activeIndex === -1) {
+            this.activeIndex = step > 0 ? 0 : items.length - 1
+            this.focusActiveAction()
+
+            return
+        }
+
+        this.activeIndex = (this.activeIndex + step + items.length) % items.length
+        this.focusActiveAction()
+    },
+
+    handleEnterKey(event) {
+        if (!this.isOpen) {
+            return
+        }
+
+        const item = this.actionItems()[this.activeIndex] ?? this.actionItems()[0]
+        if (!item) {
+            return
+        }
+
+        event.preventDefault()
+        item.click()
+    },
+
+    actionItems() {
+        return Array.from(this.$root.querySelectorAll('[data-page-action-item="enabled"]'))
+    },
+
+    firstActionIndex() {
+        return this.actionItems().length ? 0 : -1
+    },
+
+    focusActiveAction() {
+        const activeAction = this.actionItems()[this.activeIndex]
+        activeAction?.focus()
     },
 }))
 
@@ -151,6 +291,152 @@ Alpine.data('webSearch', (engines = []) => ({
         const searchUrl = this.selectedEngine.url.replace('%s', encodeURIComponent(query))
 
         window.open(searchUrl, '_blank', 'noopener,noreferrer')
+    },
+}))
+
+Alpine.data('pinsModal', (config = {}) => ({
+    storeAction: config.storeAction ?? '',
+    updateAction: config.updateAction ?? '',
+    isOpen: false,
+    isDeleteConfirmationOpen: false,
+    mode: 'create',
+    sections: Object.entries(config.sections ?? {}).map(([slug, name]) => ({ slug, name })),
+    deleteConfirmation: {
+        action: '',
+        title: '',
+        sectionName: '',
+    },
+    form: {
+        action: '',
+        method: 'POST',
+        slug: '',
+        sectionSlug: '',
+        sectionName: '',
+        title: '',
+        url: '',
+        order: '',
+        active: false,
+        icon: '',
+        iconColor: '',
+        description: '',
+        tagsText: '',
+    },
+
+    init() {
+        this.$watch('isOpen', (isOpen) => {
+            this.syncBodyScroll()
+            if (!isOpen) {
+                return
+            }
+
+            this.$nextTick(() => {
+                const selector = window.matchMedia('(min-width: 768px)').matches
+                    ? '#pin-title-desktop'
+                    : '#pin-title-mobile'
+
+                this.$root.querySelector(selector)?.focus()
+            })
+        })
+        this.$watch('isDeleteConfirmationOpen', () => {
+            this.syncBodyScroll()
+        })
+    },
+
+    get modalTitle() {
+        return this.mode === 'edit' ? 'Edit Pin' : 'New Pin'
+    },
+
+    get modalDescription() {
+        if (this.form.sectionName) {
+            return `Section: ${this.form.sectionName}`
+        }
+
+        return 'Choose a section and fill in the pin details.'
+    },
+
+    get deleteConfirmationDescription() {
+        if (this.deleteConfirmation.sectionName) {
+            return `Remove "${this.deleteConfirmation.title}" from ${this.deleteConfirmation.sectionName}?`
+        }
+
+        return `Remove "${this.deleteConfirmation.title}"?`
+    },
+
+    get parsedTags() {
+        return this.form.tagsText
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean)
+    },
+
+    openCreatePin() {
+        const firstSection = this.sections[0] ?? { slug: '', name: '' }
+
+        this.mode = 'create'
+        this.form = {
+            action: this.storeAction,
+            method: 'POST',
+            slug: '',
+            sectionSlug: firstSection.slug,
+            sectionName: firstSection.name,
+            title: '',
+            url: '',
+            order: '',
+            active: false,
+            icon: '',
+            iconColor: '',
+            description: '',
+            tagsText: '',
+        }
+        this.isOpen = true
+    },
+
+    openEditPin(pin) {
+        this.mode = 'edit'
+        this.form = {
+            action: this.resolveUpdateAction(pin.slug ?? ''),
+            method: 'PUT',
+            slug: pin.slug ?? '',
+            sectionSlug: pin.sectionSlug ?? '',
+            sectionName: pin.sectionName ?? '',
+            title: pin.title ?? '',
+            url: pin.url ?? '',
+            order: pin.order ?? '',
+            active: pin.active ?? false,
+            icon: pin.icon ?? '',
+            iconColor: pin.iconColor ?? '',
+            description: pin.description ?? '',
+            tagsText: pin.tagsText ?? '',
+        }
+        this.isOpen = true
+    },
+
+    openDeleteConfirmation(pin) {
+        this.deleteConfirmation = {
+            action: pin.action ?? '',
+            title: pin.title ?? '',
+            sectionName: pin.sectionName ?? '',
+        }
+        this.isDeleteConfirmationOpen = true
+    },
+
+    resolveUpdateAction(slug) {
+        return this.updateAction.replace('__PIN__', slug)
+    },
+
+    syncSectionName() {
+        const activeSection = this.sections.find((section) => section.slug === this.form.sectionSlug)
+
+        this.form.sectionName = activeSection?.name ?? ''
+    },
+
+    syncBodyScroll() {
+        document.body.style.overflow = this.isOpen || this.isDeleteConfirmationOpen ? 'hidden' : ''
+    },
+
+    close() {
+        this.isOpen = false
+        this.isDeleteConfirmationOpen = false
     },
 }))
 

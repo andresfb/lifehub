@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\PinController;
+use App\Http\Controllers\Tags\SearchTagController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
@@ -47,6 +48,9 @@ Route::middleware(['throttle:two-factor'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
+    Route::get('/search/tags', SearchTagController::class)
+        ->name('search.tags');
+
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'show'])
             ->name('dashboard');
@@ -64,15 +68,10 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/pins/{pin}', 'update')
                 ->name('dashboard.pins.update');
 
-            Route::get('/pins/{pin}/edit', 'edit')
-                ->name('dashboard.pins.edit');
-
-            Route::get('/pins/create', 'create')
-                ->name('dashboard.pins.create');
-
             Route::get('/pins/{pin}', 'show')
                 ->name('dashboard.pins.show');
         });
+
     });
 
     Route::delete('/logout', [LoginController::class, 'destroy'])

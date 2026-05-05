@@ -147,6 +147,17 @@ return [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
+            \App\Models\Tag::class => [
+                'filterableAttributes' => ['id', 'user_id', 'slug', 'name', 'created_at'],
+                'sortableAttributes' => ['created_at'],
+                'typoTolerance' => [
+                    'enabled' => true,
+                    'minWordSizeForTypos' => [
+                        'oneTypo' => 5,
+                        'twoTypos' => 9,
+                    ],
+                ],
+            ],
             HomepageItem::class => [
                 'filterableAttributes' => ['id', 'user_id', 'section_id', 'section', 'url', 'created_at'],
                 'sortableAttributes' => ['created_at'],

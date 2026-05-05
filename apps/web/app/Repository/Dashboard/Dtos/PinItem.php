@@ -17,11 +17,13 @@ final class PinItem extends Data
         public readonly string $slug,
         public readonly string $title,
         public readonly string $url,
-        public readonly string $order,
+        public readonly bool $active = true,
+        public readonly array $tags = [],
+        public readonly ?int $order = null,
         public readonly ?string $icon = null,
         public readonly ?string $icon_color = null,
         public readonly ?string $description = null,
-        public readonly array $tags = [],
+        public readonly ?string $section_slug = null,
     ) {}
 
     public function iconName(): string

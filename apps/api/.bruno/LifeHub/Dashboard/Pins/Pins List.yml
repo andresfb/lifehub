@@ -1,0 +1,19 @@
+info:
+  name: Pins List
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{process.env.API_URL}}/dashboard/pins?status=-1"
+  params:
+    - name: status
+      value: "-1"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
