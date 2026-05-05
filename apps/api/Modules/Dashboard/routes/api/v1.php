@@ -24,7 +24,7 @@ Route::middleware([
 
         Route::apiResource('/pins', PinController::class)
             ->middlewareFor(
-                ['index', 'show'],
+                ['index'],
                 CacheResponse::for(
                     lifetime: hours(8),
                     tags: ['dashboard']

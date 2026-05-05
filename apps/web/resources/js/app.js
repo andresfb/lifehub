@@ -298,8 +298,14 @@ Alpine.data('pinsModal', (config = {}) => ({
     storeAction: config.storeAction ?? '',
     updateAction: config.updateAction ?? '',
     isOpen: false,
+    isDeleteConfirmationOpen: false,
     mode: 'create',
     sections: Object.entries(config.sections ?? {}).map(([slug, name]) => ({ slug, name })),
+    deleteConfirmation: {
+        action: '',
+        title: '',
+        sectionName: '',
+    },
     form: {
         action: '',
         method: 'POST',
@@ -318,7 +324,7 @@ Alpine.data('pinsModal', (config = {}) => ({
 
     init() {
         this.$watch('isOpen', (isOpen) => {
-            document.body.style.overflow = isOpen ? 'hidden' : ''
+            this.syncBodyScroll()
             if (!isOpen) {
                 return
             }
@@ -330,6 +336,9 @@ Alpine.data('pinsModal', (config = {}) => ({
 
                 this.$root.querySelector(selector)?.focus()
             })
+        })
+        this.$watch('isDeleteConfirmationOpen', () => {
+            this.syncBodyScroll()
         })
     },
 
@@ -343,6 +352,14 @@ Alpine.data('pinsModal', (config = {}) => ({
         }
 
         return 'Choose a section and fill in the pin details.'
+    },
+
+    get deleteConfirmationDescription() {
+        if (this.deleteConfirmation.sectionName) {
+            return `Remove "${this.deleteConfirmation.title}" from ${this.deleteConfirmation.sectionName}?`
+        }
+
+        return `Remove "${this.deleteConfirmation.title}"?`
     },
 
     get parsedTags() {
@@ -394,6 +411,15 @@ Alpine.data('pinsModal', (config = {}) => ({
         this.isOpen = true
     },
 
+    openDeleteConfirmation(pin) {
+        this.deleteConfirmation = {
+            action: pin.action ?? '',
+            title: pin.title ?? '',
+            sectionName: pin.sectionName ?? '',
+        }
+        this.isDeleteConfirmationOpen = true
+    },
+
     resolveUpdateAction(slug) {
         return this.updateAction.replace('__PIN__', slug)
     },
@@ -404,8 +430,13 @@ Alpine.data('pinsModal', (config = {}) => ({
         this.form.sectionName = activeSection?.name ?? ''
     },
 
+    syncBodyScroll() {
+        document.body.style.overflow = this.isOpen || this.isDeleteConfirmationOpen ? 'hidden' : ''
+    },
+
     close() {
         this.isOpen = false
+        this.isDeleteConfirmationOpen = false
     },
 }))
 

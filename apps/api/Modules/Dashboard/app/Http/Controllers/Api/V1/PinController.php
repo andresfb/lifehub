@@ -7,7 +7,6 @@ namespace Modules\Dashboard\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Mcp\Exceptions\NotImplementedException;
 use Modules\Dashboard\Actions\PinCreateAction;
 use Modules\Dashboard\Actions\PinsAction;
 use Modules\Dashboard\Actions\PinUpdateAction;
@@ -63,8 +62,12 @@ final class PinController extends ApiController
         return $this->success(message: 'Pin updated successfully');
     }
 
-    public function destroy(HomepageItem $pin): never
+    public function destroy(HomepageItem $pin): JsonResponse
     {
-        throw new NotImplementedException('destroy action not implemented');
+        $this->authorize('delete', $pin);
+
+        $pin->delete();
+
+        return $this->noContent();
     }
 }

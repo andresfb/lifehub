@@ -107,4 +107,31 @@ final readonly class ApiPinsService
 
         Cache::tags(['pins'])->flush();
     }
+
+    /**
+     * @throws Exception
+     */
+    public function deletePin(int $userId, string $pinSlug): void
+    {
+        $endpoint = ManifestActionsLibrary::getEndpoint(
+            userId: $userId,
+            module: ManifestModule::DASHBOARD,
+            owner: ManifestActionOwner::PINS,
+            action: ManifestAction::DELETE,
+            method: ManifestMethod::DELETE,
+        );
+
+        if (blank($endpoint)) {
+            throw new RuntimeException('Endpoint not found');
+        }
+
+        $this->apiClient
+            ->setUserId($userId)
+            ->request(
+                $endpoint->method,
+                $endpoint->getUri($pinSlug),
+            );
+
+        Cache::tags(['pins'])->flush();
+    }
 }

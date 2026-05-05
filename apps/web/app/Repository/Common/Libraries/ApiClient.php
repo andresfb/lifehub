@@ -66,6 +66,7 @@ final class ApiClient
             'GET' => $this->get($uri, $data),
             'POST' => $this->post($uri, $data),
             'PUT' => $this->put($uri, $data),
+            'DELETE' => $this->delete($uri),
             default => throw new RuntimeException("Unsupported method: {$method}"),
         };
     }
@@ -92,6 +93,18 @@ final class ApiClient
     public function put(string $uri, array $data = []): array
     {
         $response = $this->client()->put($uri, $data);
+
+        return $this->parseResponse($response);
+    }
+
+    /**
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function delete(string $uri): array
+    {
+        $response = $this->client()->delete($uri);
 
         return $this->parseResponse($response);
     }

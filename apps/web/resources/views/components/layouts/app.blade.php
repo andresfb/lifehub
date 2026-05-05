@@ -205,7 +205,7 @@
             <button
                 type="button"
                 x-on:click="openCommand()"
-                class="btn btn-ghost btn-sm rounded-full px-3 text-base"
+                class="btn btn-ghost btn-sm rounded-lg px-2 mt-1 text-base"
                 aria-label="Open command window"
             >⌘/</button>
 
