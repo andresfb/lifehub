@@ -33,11 +33,6 @@ final class User extends Authenticatable
     use HasFactory;
     use Notifiable;
 
-    public function manifest(): HasOne
-    {
-        return $this->hasOne(ApiManifest::class);
-    }
-
     public static function getToken(int|string|null $identifier): string
     {
         if (blank($identifier)) {
@@ -54,6 +49,14 @@ final class User extends Authenticatable
         }
 
         return $user->api_token;
+    }
+
+    /**
+     * @return HasOne<ApiManifest, $this>
+     */
+    public function manifest(): HasOne
+    {
+        return $this->hasOne(ApiManifest::class);
     }
 
     /**

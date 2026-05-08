@@ -39,6 +39,9 @@ final class ApiManifest extends Model
             ->first();
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
