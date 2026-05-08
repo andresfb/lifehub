@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -36,6 +37,11 @@ final class ApiManifest extends Model
             ->withNavigation()
             ->where('user_id', $userId)
             ->first();
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**

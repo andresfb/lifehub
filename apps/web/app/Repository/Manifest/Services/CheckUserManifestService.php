@@ -34,11 +34,12 @@ final readonly class CheckUserManifestService
 
             $this->manifestService->loadUserManifest($userId);
         } finally {
-            Cache::put(
-                md5("USER:MANIFEST:VERSION:{$userId}"),
-                $userId,
-                now()->addHours(12)
-            );
+            Cache::tags('manifest')
+                ->put(
+                    md5("USER:MANIFEST:VERSION:{$userId}"),
+                    $userId,
+                    now()->addDay()
+                );
         }
     }
 }
