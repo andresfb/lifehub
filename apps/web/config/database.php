@@ -181,6 +181,16 @@ return [
             'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
         ],
 
+        'socks' => [
+            'scheme' => 'unix',
+            'path' => env('REDIS_SOCKS_PATH', '/var/run/redis/redis.sock'),
+            'database' => env('REDIS_SOCKS_DB', 1),
+            'max_retries' => env('REDIS_CACHE_MAX_RETRIES', 3),
+            'backoff_algorithm' => env('REDIS_CACHE_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
+            'backoff_base' => env('REDIS_CACHE_BACKOFF_BASE', 100),
+            'backoff_cap' => env('REDIS_CACHE_BACKOFF_CAP', 1000),
+        ],
+
     ],
 
 ];

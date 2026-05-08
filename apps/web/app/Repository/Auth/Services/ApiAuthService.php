@@ -12,6 +12,7 @@ use App\Repository\Auth\Libraries\AuthSession;
 use App\Repository\Common\Libraries\ApiClient;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Concurrency;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -92,8 +93,12 @@ final readonly class ApiAuthService
         $token = AuthSession::get('api_token');
 
         AuthSession::forget(['api_token', 'auth_user']);
+
         session()->invalidate();
         session()->regenerateToken();
+
+        Cache::tags(['manifest'])->flush();
+        Cache::tags(['pins'])->flush();
 
         Concurrency::defer([
             function () use ($token) {

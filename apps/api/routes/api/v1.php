@@ -7,8 +7,6 @@ use App\Http\Controllers\Api\V1\GlobalSearchController;
 use App\Http\Controllers\Api\V1\ManifestController;
 use App\Http\Controllers\Api\V1\SearchTagController;
 use Illuminate\Support\Facades\Route;
-use Spatie\ResponseCache\Middlewares\CacheResponse;
-use function Illuminate\Support\hours;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,13 +32,7 @@ Route::middleware(['throttle:auth'])->group(function (): void {
 // Protected routes with authenticated rate limiter (120/min)
 Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function (): void {
     Route::get('me', [AuthController::class, 'me'])
-        ->name('api.v1.me')
-        ->middleware(
-            CacheResponse::for(
-                lifetime: hours(8),
-                tags: ['user']
-            )
-        );
+        ->name('api.v1.me');
 
     Route::controller(ManifestController::class)->group(function () {
         Route::get('manifesto', 'index')

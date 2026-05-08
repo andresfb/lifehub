@@ -36,6 +36,10 @@ return [
 
     'stores' => [
 
+        'apc' => [
+            'driver' => 'apc',
+        ],
+
         'array' => [
             'driver' => 'array',
             'serialize' => false,
@@ -78,6 +82,12 @@ return [
             'driver' => 'redis',
             'connection' => env('REDIS_CACHE_CONNECTION', 'cache'),
             'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
+        ],
+
+        'socks' => [
+            'driver' => 'redis',
+            'connection' => env('REDIS_SOCKS_CONNECTION', 'socks'),
+            'lock_connection' => env('REDIS_SOCKS_LOCK_CONNECTION', 'default'),
         ],
 
         'dynamodb' => [
