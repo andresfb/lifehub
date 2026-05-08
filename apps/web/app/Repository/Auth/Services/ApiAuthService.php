@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Auth\Services;
 
+use App\Libraries\CacheLibrary;
 use App\Models\User as UserModel;
 use App\Repository\Auth\Dtos\RegisterItem;
 use App\Repository\Auth\Dtos\User;
@@ -12,7 +13,6 @@ use App\Repository\Auth\Libraries\AuthSession;
 use App\Repository\Common\Libraries\ApiClient;
 use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Concurrency;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -91,14 +91,14 @@ final readonly class ApiAuthService
     public function logout(): void
     {
         $token = AuthSession::get('api_token');
+        $user = AuthSession::get('auth_user');
 
         AuthSession::forget(['api_token', 'auth_user']);
 
         session()->invalidate();
         session()->regenerateToken();
 
-        Cache::tags(['manifest'])->flush();
-        Cache::tags(['pins'])->flush();
+        CacheLibrary::clearCache($user);
 
         Concurrency::defer([
             function () use ($token) {

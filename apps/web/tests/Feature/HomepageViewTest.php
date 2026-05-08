@@ -28,6 +28,24 @@ test('homepage search button keeps its icon centered', function () {
         ->toContain('class="btn btn-primary h-8 md:h-12 px-5"');
 });
 
+test('homepage scales search and bookmark cards on large screens', function () {
+    $this->withoutVite();
+
+    $html = (string) $this->view('dashboard.homepage.show', [
+        'bookmarks' => homepageSections(),
+        'modules' => homepageModules(),
+        'pageActions' => homepagePageActions(),
+        'searchEngines' => homepageSearchEngines(),
+    ]);
+
+    expect($html)
+        ->toContain('mx-auto max-w-4xl pt-3 sm:pt-8 lg:max-w-[52.08rem]')
+        ->toContain('card w-full border border-base-300 bg-base-100 no-underline shadow-sm transition-transform duration-150 hover:-translate-y-1 hover:shadow-lg lg:w-[95%] lg:justify-self-center')
+        ->toContain('card-body flex-row items-center gap-3 p-4 lg:gap-[0.7125rem] lg:p-[0.95rem]')
+        ->toContain('lg:h-[2.375rem] lg:w-[2.375rem] lg:text-[0.95rem]')
+        ->toContain('text-sm font-medium text-base-content lg:text-[0.83125rem]');
+});
+
 test('web search replaces the engine placeholder with the encoded query', function () {
     $script = file_get_contents(resource_path('js/app.js'));
 
@@ -52,7 +70,7 @@ test('homepage renders responsive page actions menu', function () {
         ->toContain('𖦏')
         ->toContain('Pins')
         ->toContain('Search Engines')
-        ->toContain('href="dashboard/pins"')
+        ->toContain('href="/dashboard/pins"')
         ->toContain('x-data="pageActionsMenu()"')
         ->toContain('x-on:page-actions:toggle="toggleFromShortcut()"')
         ->toContain('x-on:keydown.down="handleArrowKey($event, 1)"')
@@ -81,7 +99,7 @@ function homepageSections(): Collection
                     title: 'LifeHub',
                     url: 'https://example.com',
                     active: true,
-                    order: '1',
+                    order: 1,
                 ),
             ]),
         ),

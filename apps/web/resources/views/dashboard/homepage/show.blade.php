@@ -9,7 +9,7 @@
         </div>
 
         {{-- Search bar --}}
-        <div class="mx-auto max-w-4xl pt-3 sm:pt-8">
+        <div class="mx-auto max-w-4xl pt-3 sm:pt-8 lg:max-w-[52.08rem]">
             <div
                 x-data="webSearch({{ Js::from($searchEngines) }})"
                 x-on:keydown.escape.window="isEngineDropdownOpen = false"
@@ -99,14 +99,14 @@
                             href="{{ $bookmark->url }}"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="card border border-base-300 bg-base-100 no-underline shadow-sm transition-transform duration-150 hover:-translate-y-1 hover:shadow-lg"
+                            class="card w-full border border-base-300 bg-base-100 no-underline shadow-sm transition-transform duration-150 hover:-translate-y-1 hover:shadow-lg lg:w-[95%] lg:justify-self-center"
                         >
-                            <div class="card-body flex-row items-center gap-3 p-4">
+                            <div class="card-body flex-row items-center gap-3 p-4 lg:gap-[0.7125rem] lg:p-[0.95rem]">
                                 <span
-                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-box text-base font-display font-bold text-white"
+                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-box text-base font-display font-bold text-white lg:h-[2.375rem] lg:w-[2.375rem] lg:text-[0.95rem]"
                                     style="background-color: {{ $bookmark->iconColor() }}"
                                 >{{ $bookmark->iconName() }}</span>
-                                <span class="text-sm font-medium text-base-content">
+                                <span class="text-sm font-medium text-base-content lg:text-[0.83125rem]">
                                     {{ $bookmark->title }}
                                 </span>
                             </div>
