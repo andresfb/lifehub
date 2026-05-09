@@ -14,6 +14,9 @@ final class PinUpdateRequest extends FormRequest
         return $this->user()->can('update', HomepageItem::class);
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function rules(): array
     {
         return [

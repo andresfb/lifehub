@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Dtos\PageActionItem;
 use App\Http\Controllers\PageBaseController;
+use App\Repository\Core\Dtos\SearchHistory\SearchTermActionItem;
 use App\Repository\Dashboard\Actions\Pins\LoadUserPinsAction;
 use App\Repository\Dashboard\Actions\SearchProviders\LoadUserSearchProvidersAction;
+use App\Repository\Dashboard\Dtos\PageActionItem;
+use App\Repository\Manifest\Enums\ManifestModule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -35,6 +37,7 @@ final class DashboardController extends PageBaseController
                 'searchEngines' => $searchEngines,
                 'modules' => $modules,
                 'pageActions' => $this->getPageActions(),
+                'searchTermActions' => $this->getSearchTermActions(),
             ],
         );
     }
@@ -54,6 +57,27 @@ final class DashboardController extends PageBaseController
                 label: 'Search Engines',
                 route: '', // TODO: add search engines route
                 icon: '⌕',
+            ),
+        ]);
+    }
+
+    /**
+     * @return Collection<int, SearchTermActionItem>
+     */
+    private function getSearchTermActions(): Collection
+    {
+        return collect([
+            new SearchTermActionItem(
+                name: 'list',
+                module: ManifestModule::DASHBOARD->value,
+                type: 'external_search',
+                route: 'search.terms.index',
+            ),
+            new SearchTermActionItem(
+                name: 'store',
+                module: ManifestModule::DASHBOARD->value,
+                type: 'external_search',
+                route: 'search.terms.store',
             ),
         ]);
     }

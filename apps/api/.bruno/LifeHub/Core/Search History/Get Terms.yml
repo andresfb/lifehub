@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{process.env.API_URL}}/search/history?module=dashboard&type=external_search&query=laravel"
+  url: "{{process.env.API_URL}}/search/terms?module=dashboard&type=external_search&term=la"
   params:
     - name: module
       value: dashboard
@@ -13,8 +13,8 @@ http:
     - name: type
       value: external_search
       type: query
-    - name: query
-      value: laravel
+    - name: term
+      value: la
       type: query
   auth: inherit
 

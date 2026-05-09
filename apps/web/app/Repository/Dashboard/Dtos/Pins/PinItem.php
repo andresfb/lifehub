@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repository\Dashboard\Dtos;
+namespace App\Repository\Dashboard\Dtos\Pins;
 
 use Spatie\LaravelData\Data;
 

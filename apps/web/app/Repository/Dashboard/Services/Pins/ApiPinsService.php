@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Repository\Dashboard\Services;
+namespace App\Repository\Dashboard\Services\Pins;
 
 use App\Repository\Common\Libraries\ApiClient;
-use App\Repository\Dashboard\Dtos\PinCreateItem;
-use App\Repository\Dashboard\Dtos\PinUpdateItem;
+use App\Repository\Dashboard\Dtos\Pins\PinCreateItem;
+use App\Repository\Dashboard\Dtos\Pins\PinUpdateItem;
 use App\Repository\Dashboard\Enums\PinStatus;
 use App\Repository\Manifest\Enums\ManifestAction;
 use App\Repository\Manifest\Enums\ManifestActionOwner;

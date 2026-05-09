@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Dtos\PageActionItem;
+use App\Repository\Dashboard\Dtos\PageActionItem;
 use Illuminate\Support\Collection;
 
 abstract class PageBaseController extends Controller

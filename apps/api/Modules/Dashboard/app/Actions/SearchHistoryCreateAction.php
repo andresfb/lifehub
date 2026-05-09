@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Dashboard\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Dtos\AI\SearchHistoryItem;
 use Modules\Core\Models\SearchHistory;
-use Modules\Dashboard\Dtos\SearchHistoryItem;
 use Throwable;
 
 final readonly class SearchHistoryCreateAction

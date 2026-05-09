@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Tags;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SearchTagRequest;
+use App\Http\Requests\Tags\SearchTagRequest;
 use App\Repository\Common\Services\ApiSearchTagsService;
 use Exception;
 use Illuminate\Contracts\View\Factory;
@@ -20,6 +20,7 @@ final class SearchTagController extends Controller
      */
     public function __invoke(SearchTagRequest $request, ApiSearchTagsService $service): Factory|View
     {
+        // TODO: replace the use of the service with an Action
         try {
             $result = $service->getUseTags(
                 (int) Auth::id(),

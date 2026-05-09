@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\PinController;
+use App\Http\Controllers\Search\SearchTermsController;
 use App\Http\Controllers\Tags\SearchTagController;
 use Illuminate\Support\Facades\Route;
 
@@ -50,6 +51,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/search/tags', SearchTagController::class)
         ->name('search.tags');
+
+    Route::controller(SearchTermsController::class)->group(function () {
+        Route::get('/search/terms', 'index')
+            ->name('search.terms.index');
+
+        Route::post('/search/terms', 'store')
+            ->name('search.terms.store');
+    });
 
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'show'])

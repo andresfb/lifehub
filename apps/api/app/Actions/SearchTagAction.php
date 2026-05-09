@@ -9,6 +9,9 @@ use Illuminate\Support\Collection;
 
 final readonly class SearchTagAction
 {
+    /**
+     * @return Collection<int, Tag>
+     */
     public function handle(int $userId, string $query): Collection
     {
         return Tag::search($query)

@@ -16,6 +16,7 @@ parameters:
 
     excludePaths:
         - ./Modules/*/config/*.php*
+        - ./Modules/*/database/factories/*
         - ./Modules/*/database/migrations/*
         - ./Modules/*/database/seeds/*
         - ./Modules/*/tests/*

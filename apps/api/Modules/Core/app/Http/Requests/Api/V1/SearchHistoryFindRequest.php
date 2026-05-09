@@ -14,12 +14,15 @@ final class SearchHistoryFindRequest extends FormRequest
         return $this->user()->can('viewAny', SearchHistory::class);
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function rules(): array
     {
         return [
             'module' => ['required', 'string'],
             'type' => ['required', 'string'],
-            'query' => ['required', 'string'],
+            'term' => ['required', 'string'],
         ];
     }
 }

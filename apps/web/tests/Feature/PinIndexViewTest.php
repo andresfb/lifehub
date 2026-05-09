@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Repository\Dashboard\Dtos\PinIndexItem;
-use App\Repository\Dashboard\Dtos\PinItem;
-use App\Repository\Dashboard\Dtos\SectionItem;
+use App\Repository\Dashboard\Dtos\Pins\PinIndexItem;
+use App\Repository\Dashboard\Dtos\Pins\PinItem;
+use App\Repository\Dashboard\Dtos\Pins\SectionItem;
 use App\Repository\Manifest\Dtos\ModuleItem;
 use App\Repository\Manifest\Dtos\NavigationItem;
 use Illuminate\Support\Collection;

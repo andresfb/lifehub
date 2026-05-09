@@ -7,12 +7,12 @@ namespace Modules\Core\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Modules\Core\Dtos\AI\SearchHistoryItem;
 use Modules\Core\Http\Requests\Api\V1\SearchHistoryCreateRequest;
 use Modules\Core\Http\Requests\Api\V1\SearchHistoryFindRequest;
 use Modules\Core\Http\Resources\Api\V1\SearchHistoryCollection;
 use Modules\Core\Models\SearchHistory;
 use Modules\Dashboard\Actions\SearchHistoryCreateAction;
-use Modules\Dashboard\Dtos\SearchHistoryItem;
 use Throwable;
 
 final class SearchHistoryController extends ApiController

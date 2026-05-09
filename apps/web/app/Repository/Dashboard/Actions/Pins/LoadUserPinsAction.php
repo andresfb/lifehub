@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Repository\Dashboard\Actions\Pins;
 
-use App\Repository\Dashboard\Dtos\SectionItem;
+use App\Repository\Dashboard\Dtos\Pins\SectionItem;
 use App\Repository\Dashboard\Enums\PinStatus;
-use App\Repository\Dashboard\Services\ApiPinsService;
+use App\Repository\Dashboard\Services\Pins\ApiPinsService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use RuntimeException;

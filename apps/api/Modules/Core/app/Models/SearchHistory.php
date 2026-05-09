@@ -8,9 +8,15 @@ use App\Contracts\UserModelInterface;
 use App\Models\User;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
+use Modules\Core\Database\Factories\SearchHistoryFactory;
+use Modules\Core\Observers\SearchHistoryObserver;
+use Modules\Core\Policies\SearchHistoryPolicy;
 
 /**
  * @property-read int $id
@@ -23,6 +29,9 @@ use Laravel\Scout\Searchable;
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
  */
+#[ObservedBy([SearchHistoryObserver::class])]
+#[UsePolicy(SearchHistoryPolicy::class)]
+#[UseFactory(SearchHistoryFactory::class)]
 final class SearchHistory extends Model implements UserModelInterface
 {
     use BelongsToUser;
@@ -34,6 +43,9 @@ final class SearchHistory extends Model implements UserModelInterface
         return 'search_history_index';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toSearchableArray(): array
     {
         return [

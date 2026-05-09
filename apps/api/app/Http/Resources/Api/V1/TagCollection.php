@@ -10,6 +10,9 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 /** @see \App\Models\Tag */
 final class TagCollection extends ResourceCollection
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [

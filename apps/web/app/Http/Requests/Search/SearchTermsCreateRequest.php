@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Modules\Core\Http\Requests\Api\V1;
+namespace App\Http\Requests\Search;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\Core\Models\SearchHistory;
 
-final class SearchHistoryCreateRequest extends FormRequest
+final class SearchTermsCreateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('create', SearchHistory::class);
+        return true;
     }
 
     /**

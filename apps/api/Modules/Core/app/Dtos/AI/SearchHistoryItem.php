@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Modules\Dashboard\Dtos;
+namespace Modules\Core\Dtos\AI;
 
 use Override;
-use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
 
 final class SearchHistoryItem extends Data
@@ -13,8 +12,7 @@ final class SearchHistoryItem extends Data
     public function __construct(
         public readonly string $module,
         public readonly string $type,
-        #[MapInputName('term')]
-        public readonly string $query,
+        public readonly string $term,
     ) {}
 
     #[Override]
@@ -29,7 +27,7 @@ final class SearchHistoryItem extends Data
 
     public function getQuery(): string
     {
-        return str($this->query)
+        return str($this->term)
             ->trim()
             ->lower()
             ->value();

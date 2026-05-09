@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repository\Dashboard\Services;
+namespace App\Repository\Dashboard\Services\SearchProviders;
 
 use App\Repository\Common\Libraries\ApiClient;
 use App\Repository\Manifest\Enums\ManifestAction;

@@ -115,6 +115,24 @@ final readonly class CoreManifestProvider implements ManifestProviderInterface
                 endpoint: new EndpointBinding(routeName: 'v1.search.tags'),
             ),
             new ModuleActionItem(
+                owner: 'search.terms',
+                name: 'list',
+                requiredAccess: ModuleAccessLevel::READ,
+                endpoint: new EndpointBinding(routeName: 'v1.search.terms'),
+            ),
+            new ModuleActionItem(
+                owner: 'search.terms',
+                name: 'save',
+                requiredAccess: ModuleAccessLevel::WRITE,
+                endpoint: new EndpointBinding(routeName: 'v1.search.history.store'),
+            ),
+            new ModuleActionItem(
+                owner: 'search.terms',
+                name: 'delete',
+                requiredAccess: ModuleAccessLevel::WRITE,
+                endpoint: new EndpointBinding(routeName: 'v1.search.history.destroy'),
+            ),
+            new ModuleActionItem(
                 owner: 'ai.providers',
                 name: 'list',
                 requiredAccess: ModuleAccessLevel::READ,
