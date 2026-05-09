@@ -30,6 +30,10 @@ Route::middleware([
                     tags: ['dashboard']
                 )
             )
+            ->middlewareFor(
+                ['store', 'update', 'destroy'],
+                ['can:module.dashboard.write']
+            )
             ->names([
                 'index' => 'v1.dashboard.pins.index',
                 'store' => 'v1.dashboard.pins.store',
@@ -53,6 +57,10 @@ Route::middleware([
                     lifetime: hours(8),
                     tags: ['dashboard']
                 )
+            )
+            ->middlewareFor(
+                ['store', 'update', 'destroy'],
+                ['can:module.dashboard.write']
             )
             ->names([
                 'index' => 'v1.dashboard.search.providers.index',

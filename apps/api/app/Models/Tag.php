@@ -29,8 +29,8 @@ use Spatie\Tags\Tag as SpatieTag;
 final class Tag extends SpatieTag implements UserModelInterface
 {
     use BelongsToUser;
-    use SoftDeletes;
     use Searchable;
+    use SoftDeletes;
 
     public function searchableAs(): string
     {

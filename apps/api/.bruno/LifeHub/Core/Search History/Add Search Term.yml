@@ -1,0 +1,23 @@
+info:
+  name: Add Search Term
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{process.env.API_URL}}/search/history"
+  body:
+    type: json
+    data: |-
+      {
+        "module": "dashboard",
+        "type": "external_search",
+        "term": "The last Ronin"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Dashboard\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Modules\Dashboard\Models\HomepageItem;
 
-class PinUpdateRequest extends FormRequest
+final class PinUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {

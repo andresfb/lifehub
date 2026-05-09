@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\Api\V1\ReminderController;
+use Modules\Core\Http\Controllers\Api\V1\SearchHistoryController;
 use Modules\Core\Http\Controllers\Api\V1\UserAiModelController;
 use Modules\Core\Http\Controllers\Api\V1\UserAiProviderController;
 
@@ -14,6 +15,19 @@ Route::middleware([
 ])
     ->prefix('v1')
     ->group(function (): void {
+
+        Route::controller(SearchHistoryController::class)->group(function () {
+            Route::get('search/history', 'index')
+                ->name('api.v1.search.history');
+
+            Route::middleware('can:module.core.write')->group(function (): void {
+                Route::post('search/history', 'store')
+                    ->name('api.v1.search.history.store');
+
+                Route::delete('search/history/{searchHistory}', 'destroy')
+                    ->name('api.v1.search.history.destroy');
+            });
+        });
 
         Route::get('/reminder/{reminder}', ReminderController::class)
             ->name('v1.reminder.show');

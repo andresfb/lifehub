@@ -1,0 +1,25 @@
+info:
+  name: Get Terms
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{process.env.API_URL}}/search/history?module=dashboard&type=external_search&query=laravel"
+  params:
+    - name: module
+      value: dashboard
+      type: query
+    - name: type
+      value: external_search
+      type: query
+    - name: query
+      value: laravel
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

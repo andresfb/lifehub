@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Dashboard\Policies;
+namespace Modules\Core\Policies;
 
 use App\Contracts\UserModelInterface;
 use App\Enums\ModuleAccessLevel;
@@ -21,29 +21,29 @@ abstract class BasePolicy
 
     public function viewAny(User $user): bool
     {
-        return $this->accessService->canUse($user, ModuleKey::DASHBOARD);
+        return $this->accessService->canUse($user, ModuleKey::CORE);
     }
 
     public function view(User $user, UserModelInterface $model): bool
     {
         return $model->getUserId() === $user->id
-            && $this->accessService->canUse($user, ModuleKey::DASHBOARD);
+            && $this->accessService->canUse($user, ModuleKey::CORE);
     }
 
     public function create(User $user): bool
     {
-        return $this->accessService->canUse($user, ModuleKey::DASHBOARD, ModuleAccessLevel::WRITE);
+        return $this->accessService->canUse($user, ModuleKey::CORE, ModuleAccessLevel::WRITE);
     }
 
     public function update(User $user, UserModelInterface $model): bool
     {
         return $model->getUserId() === $user->id
-            && $this->accessService->canUse($user, ModuleKey::DASHBOARD, ModuleAccessLevel::WRITE);
+            && $this->accessService->canUse($user, ModuleKey::CORE, ModuleAccessLevel::WRITE);
     }
 
     public function delete(User $user, UserModelInterface $model): bool
     {
         return $model->getUserId() === $user->id
-            && $this->accessService->canUse($user, ModuleKey::DASHBOARD, ModuleAccessLevel::WRITE);
+            && $this->accessService->canUse($user, ModuleKey::CORE, ModuleAccessLevel::WRITE);
     }
 }

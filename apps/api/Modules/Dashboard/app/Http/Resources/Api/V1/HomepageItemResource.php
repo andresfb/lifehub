@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Http\Resources\Api\V1;
 
+use App\Http\Resources\Api\V1\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Dashboard\Models\HomepageItem;
 
-/**
- * @mixin HomepageItem
- */
+/** @mixin HomepageItem */
 final class HomepageItemResource extends JsonResource
 {
     /**
@@ -28,6 +27,10 @@ final class HomepageItemResource extends JsonResource
             'order' => $this->order,
             'active' => $this->active,
             'tags' => $this->getTags(),
+
+            'user_id' => $this->user_id,
+
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }
