@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Models\Tag;
+use Modules\Core\Models\SearchHistory;
 use Modules\Dashboard\Models\HomepageItem;
 
 return [
@@ -147,9 +149,33 @@ return [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
-            \App\Models\Tag::class => [
+            Tag::class => [
                 'filterableAttributes' => ['id', 'user_id', 'slug', 'name', 'created_at'],
                 'sortableAttributes' => ['created_at'],
+                'typoTolerance' => [
+                    'enabled' => true,
+                    'minWordSizeForTypos' => [
+                        'oneTypo' => 5,
+                        'twoTypos' => 9,
+                    ],
+                ],
+            ],
+            SearchHistory::class => [
+                'filterableAttributes' => ['id', 'user_id', 'module', 'type', 'query', 'created_at'],
+                'sortableAttributes' => ['created_at'],
+                'rankingRules' => [
+                    'words',
+                    'typo',
+                    'proximity',
+                    'attributeRank',
+                    'sort',
+                    'wordPosition',
+                    'exactness',
+                ],
+                'stopWords' => [
+                    'the',
+                    'a',
+                ],
                 'typoTolerance' => [
                     'enabled' => true,
                     'minWordSizeForTypos' => [

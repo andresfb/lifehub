@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Actions\SearchTagAction;
@@ -9,7 +11,7 @@ use App\Http\Resources\Api\V1\TagCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
-class SearchTagController extends ApiController
+final class SearchTagController extends ApiController
 {
     public function __invoke(SearchTagRequest $request, SearchTagAction $action): TagCollection|JsonResponse
     {

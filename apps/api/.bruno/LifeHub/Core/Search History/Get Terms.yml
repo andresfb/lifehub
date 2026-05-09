@@ -1,0 +1,25 @@
+info:
+  name: Get Terms
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{process.env.API_URL}}/search/terms?module=dashboard&type=external_search&term=la"
+  params:
+    - name: module
+      value: dashboard
+      type: query
+    - name: type
+      value: external_search
+      type: query
+    - name: term
+      value: la
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

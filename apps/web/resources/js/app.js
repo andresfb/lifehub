@@ -267,8 +267,9 @@ Alpine.data('navigationGroup', (initialExpanded = false) => ({
     },
 }))
 
-Alpine.data('webSearch', (engines = []) => ({
+Alpine.data('webSearch', (engines = [], termStore = null) => ({
     engines,
+    termStore,
     isEngineDropdownOpen: false,
     query: '',
     selectedEngine: engines[0] ?? {
@@ -291,6 +292,33 @@ Alpine.data('webSearch', (engines = []) => ({
         const searchUrl = this.selectedEngine.url.replace('%s', encodeURIComponent(query))
 
         window.open(searchUrl, '_blank', 'noopener,noreferrer')
+
+        this.saveTerm(query)
+    },
+
+    saveTerm(term) {
+        if (!this.termStore || term.length < 2) {
+            return
+        }
+
+        const csrf = document.querySelector('meta[name="csrf-token"]')?.content ?? ''
+
+        fetch(this.termStore.url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrf,
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                module: this.termStore.module,
+                type: this.termStore.type,
+                term,
+            }),
+            keepalive: true,
+        }).catch(() => {})
     },
 }))
 

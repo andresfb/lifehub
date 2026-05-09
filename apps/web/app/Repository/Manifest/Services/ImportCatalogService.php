@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use JsonException;
 use Throwable;
 
-final class ImportApiCatalogService
+final class ImportCatalogService
 {
     /**
      * @param  array<string, mixed>  $payload

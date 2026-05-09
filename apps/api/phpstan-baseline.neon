@@ -91,6 +91,12 @@ parameters:
 			path: app/Models/UserSetting.php
 
 		-
+		    rawMessage: 'Class Modules\Core\Models\SearchHistory uses generic trait Illuminate\Database\Eloquent\Factories\HasFactory but does not specify its types: TFactory'
+		    identifier: missingType.generics
+		    count: 1
+		    path: Modules/Core/app/Models/SearchHistory.php
+
+		-
 			rawMessage: Trait App\Traits\AiTaskable is used zero times and is not analysed.
 			identifier: trait.unused
 			count: 1

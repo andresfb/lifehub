@@ -11,8 +11,7 @@ final class CacheLibrary
     /**
      * clearCache Method.
      *
-     * @param array<string, string>|int|null $user
-     * @return void
+     * @param  array<string, string>|int|null  $user
      */
     public static function clearCache(array|int|null $user): void
     {

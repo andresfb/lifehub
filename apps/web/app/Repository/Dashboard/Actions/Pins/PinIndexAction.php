@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Dashboard\Actions\Pins;
 
-use App\Repository\Dashboard\Dtos\PinIndexItem;
+use App\Repository\Dashboard\Dtos\Pins\PinIndexItem;
 use App\Repository\Dashboard\Enums\PinStatus;
 use App\Repository\Manifest\Enums\ManifestAction;
 use App\Repository\Manifest\Enums\ManifestActionOwner;

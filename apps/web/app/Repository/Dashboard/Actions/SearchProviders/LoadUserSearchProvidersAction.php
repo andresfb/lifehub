@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Repository\Dashboard\Actions\SearchProviders;
 
-use App\Repository\Dashboard\Dtos\SearchProviderItem;
-use App\Repository\Dashboard\Services\ApiSearchProviderService;
+use App\Repository\Dashboard\Dtos\SearchProviders\SearchProviderItem;
+use App\Repository\Dashboard\Services\SearchProviders\ApiSearchProviderService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use RuntimeException;

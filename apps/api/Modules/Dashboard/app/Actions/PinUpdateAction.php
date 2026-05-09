@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Dashboard\Actions;
 
 use Illuminate\Support\Facades\DB;
@@ -8,7 +10,7 @@ use Modules\Dashboard\Models\HomepageItem;
 use Modules\Dashboard\Models\HomepageSection;
 use Throwable;
 
-class PinUpdateAction
+final class PinUpdateAction
 {
     /**
      * @throws Throwable
@@ -26,7 +28,7 @@ class PinUpdateAction
                     $item->except('sectionSlug', 'tags', 'url')->toArray(),
                     [
                         'section_id' => $section->id,
-                        'url' => $item->getUrl()
+                        'url' => $item->getUrl(),
                     ],
                 )
             );

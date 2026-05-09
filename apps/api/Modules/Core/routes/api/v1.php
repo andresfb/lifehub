@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\Api\V1\ReminderController;
+use Modules\Core\Http\Controllers\Api\V1\SearchHistoryController;
 use Modules\Core\Http\Controllers\Api\V1\UserAiModelController;
 use Modules\Core\Http\Controllers\Api\V1\UserAiProviderController;
+use Spatie\ResponseCache\Middlewares\CacheResponse;
+
+use function Illuminate\Support\minutes;
 
 Route::middleware([
     'auth:sanctum',
@@ -14,6 +18,25 @@ Route::middleware([
 ])
     ->prefix('v1')
     ->group(function (): void {
+
+        Route::controller(SearchHistoryController::class)->group(function () {
+            Route::get('search/terms', 'index')
+                ->name('v1.search.terms')
+                ->middleware(
+                    CacheResponse::for(
+                        lifetime: minutes(10),
+                        tags: ['search-terms']
+                    )
+                );
+
+            Route::middleware('can:module.core.write')->group(function (): void {
+                Route::post('search/history', 'store')
+                    ->name('v1.search.history.store');
+
+                Route::delete('search/history/{searchHistory}', 'destroy')
+                    ->name('v1.search.history.destroy');
+            });
+        });
 
         Route::get('/reminder/{reminder}', ReminderController::class)
             ->name('v1.reminder.show');

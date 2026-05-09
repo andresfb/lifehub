@@ -18,7 +18,7 @@ return [
     ),
 
     'manifest' => [
-        'version' => env('MANIFEST_VERSION', '0.0.1'),
+        'version' => env('MANIFEST_VERSION', '0.0.3'),
     ],
 
     'providers' => [

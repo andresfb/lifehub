@@ -16,7 +16,7 @@ final readonly class ApiManifestService
 {
     public function __construct(
         private ApiClient $apiClient,
-        private ImportApiCatalogService $catalogService,
+        private ImportCatalogService $catalogService,
     ) {}
 
     public static function checkVersion(int $userId): void

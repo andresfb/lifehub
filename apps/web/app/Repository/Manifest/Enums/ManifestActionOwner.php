@@ -11,4 +11,5 @@ enum ManifestActionOwner: string
     case SEARCH_TAGS = 'search.tags';
     case PINS = 'dashboard.pins';
     case SEARCH = 'dashboard.search';
+    case SEARCH_TERNS = 'search.terms';
 }
