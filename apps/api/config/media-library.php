@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Libraries\MediaLibrary\MediaFileNamer;
-use App\Libraries\MediaLibrary\MediaPathGenerator;
 use App\Models\Media;
 use Spatie\ImageOptimizer\Optimizers\Avifenc;
 use Spatie\ImageOptimizer\Optimizers\Cwebp;
@@ -24,9 +23,10 @@ use Spatie\MediaLibrary\MediaCollections\Models\Observers\MediaObserver;
 use Spatie\MediaLibrary\ResponsiveImages\Jobs\GenerateResponsiveImagesJob;
 use Spatie\MediaLibrary\ResponsiveImages\TinyPlaceholderGenerator\Blurred;
 use Spatie\MediaLibrary\ResponsiveImages\WidthCalculator\FileSizeOptimizedWidthCalculator;
-use Spatie\MediaLibrary\Support\FileRemover\DefaultFileRemover;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator;
-use Spatie\MediaLibraryPro\Models\TemporaryUpload;
+use Spatie\MediaLibraryPro\Models\TemporaryUpload\TemporaryUpload;
+use XLaravel\SpatieMediaLibraryUuidPath\UuidFileRemover;
+use XLaravel\SpatieMediaLibraryUuidPath\UuidPathGenerator;
 
 return [
 
@@ -109,12 +109,12 @@ return [
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => MediaPathGenerator::class,
+    'path_generator' => UuidPathGenerator::class,
 
     /*
      * The class that contains the strategy for determining how to remove files.
      */
-    'file_remover_class' => DefaultFileRemover::class,
+    'file_remover_class' => UuidFileRemover::class,
 
     /*
      * Here you can specify which path generator should be used for the given class.

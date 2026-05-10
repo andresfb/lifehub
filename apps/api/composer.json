@@ -30,6 +30,7 @@
         "spatie/laravel-responsecache": "^8.3",
         "spatie/laravel-tags": "^4.11",
         "square1/laravel-idempotency": "^13.0",
+        "x-laravel/spatie-media-library-uuid-path": "^1.0",
         "yethee/tiktoken": "^1.1"
     },
     "require-dev": {
@@ -117,7 +118,7 @@
             "wikimedia/composer-merge-plugin": true
         },
         "platform": {
-            "php": "8.3.0"
+            "php": "8.5.0"
         }
     },
     "minimum-stability": "stable",

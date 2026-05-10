@@ -12,7 +12,7 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 final class PinCreateItem extends Data
 {
     /**
-     * @param array<int, string>|null $tags
+     * @param  array<int, string>|null  $tags
      */
     public function __construct(
         public readonly string $sectionSlug,

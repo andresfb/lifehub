@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9f6d6d95d06e3554072a159aa257e5aa",
+    "content-hash": "d25cff2b1fff773e8f51d591b5292e92",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -10354,6 +10354,67 @@
             "time": "2023-04-15T19:07:00+00:00"
         },
         {
+            "name": "x-laravel/spatie-media-library-uuid-path",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/x-laravel/spatie-media-library-uuid-path.git",
+                "reference": "c9090db75c96413bd45924712a987a888e47424b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/x-laravel/spatie-media-library-uuid-path/zipball/c9090db75c96413bd45924712a987a888e47424b",
+                "reference": "c9090db75c96413bd45924712a987a888e47424b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2",
+                "spatie/laravel-medialibrary": "^11.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "orchestra/testbench": "^10.0|^11.0",
+                "phpunit/phpunit": "^11.0|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "XLaravel\\SpatieMediaLibraryUuidPath\\MediaLibraryUuidPathServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "XLaravel\\SpatieMediaLibraryUuidPath\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "X-Adam",
+                    "email": "www@mehmetogmen.com.tr",
+                    "homepage": "https://mehmetogmen.com.tr"
+                }
+            ],
+            "description": "A UUID-based path generator for spatie/laravel-medialibrary.",
+            "keywords": [
+                "laravel",
+                "media-library",
+                "path-generator",
+                "spatie",
+                "uuid"
+            ],
+            "support": {
+                "issues": "https://github.com/x-laravel/spatie-media-library-uuid-path/issues",
+                "source": "https://github.com/x-laravel/spatie-media-library-uuid-path/tree/v1.0.0"
+            },
+            "time": "2026-04-22T12:37:57+00:00"
+        },
+        {
             "name": "yethee/tiktoken",
             "version": "1.1.1",
             "source": {
@@ -14186,7 +14247,7 @@
     },
     "platform-dev": {},
     "platform-overrides": {
-        "php": "8.3.0"
+        "php": "8.5.0"
     },
     "plugin-api-version": "2.9.0"
 }
