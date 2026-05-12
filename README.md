@@ -14,20 +14,25 @@ A Personal Everything App
 
 - Go live
 
-8. Notes
-9. News Feed
-10. Prompt Generator
-11. Gallery
-12. Magazines
-13. Writings
-14. InstaSlop
-15. Personal Journal
-16. Personal CRM
-17. Budget
-18. Medicine Tracker
-19. Lube-Logger
-20. Wiki
-21. Recipes
-22. Project Management
-23. Bug Tracker
-24. Car Maintenance
+7. Notes
+8. News Feed
+9. Prompt Generator
+10. Gallery
+11. Magazines
+12. Writings
+13. InstaSlop
+14. Personal Journal
+15. Personal CRM
+16. Budget
+17. Medicine Tracker
+18. Lube-Logger
+19. Wiki
+20. Recipes
+21. Project Management
+22. Bug Tracker
+23. Car Maintenance
+24. Shopping List
+25. Invoices
+26. TODO (Like Workflowy)
+27. Subscription Manager 
+28. YouTube Watch History
