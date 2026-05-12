@@ -24,13 +24,13 @@ Route::middleware([
             ->name('v1.dashboard');
 
         Route::apiResource('/pins', PinController::class)
-//            ->middlewareFor(
-//                ['index'],
-//                CacheResponse::for(
-//                    lifetime: hours(8),
-//                    tags: ['dashboard']
-//                )
-//            )
+            ->middlewareFor(
+                ['index'],
+                CacheResponse::for(
+                    lifetime: hours(8),
+                    tags: ['dashboard']
+                )
+            )
             ->middlewareFor(
                 ['store', 'update', 'destroy'],
                 ['can:module.dashboard.write']
@@ -53,7 +53,7 @@ Route::middleware([
 
         Route::apiResource('/search/providers', SearchProviderController::class)
             ->middlewareFor(
-                ['index', 'show'],
+                ['index'],
                 CacheResponse::for(
                     lifetime: hours(8),
                     tags: ['dashboard']
@@ -66,7 +66,6 @@ Route::middleware([
             ->names([
                 'index' => 'search.providers.index',
                 'store' => 'search.providers.store',
-                'show' => 'search.providers.show',
                 'update' => 'search.providers.update',
                 'destroy' => 'search.providers.destroy',
             ]);

@@ -16,8 +16,10 @@ return new class extends Migration
             $table->foreignIdFor(User::class)
                 ->constrained()
                 ->cascadeOnDelete();
+            $table->string('slug', 20)->unique();
             $table->string('name');
-            $table->text('url');
+            $table->string('url', 2000);
+            $table->string('term_field', 10);
             $table->string('icon', 10)->nullable();
             $table->string('icon_color', 20)->nullable();
             $table->boolean('active')->default(true);
@@ -30,6 +32,11 @@ return new class extends Migration
                 ['user_id', 'active', 'default', 'deleted_at'],
                 'idx_user_active',
             );
+
+            DB::statement("
+                ALTER TABLE dashboard_search_providers
+                ADD INDEX idx_user_name_url (user_id, name, url(500))
+            ");
         });
     }
 

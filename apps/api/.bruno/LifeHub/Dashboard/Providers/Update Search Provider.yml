@@ -1,0 +1,28 @@
+info:
+  name: Update Search Provider
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: "{{process.env.API_URL}}/dashboard/search/providers/6"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Example Search",
+        "url": "https://www.example.com/?q=&noai=1",
+        "term_field": "q",
+        "active": true,
+        "default": false,
+        "icon": "E",
+        "icon_color": "#bd77f8",
+        "order": 6
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -13,6 +13,7 @@ use App\Models\ApiManifestNavigationNode;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use JsonException;
+use stdClass;
 use Throwable;
 
 final class ImportCatalogService
@@ -43,49 +44,49 @@ final class ImportCatalogService
                 /** @var ApiManifestModule $module */
                 $module = $manifest->modules()
                     ->create([
-                        'key' => $modulePayload['key'],
-                        'name' => $modulePayload['name'],
-                        'description' => $modulePayload['description'] ?? null,
-                        'is_public' => (bool) ($modulePayload['is_public'] ?? $modulePayload['isPublic'] ?? false),
+                        'key' => $modulePayload->key,
+                        'name' => $modulePayload->name,
+                        'description' => $modulePayload->description ?? null,
+                        'is_public' => (bool) ($modulePayload->is_public ?? $modulePayload->isPublic ?? false),
                         'sort_order' => $moduleIndex,
                     ]);
 
                 $this->createNavigationNode(
                     module: $module,
-                    nodePayload: $modulePayload['navigation'] ?? null,
+                    nodePayload: $modulePayload->navigation ?? null,
                     sortOrder: 0,
                 );
 
-                foreach (($modulePayload['commands'] ?? []) as $commandIndex => $commandPayload) {
+                foreach (($modulePayload->commands ?? []) as $commandIndex => $commandPayload) {
                     ApiManifestCommand::query()
                         ->create([
                             'api_manifest_module_id' => $module->id,
                             'api_manifest_endpoint_id' => $this->resolveEndpointId(
                                 manifest: $manifest,
-                                endpointPayload: $commandPayload['endpoint'] ?? [],
+                                endpointPayload: $commandPayload->endpoint ?? [],
                                 endpointIds: $endpointIds,
                             ),
-                            'owner' => $commandPayload['owner'],
-                            'code' => $commandPayload['code'],
-                            'name' => $commandPayload['name'],
-                            'required_access' => $commandPayload['required_access'],
-                            'shortcut' => $commandPayload['shortcut'] ?? null,
+                            'owner' => $commandPayload->owner,
+                            'code' => $commandPayload->code,
+                            'name' => $commandPayload->name,
+                            'required_access' => $commandPayload->required_access,
+                            'shortcut' => $commandPayload->shortcut ?? null,
                             'sort_order' => $commandIndex,
                         ]);
                 }
 
-                foreach (($modulePayload['actions'] ?? []) as $actionIndex => $actionPayload) {
+                foreach (($modulePayload->actions ?? []) as $actionIndex => $actionPayload) {
                     ApiManifestAction::query()
                         ->create([
                             'api_manifest_module_id' => $module->id,
                             'api_manifest_endpoint_id' => $this->resolveEndpointId(
                                 manifest: $manifest,
-                                endpointPayload: $actionPayload['endpoint'] ?? [],
+                                endpointPayload: $actionPayload->endpoint ?? [],
                                 endpointIds: $endpointIds,
                             ),
-                            'owner' => $actionPayload['owner'],
-                            'name' => $actionPayload['name'],
-                            'required_access' => $actionPayload['required_access'],
+                            'owner' => $actionPayload->owner,
+                            'name' => $actionPayload->name,
+                            'required_access' => $actionPayload->required_access,
                             'sort_order' => $actionIndex,
                         ]);
                 }
@@ -95,18 +96,17 @@ final class ImportCatalogService
 
     /**
      * @param  array<int, string|int|null>  $endpointIds
-     * @param  array<string, mixed>  $endpointPayload
      *
      * @throws JsonException
      */
-    private function resolveEndpointId(ApiManifest $manifest, array $endpointPayload, array &$endpointIds): int
+    private function resolveEndpointId(ApiManifest $manifest, stdClass $endpointPayload, array &$endpointIds): int
     {
         $signature = json_encode([
-            $endpointPayload['route_name'] ?? null,
-            $endpointPayload['method'] ?? null,
-            $endpointPayload['type'] ?? null,
-            $endpointPayload['path'] ?? null,
-            $endpointPayload['operation_id'] ?? null,
+            $endpointPayload->route_name ?? null,
+            $endpointPayload->method ?? null,
+            $endpointPayload->type ?? null,
+            $endpointPayload->path ?? null,
+            $endpointPayload->operation_id ?? null,
         ], JSON_THROW_ON_ERROR);
 
         if (isset($endpointIds[$signature])) {
@@ -115,11 +115,11 @@ final class ImportCatalogService
 
         /** @var ApiManifestEndpoint $endpoint */
         $endpoint = $manifest->endpoints()->create([
-            'route_name' => $endpointPayload['route_name'] ?? null,
-            'type' => $endpointPayload['type'] ?? null,
-            'method' => $endpointPayload['method'] ?? null,
-            'path' => $endpointPayload['path'] ?? null,
-            'operation_id' => $endpointPayload['operation_id'] ?? null,
+            'route_name' => $endpointPayload->route_name ?? null,
+            'type' => $endpointPayload->type ?? null,
+            'method' => $endpointPayload->method ?? null,
+            'path' => $endpointPayload->path ?? null,
+            'operation_id' => $endpointPayload->operation_id ?? null,
         ]);
 
         $endpointIds[$signature] = $endpoint->id;
@@ -127,12 +127,9 @@ final class ImportCatalogService
         return $endpoint->id;
     }
 
-    /**
-     * @param  array<string, mixed>|null  $nodePayload
-     */
     private function createNavigationNode(
         ApiManifestModule $module,
-        ?array $nodePayload,
+        ?stdClass $nodePayload,
         int $sortOrder,
         ?ApiManifestNavigationNode $parent = null,
     ): void {
@@ -143,17 +140,17 @@ final class ImportCatalogService
         $node = ApiManifestNavigationNode::query()->create([
             'api_manifest_module_id' => $module->id,
             'parent_id' => $parent?->id,
-            'node_id' => $nodePayload['id'],
-            'key' => $nodePayload['key'] ?? null,
-            'name' => $nodePayload['name'],
-            'web_path' => $nodePayload['web_path'] ?? null,
-            'icon' => $nodePayload['icon'] ?? null,
-            'shortcut' => $nodePayload['shortcut'] ?? null,
-            'show' => (bool) ($nodePayload['show'] ?? false),
+            'node_id' => $nodePayload->id,
+            'key' => $nodePayload->key ?? null,
+            'name' => $nodePayload->name,
+            'web_path' => $nodePayload->web_path ?? null,
+            'icon' => $nodePayload->icon ?? null,
+            'shortcut' => $nodePayload->shortcut ?? null,
+            'show' => (bool) ($nodePayload->show ?? false),
             'sort_order' => $sortOrder,
         ]);
 
-        foreach (($nodePayload['nodes'] ?? []) ?: [] as $childIndex => $childNode) {
+        foreach (($nodePayload->nodes ?? []) ?: [] as $childIndex => $childNode) {
             $this->createNavigationNode(
                 module: $module,
                 nodePayload: $childNode,

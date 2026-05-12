@@ -1,0 +1,27 @@
+info:
+  name: Create Search Provider
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{process.env.API_URL}}/dashboard/search/providers"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Example Search",
+        "url": "https://www.example.com/q=",
+        "term_field": "q",
+        "active": true,
+        "default": false,
+        "icon": "E",
+        "icon_color": "#bd91f9"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

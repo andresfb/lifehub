@@ -67,7 +67,7 @@ final readonly class DashboardManifestProvider implements ManifestProviderInterf
                     id: 'dashboard.search',
                     key: $this->moduleKey(),
                     name: 'Search Providers',
-                    webPath: '/dashboard/search/providers',
+                    webPath: '/dashboard/search-providers',
                     icon: 'search',
                     show: true,
                 ),

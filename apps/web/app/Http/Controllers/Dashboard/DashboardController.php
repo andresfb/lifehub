@@ -55,7 +55,7 @@ final class DashboardController extends PageBaseController
             ),
             new PageActionItem(
                 label: 'Search Engines',
-                route: '', // TODO: add search engines route
+                route: 'dashboard.search-providers.index',
                 icon: '⌕',
             ),
         ]);

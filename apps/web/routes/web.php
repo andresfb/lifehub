@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\PinController;
+use App\Http\Controllers\Dashboard\SearchProviderController;
 use App\Http\Controllers\Search\SearchTermsController;
 use App\Http\Controllers\Tags\SearchTagController;
 use Illuminate\Support\Facades\Route;
@@ -79,6 +80,11 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/pins/{pin}', 'show')
                 ->name('dashboard.pins.show');
+        });
+
+        Route::controller(SearchProviderController::class)->group( function () {
+            Route::get('/search-providers', 'index')
+                ->name('dashboard.search-providers.index');
         });
 
     });

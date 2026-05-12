@@ -6,6 +6,7 @@ namespace Modules\Dashboard\Models;
 
 use App\Contracts\UserModelInterface;
 use App\Traits\BelongsToUser;
+use App\Traits\HasSlug;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -25,10 +26,12 @@ use Override;
 /**
  * @property-read int $id
  * @property int $user_id
+ * @property string $slug
  * @property string $name
  * @property string $url
- * @property string $icon
- * @property string $icon_color
+ * @property string $term_field
+ * @property string|null $icon
+ * @property string|null $icon_color
  * @property bool $active
  * @property bool $default
  * @property int $order
@@ -44,7 +47,14 @@ final class SearchProvider extends Model implements UserModelInterface
 {
     use BelongsToUser;
     use HasFactory;
+    use HasSlug;
     use SoftDeletes;
+
+    #[Override]
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 
     /**
      * @return Collection<int, SearchProvider>
@@ -57,6 +67,28 @@ final class SearchProvider extends Model implements UserModelInterface
             ->orderByDesc('default')
             ->orderBy('order')
             ->get();
+    }
+
+    public static function found(int $userId, string $name, string $url): bool
+    {
+        return self::query()
+            ->where('user_id', $userId)
+            ->where('name', $name)
+            ->where('url', $url)
+            ->exists();
+    }
+
+    public static function rules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'url' => ['required', 'string', 'url', 'max:2000'],
+            'term_field' => ['required', 'string', 'max:10'],
+            'icon' => ['nullable', 'string', 'max:10'],
+            'icon_color' => ['nullable', 'string', 'regex:/^#[0-9a-fA-F]{6}$/', 'max:20'],
+            'active' => ['boolean'],
+            'default' => ['boolean'],
+        ];
     }
 
     /**

@@ -28,6 +28,7 @@ final class PinCreateItem extends Data
     {
         return str($this->url)
             ->trim()
+            ->lower()
             ->replaceEnd('/', '')
             ->value();
     }

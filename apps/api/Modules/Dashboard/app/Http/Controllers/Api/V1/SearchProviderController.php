@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace Modules\Dashboard\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Mcp\Exceptions\NotImplementedException;
+use Modules\Dashboard\Actions\SearchProviderCreateAction;
 use Modules\Dashboard\Actions\SearchProvidersAction;
+use Modules\Dashboard\Actions\SearchProviderUpdateAction;
+use Modules\Dashboard\Dtos\SearchProviderItem;
+use Modules\Dashboard\Http\Requests\Api\V1\SearchProviderCreateRequest;
+use Modules\Dashboard\Http\Requests\SearchProviderUpdateRequest;
 use Modules\Dashboard\Http\Resources\Api\V1\SearchProviderResource;
 use Modules\Dashboard\Models\SearchProvider;
+use Throwable;
 
 final class SearchProviderController extends ApiController
 {
@@ -24,23 +29,45 @@ final class SearchProviderController extends ApiController
         );
     }
 
-    public function store(Request $request): never
+    public function store(SearchProviderCreateRequest $request, SearchProviderCreateAction $action): JsonResponse
     {
-        throw new NotImplementedException('store action not implemented');
+        try {
+            $action->handle(
+                Auth::id(),
+                SearchProviderItem::from($request->validated())
+            );
+        } catch (Throwable $e) {
+            return $this->error($e->getMessage());
+        }
+
+        return $this->created(
+            message: 'Search Provider created successfully'
+        );
     }
 
-    public function show(SearchProvider $provider): never
-    {
-        throw new NotImplementedException('show action not implemented');
+    public function update(
+        SearchProviderUpdateRequest $request,
+        SearchProvider $provider,
+        SearchProviderUpdateAction $action
+    ): JsonResponse {
+        try {
+            $action->handle(
+                provider: $provider,
+                item: SearchProviderItem::from($request->validated()),
+            );
+        } catch (Throwable $e) {
+            return $this->error($e->getMessage());
+        }
+
+        return $this->success(message: 'Pin updated successfully');
     }
 
-    public function update(Request $request, SearchProvider $provider): never
+    public function destroy(SearchProvider $provider): JsonResponse
     {
-        throw new NotImplementedException('update action not implemented');
-    }
+        $this->authorize('delete', $provider);
 
-    public function destroy(SearchProvider $provider): never
-    {
-        throw new NotImplementedException('destroy action not implemented');
+        $provider->delete();
+
+        return $this->noContent();
     }
 }
