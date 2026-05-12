@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repository\Common\Dtos;
+namespace App\Repository\Api\Dtos;
 
 use Spatie\LaravelData\Data;
 

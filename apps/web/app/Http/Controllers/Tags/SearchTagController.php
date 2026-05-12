@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Tags;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tags\SearchTagRequest;
-use App\Repository\Common\Services\ApiSearchTagsService;
+use App\Repository\Api\Services\ApiSearchTagsService;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -22,7 +22,7 @@ final class SearchTagController extends Controller
     {
         // TODO: replace the use of the service with an Action
         try {
-            $result = $service->getUseTags(
+            $result = $service->getUserTags(
                 (int) Auth::id(),
                 $request->safe()
                     ->string('q')

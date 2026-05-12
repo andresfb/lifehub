@@ -4,30 +4,24 @@ declare(strict_types=1);
 
 namespace App\Repository\Dashboard\Services\Pins;
 
-use App\Libraries\ApiLibrary;
-use App\Repository\Common\Libraries\ApiClient;
+use App\Repository\Api\Libraries\ApiLibrary;
 use App\Repository\Dashboard\Dtos\Pins\PinCreateItem;
 use App\Repository\Dashboard\Dtos\Pins\PinUpdateItem;
 use App\Repository\Dashboard\Enums\PinStatus;
-use App\Repository\Manifest\Enums\ManifestAction;
-use App\Repository\Manifest\Enums\ManifestActionOwner;
-use App\Repository\Manifest\Enums\ManifestMethod;
-use App\Repository\Manifest\Enums\ManifestModule;
-use App\Repository\Manifest\Libraries\ManifestActionsLibrary;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use LifeHub\ApiClient\Model\HomepageItemResource;
 use LifeHub\ApiClient\Model\HomepageSectionResource;
+use LifeHub\ApiClient\Model\PinCreateRequest;
+use LifeHub\ApiClient\Model\PinUpdateRequest;
 use LifeHub\ApiClient\Model\V1DashboardPinsIndex200Response;
+use LifeHub\ApiClient\Model\V1DashboardPinsStore201Response;
+use LifeHub\ApiClient\Model\V1DashboardPinsUpdate200Response;
 use RuntimeException;
 use Throwable;
 
 final readonly class ApiPinsService
 {
-    public function __construct(
-        private ApiClient $apiClient,
-    ) {}
-
     /**
      * @return array<string, mixed>
      *
@@ -91,25 +85,22 @@ final readonly class ApiPinsService
      */
     public function createPin(int $userId, PinCreateItem $item): void
     {
-        $endpoint = ManifestActionsLibrary::getEndpoint(
-            userId: $userId,
-            module: ManifestModule::DASHBOARD,
-            owner: ManifestActionOwner::PINS,
-            action: ManifestAction::SAVE,
-            method: ManifestMethod::POST,
-        );
+        $request = new PinCreateRequest($item->toArray());
 
-        if (blank($endpoint)) {
-            throw new RuntimeException('Endpoint not found');
+        $response = ApiLibrary::pinApi($userId)
+            ->v1DashboardPinsStore($request);
+
+        if (! $response instanceof V1DashboardPinsStore201Response) {
+            $message = $response->isNullableSetToNull('errors')
+                ? $response->getMessage()
+                : $response->getErrors();
+
+            throw new RuntimeException($message);
         }
 
-        $this->apiClient
-            ->setUserId($userId)
-            ->request(
-                $endpoint->method,
-                $endpoint->getUri(),
-                $item->toArray(),
-            );
+        if ($response->getSuccess() !== true) {
+            throw new RuntimeException($response->getMessage());
+        }
 
         Cache::tags(['pins'])->flush();
     }
@@ -119,25 +110,22 @@ final readonly class ApiPinsService
      */
     public function updatePin(int $userId, string $pinSlug, PinUpdateItem $item): void
     {
-        $endpoint = ManifestActionsLibrary::getEndpoint(
-            userId: $userId,
-            module: ManifestModule::DASHBOARD,
-            owner: ManifestActionOwner::PINS,
-            action: ManifestAction::UPDATE,
-            method: ManifestMethod::PUT,
-        );
+        $request = new PinUpdateRequest($item->toArray());
 
-        if (blank($endpoint)) {
-            throw new RuntimeException('Endpoint not found');
+        $response = ApiLibrary::pinApi($userId)
+            ->v1DashboardPinsUpdate($pinSlug, $request);
+
+        if (! $response instanceof V1DashboardPinsUpdate200Response) {
+            $message = $response->isNullableSetToNull('errors')
+                ? $response->getMessage()
+                : $response->getErrors();
+
+            throw new RuntimeException($message);
         }
 
-        $this->apiClient
-            ->setUserId($userId)
-            ->request(
-                $endpoint->method,
-                $endpoint->getUri($pinSlug),
-                $item->toArray(),
-            );
+        if ($response->getSuccess() !== true) {
+            throw new RuntimeException($response->getMessage());
+        }
 
         Cache::tags(['pins'])->flush();
     }
@@ -147,24 +135,8 @@ final readonly class ApiPinsService
      */
     public function deletePin(int $userId, string $pinSlug): void
     {
-        $endpoint = ManifestActionsLibrary::getEndpoint(
-            userId: $userId,
-            module: ManifestModule::DASHBOARD,
-            owner: ManifestActionOwner::PINS,
-            action: ManifestAction::DELETE,
-            method: ManifestMethod::DELETE,
-        );
-
-        if (blank($endpoint)) {
-            throw new RuntimeException('Endpoint not found');
-        }
-
-        $this->apiClient
-            ->setUserId($userId)
-            ->request(
-                $endpoint->method,
-                $endpoint->getUri($pinSlug),
-            );
+        ApiLibrary::pinApi($userId)
+            ->v1DashboardPinsDestroy($pinSlug);
 
         Cache::tags(['pins'])->flush();
     }

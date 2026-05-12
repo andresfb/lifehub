@@ -86,7 +86,7 @@
                                     name="query"
                                     autocomplete="off"
                                     hx-get="{{ $searchTermListUrl }}"
-                                    hx-trigger="keyup changed delay:300ms[this.value.length >= 2]"
+                                    hx-trigger="keyup[target.value.length >= 2] changed delay:300ms"
                                     hx-target="#search-suggestions"
                                     hx-swap="innerHTML"
                                     hx-vals='@json(['module' => $listTermAction->module, 'type' => $listTermAction->type], JSON_THROW_ON_ERROR)'

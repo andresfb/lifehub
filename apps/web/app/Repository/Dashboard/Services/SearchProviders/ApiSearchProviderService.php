@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Dashboard\Services\SearchProviders;
 
-use App\Libraries\ApiLibrary;
+use App\Repository\Api\Libraries\ApiLibrary;
 use LifeHub\ApiClient\Model\SearchProviderResource;
 use LifeHub\ApiClient\Model\V1DashboardSearchProvidersIndex200Response;
 use RuntimeException;

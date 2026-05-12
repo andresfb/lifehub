@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Repository\Auth\Services;
 
-use App\Libraries\ApiLibrary;
 use App\Libraries\CacheLibrary;
 use App\Models\User as UserModel;
+use App\Repository\Api\Libraries\ApiLibrary;
 use App\Repository\Auth\Dtos\RegisterItem;
 use App\Repository\Auth\Dtos\User;
 use App\Repository\Auth\Enums\AuthStatus;

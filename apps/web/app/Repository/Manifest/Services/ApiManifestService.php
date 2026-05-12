@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace App\Repository\Manifest\Services;
 
 use App\Jobs\CheckUserManifestJob;
-use App\Repository\Common\Libraries\ApiClient;
+use App\Repository\Api\Libraries\ApiLibrary;
 use Exception;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use LifeHub\ApiClient\Model\V1ManifestoVersion200Response;
+use LifeHub\ApiClient\Model\V1Search200Response;
+use RuntimeException;
 use Throwable;
 
 final readonly class ApiManifestService
 {
     public function __construct(
-        private ApiClient $apiClient,
         private ImportCatalogService $catalogService,
     ) {}
 
@@ -38,12 +39,14 @@ final readonly class ApiManifestService
         Cache::tags(['manifest'])->flush();
         Cache::forget(md5("USER:MANIFEST:VERSION:{$userId}"));
 
-        $payload = $this->apiClient
-            ->setUserId($userId)
-            ->get(
-                uri: Config::string('services.backend.endpoints.manifest.data'),
-            );
+        $response = ApiLibrary::manifestApi($userId)
+            ->v1Manifesto();
 
+        if (! $response instanceof V1Search200Response) {
+            throw new RuntimeException($response->getMessage());
+        }
+
+        $payload = $response->getData();
         $this->catalogService->execute($payload, $userId);
 
         return $payload;
@@ -52,13 +55,14 @@ final readonly class ApiManifestService
     public function getVersion(int $userId): ?string
     {
         try {
-            $payload = $this->apiClient
-                ->setUserId($userId)
-                ->get(
-                    uri: Config::string('services.backend.endpoints.manifest.version'),
-                );
+            $response = ApiLibrary::manifestApi($userId)
+                ->v1ManifestoVersion();
 
-            return $payload['version'] ?? null;
+            if (! $response instanceof V1ManifestoVersion200Response) {
+                throw new RuntimeException($response->getMessage());
+            }
+
+            return $response->getData()->getVersion();
         } catch (Exception $e) {
             Log::error($e->getMessage());
 
