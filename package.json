@@ -1,0 +1,14 @@
+{
+  "name": "life-hub",
+  "version": "0.0.1",
+  "description": "A Personal Everything App",
+  "license": "AGPL-3.0",
+  "author": "Andres Bastidas",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "openapi:export": "php apps/api/artisan scramble:export --path=packages/contracts/openapi.json",
+    "sdk:web": "openapi-generator generate -i packages/contracts/openapi.json -g php -o packages/sdk-web --additional-properties=invokerPackage=LifeHub\\\\ApiClient",
+    "sdk:all": "npm run sdk:web"
+  }
+}

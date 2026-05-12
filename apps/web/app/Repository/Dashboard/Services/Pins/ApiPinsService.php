@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Dashboard\Services\Pins;
 
+use App\Libraries\ApiLibrary;
 use App\Repository\Common\Libraries\ApiClient;
 use App\Repository\Dashboard\Dtos\Pins\PinCreateItem;
 use App\Repository\Dashboard\Dtos\Pins\PinUpdateItem;
@@ -15,6 +16,9 @@ use App\Repository\Manifest\Enums\ManifestModule;
 use App\Repository\Manifest\Libraries\ManifestActionsLibrary;
 use Exception;
 use Illuminate\Support\Facades\Cache;
+use LifeHub\ApiClient\Model\HomepageItemResource;
+use LifeHub\ApiClient\Model\HomepageSectionResource;
+use LifeHub\ApiClient\Model\V1DashboardPinsIndex200Response;
 use RuntimeException;
 use Throwable;
 
@@ -31,25 +35,55 @@ final readonly class ApiPinsService
      */
     public function getUserPins(int $userId, PinStatus $status): array
     {
-        $endpoint = ManifestActionsLibrary::getEndpoint(
-            $userId,
-            ManifestModule::DASHBOARD,
-            ManifestActionOwner::PINS,
-            ManifestAction::LIST,
-            ManifestMethod::GET,
-        );
+        $response = ApiLibrary::pinApi($userId)
+            ->v1DashboardPinsIndex(
+                status: $status->value,
+                include: 'items',
+            );
 
-        if (blank($endpoint)) {
-            throw new RuntimeException('Endpoint not found');
+        if (! $response instanceof V1DashboardPinsIndex200Response) {
+            $message = $response->isNullableSetToNull('errors')
+                ? $response->getMessage()
+                : $response->getErrors();
+
+            throw new RuntimeException($message);
         }
 
-        return $this->apiClient
-            ->setUserId($userId)
-            ->request(
-                $endpoint->method,
-                $endpoint->getUri(),
-                ['status' => $status->value]
-            );
+        if ($response->isNullableSetToNull('data')) {
+            return [];
+        }
+
+        $included = collect($response->getIncluded() ?? []);
+
+        return collect($response->getData())
+            ->map(function (HomepageSectionResource $section) use ($included): array {
+                $relationships = collect($section->getRelationships()?->getItems()?->getData() ?: []);
+                $itemIds = $relationships->pluck('id')->toArray();
+                $items = $included->whereIn('id', $itemIds);
+
+                return [
+                    'id' => $section->getId(),
+                    'slug' => $section->getAttributes()->getSlug(),
+                    'name' => $section->getAttributes()->getName(),
+                    'order' => $section->getAttributes()->getOrder(),
+                    'items' => $items->map(function (HomepageItemResource $item) use ($section): array {
+                        return [
+                            'id' => $item->getId(),
+                            'slug' => $item->getAttributes()->getSlug(),
+                            'title' => $item->getAttributes()->getTitle(),
+                            'description' => $item->getAttributes()->getDescription(),
+                            'url' => $item->getAttributes()->getUrl(),
+                            'active' => $item->getAttributes()->getActive(),
+                            'order' => $item->getAttributes()->getOrder(),
+                            'icon' => $item->getAttributes()->getIcon(),
+                            'icon_color' => $item->getAttributes()->getIconColor(),
+                            'section_slug' => $section->getAttributes()->getSlug(),
+                            'tags' => $item->getAttributes()->getTags(),
+                        ];
+                    })->all(),
+                ];
+            })
+            ->all();
     }
 
     /**

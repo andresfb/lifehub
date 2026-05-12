@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Modules\Core\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Modules\Core\Http\Requests\Api\V1\StoreUserAiModelRequest;
-use Modules\Core\Http\Requests\Api\V1\StoreUserAiProviderRequest;
-use Modules\Core\Http\Requests\Api\V1\UpdateUserAiProviderRequest;
+use Modules\Core\Http\Requests\Api\V1\UserAiModelStoreRequest;
+use Modules\Core\Http\Requests\Api\V1\UserAiProviderStoreRequest;
+use Modules\Core\Http\Requests\Api\V1\UserAiProviderUpdateRequest;
 use Modules\Core\Http\Resources\Api\V1\UserAiModelResource;
 use Modules\Core\Http\Resources\Api\V1\UserAiProviderResource;
 use Modules\Core\Models\AiProvider;
@@ -29,35 +28,35 @@ final class UserAiProviderController extends ApiController
 
     public function index(Request $request): AnonymousResourceCollection
     {
-        /** @var User $user */
+        $this->authorize('viewAny', AiProvider::class);
+
         $user = $request->user();
         $user->ensureAiSettings();
 
         return UserAiProviderResource::collection(
-            $user->aiProviders()->with('models')->orderBy('name')->get()
+            $user->aiProviders()
+                ->with('models')
+                ->orderBy('name')
+                ->get()
         );
     }
 
-    public function store(StoreUserAiProviderRequest $request): JsonResponse
+    public function show(AiProvider $provider): UserAiProviderResource
     {
-        /** @var User $user */
+        $this->authorize('view', $provider);
+
+        return new UserAiProviderResource($provider->load('models'));
+    }
+
+    public function store(UserAiProviderStoreRequest $request): UserAiProviderResource
+    {
         $user = $request->user();
         $provider = $this->settingsService->createProvider($user, $request->validated());
 
-        return $this->created(
-            new UserAiProviderResource($provider->load('models'))->resolve()['data'],
-            'AI provider created successfully'
-        );
+        return new UserAiProviderResource($provider->load('models'));
     }
 
-    public function show(AiProvider $provider): JsonResponse
-    {
-        return $this->success(
-            new UserAiProviderResource($provider->load('models'))->resolve()['data']
-        );
-    }
-
-    public function update(UpdateUserAiProviderRequest $request, AiProvider $provider): JsonResponse
+    public function update(UserAiProviderUpdateRequest $request, AiProvider $provider): UserAiProviderResource
     {
         if ($request->exists('name')) {
             $provider->name = (string) $request->input('name');
@@ -79,20 +78,19 @@ final class UserAiProviderController extends ApiController
 
         $provider->save();
 
-        return $this->success(
-            new UserAiProviderResource($provider->load('models'))->resolve()['data'],
-            'AI provider updated successfully'
-        );
+        return new UserAiProviderResource($provider->load('models'));
     }
 
     public function destroy(AiProvider $provider): JsonResponse
     {
+        $this->authorize('delete', $provider);
+
         $provider->delete();
 
         return $this->noContent();
     }
 
-    public function storeModel(StoreUserAiModelRequest $request, AiProvider $provider): JsonResponse
+    public function storeModel(UserAiModelStoreRequest $request, AiProvider $provider): UserAiModelResource
     {
         $attributes = array_merge(
             $this->catalog->defaultModelAttributes($provider->code),
@@ -106,9 +104,6 @@ final class UserAiProviderController extends ApiController
 
         $model = $provider->models()->create($attributes);
 
-        return $this->created(
-            new UserAiModelResource($model)->resolve()['data'],
-            'AI model created successfully'
-        );
+        return new UserAiModelResource($model);
     }
 }

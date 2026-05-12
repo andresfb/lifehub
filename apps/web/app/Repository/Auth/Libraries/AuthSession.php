@@ -69,6 +69,16 @@ final class AuthSession
         return true;
     }
 
+    public static function getUserToken(int $userId): string
+    {
+        $token = self::get('api_token', '');
+        if (filled($token)) {
+            return $token;
+        }
+
+        return UserModel::getToken($userId);
+    }
+
     /**
      * @param  array<int, string>|string|UnitEnum  $keys
      */
