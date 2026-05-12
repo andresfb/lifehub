@@ -1,0 +1,3247 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "LifeHub",
+        "version": "0.1.0.1",
+        "description": "API for the Personal Everything App"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api"
+        }
+    ],
+    "paths": {
+        "/v1/register": {
+            "post": {
+                "operationId": "v1.register",
+                "tags": [
+                    "Auth"
+                ],
+                "parameters": [
+                    {
+                        "name": "fields[users]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "name",
+                                    "email",
+                                    "is_admin",
+                                    "remember_token",
+                                    "access_token",
+                                    "two_factor_enabled",
+                                    "email_verified_at",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`UserApiResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserApiResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/login": {
+            "post": {
+                "operationId": "v1.login",
+                "tags": [
+                    "Auth"
+                ],
+                "parameters": [
+                    {
+                        "name": "fields[users]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "name",
+                                    "email",
+                                    "is_admin",
+                                    "remember_token",
+                                    "access_token",
+                                    "two_factor_enabled",
+                                    "email_verified_at",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`UserApiResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserApiResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "203": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Two-factor authentication required"
+                                        },
+                                        "two_factor": {
+                                            "type": "boolean"
+                                        },
+                                        "ttl": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "two_factor",
+                                        "ttl"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Invalid credentials"
+                                        },
+                                        "errors": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "errors"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/login/validate": {
+            "post": {
+                "operationId": "v1.login.validate",
+                "tags": [
+                    "Auth"
+                ],
+                "parameters": [
+                    {
+                        "name": "fields[users]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "name",
+                                    "email",
+                                    "is_admin",
+                                    "remember_token",
+                                    "access_token",
+                                    "two_factor_enabled",
+                                    "email_verified_at",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TwoFactorCodeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "Invalid two-factor authentication code"
+                                                },
+                                                "errors": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message",
+                                                "errors"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "Two Factor Validation Expired"
+                                                },
+                                                "errors": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message",
+                                                "errors"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "`UserApiResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserApiResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/me": {
+            "get": {
+                "operationId": "v1.me",
+                "tags": [
+                    "Auth"
+                ],
+                "parameters": [
+                    {
+                        "name": "fields[users]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "name",
+                                    "email",
+                                    "is_admin",
+                                    "remember_token",
+                                    "access_token",
+                                    "two_factor_enabled",
+                                    "email_verified_at",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`UserApiResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserApiResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/logout": {
+            "post": {
+                "operationId": "v1.logout",
+                "tags": [
+                    "Auth"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Token revoked successfully"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/forgot-password": {
+            "post": {
+                "operationId": "v1.password.email",
+                "tags": [
+                    "Auth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ForgotPasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Unable to send reset link"
+                                        },
+                                        "errors": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "errors"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Password reset link sent to your email"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/reset-password": {
+            "post": {
+                "operationId": "v1.password.reset",
+                "tags": [
+                    "Auth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResetPasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Invalid or expired reset token",
+                                                "User not found",
+                                                "Unable to reset password"
+                                            ]
+                                        },
+                                        "errors": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "errors"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Password reset successfully"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/dashboard": {
+            "get": {
+                "operationId": "v1.dashboard.v1.dashboard",
+                "tags": [
+                    "Dashboard"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/search": {
+            "get": {
+                "operationId": "v1.search",
+                "tags": [
+                    "GlobalSearch"
+                ],
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "module",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "name": "entity_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "name": "is_private",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "is_archived",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Success"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/v1/manifesto": {
+            "get": {
+                "operationId": "v1.manifesto",
+                "tags": [
+                    "Manifest"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Success"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/manifesto/version": {
+            "get": {
+                "operationId": "v1.manifesto.version",
+                "tags": [
+                    "Manifest"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Success"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "version": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "version"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/dashboard/pins": {
+            "get": {
+                "operationId": "v1.dashboard.pins.index",
+                "tags": [
+                    "Pin"
+                ],
+                "parameters": [
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                "-1",
+                                "0",
+                                "1"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "fields[homepage_sections]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "slug",
+                                    "name",
+                                    "order",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    },
+                    {
+                        "name": "fields[homepage_items]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "slug",
+                                    "title",
+                                    "url",
+                                    "icon",
+                                    "icon_color",
+                                    "description",
+                                    "order",
+                                    "active",
+                                    "tags"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `HomepageSectionResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/HomepageSectionResource"
+                                            }
+                                        },
+                                        "included": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/HomepageItemResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.dashboard.pins.store",
+                "tags": [
+                    "Pin"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PinCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Pin created successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "slug": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "slug"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "errors"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/dashboard/pins/{pin}": {
+            "put": {
+                "operationId": "v1.dashboard.pins.update",
+                "tags": [
+                    "Pin"
+                ],
+                "parameters": [
+                    {
+                        "name": "pin",
+                        "in": "path",
+                        "required": true,
+                        "description": "The pin slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PinUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Pin updated successfully"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "errors"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.dashboard.pins.destroy",
+                "tags": [
+                    "Pin"
+                ],
+                "parameters": [
+                    {
+                        "name": "pin",
+                        "in": "path",
+                        "required": true,
+                        "description": "The pin slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/reminder/{reminder}": {
+            "get": {
+                "operationId": "v1.reminder.show",
+                "tags": [
+                    "Reminder"
+                ],
+                "parameters": [
+                    {
+                        "name": "reminder",
+                        "in": "path",
+                        "required": true,
+                        "description": "The reminder ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/search/terms": {
+            "get": {
+                "operationId": "v1.search.terms",
+                "tags": [
+                    "SearchHistory"
+                ],
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "term",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fields[search_histories]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "module",
+                                    "type",
+                                    "query",
+                                    "hash",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `SearchHistoryResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SearchHistoryResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/search/history": {
+            "post": {
+                "operationId": "v1.search.history.store",
+                "tags": [
+                    "SearchHistory"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SearchHistoryCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Search Term added successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "hash": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "hash"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "errors"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/search/history/{searchHistory}": {
+            "delete": {
+                "operationId": "v1.search.history.destroy",
+                "tags": [
+                    "SearchHistory"
+                ],
+                "parameters": [
+                    {
+                        "name": "searchHistory",
+                        "in": "path",
+                        "required": true,
+                        "description": "The search history ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/dashboard/pins/search": {
+            "get": {
+                "operationId": "v1.dashboard.pins.search",
+                "tags": [
+                    "SearchPin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/dashboard/search/providers": {
+            "get": {
+                "operationId": "v1.dashboard.search.providers.index",
+                "tags": [
+                    "SearchProvider"
+                ],
+                "parameters": [
+                    {
+                        "name": "fields[search_providers]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "name",
+                                    "url",
+                                    "icon",
+                                    "icon_color",
+                                    "order",
+                                    "default",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `SearchProviderResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SearchProviderResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.dashboard.search.providers.store",
+                "tags": [
+                    "SearchProvider"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/dashboard/search/providers/{provider}": {
+            "get": {
+                "operationId": "v1.dashboard.search.providers.show",
+                "tags": [
+                    "SearchProvider"
+                ],
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "description": "The provider ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.dashboard.search.providers.update",
+                "tags": [
+                    "SearchProvider"
+                ],
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "description": "The provider ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.dashboard.search.providers.destroy",
+                "tags": [
+                    "SearchProvider"
+                ],
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "description": "The provider ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/search/tags": {
+            "get": {
+                "operationId": "v1.search.tags",
+                "tags": [
+                    "SearchTag"
+                ],
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    },
+                    {
+                        "name": "fields[tags]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "slug",
+                                    "name"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `TagResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TagResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/v1/ai/models/{model}": {
+            "get": {
+                "operationId": "v1.ai.models.show",
+                "tags": [
+                    "UserAiModel"
+                ],
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "required": true,
+                        "description": "The model ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "fields[user_ai_models]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "provider_id",
+                                    "name",
+                                    "enabled",
+                                    "supports_text",
+                                    "supports_images",
+                                    "supports_tts",
+                                    "supports_stt",
+                                    "supports_embeddings",
+                                    "supports_reranking",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`UserAiModelResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserAiModelResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "v1.ai.models.update",
+                "tags": [
+                    "UserAiModel"
+                ],
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "required": true,
+                        "description": "The model ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "fields[user_ai_models]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "provider_id",
+                                    "name",
+                                    "enabled",
+                                    "supports_text",
+                                    "supports_images",
+                                    "supports_tts",
+                                    "supports_stt",
+                                    "supports_embeddings",
+                                    "supports_reranking",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserAiModelUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`UserAiModelResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserAiModelResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.ai.models.destroy",
+                "tags": [
+                    "UserAiModel"
+                ],
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "required": true,
+                        "description": "The model ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/ai/providers": {
+            "get": {
+                "operationId": "v1.ai.providers.index",
+                "tags": [
+                    "UserAiProvider"
+                ],
+                "parameters": [
+                    {
+                        "name": "fields[user_ai_providers]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "code",
+                                    "name",
+                                    "enabled",
+                                    "has_api_key",
+                                    "url",
+                                    "api_version",
+                                    "deployment",
+                                    "embedding_deployment",
+                                    "models",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `UserAiProviderResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserAiProviderResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.ai.providers.store",
+                "tags": [
+                    "UserAiProvider"
+                ],
+                "parameters": [
+                    {
+                        "name": "fields[user_ai_providers]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "code",
+                                    "name",
+                                    "enabled",
+                                    "has_api_key",
+                                    "url",
+                                    "api_version",
+                                    "deployment",
+                                    "embedding_deployment",
+                                    "models",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserAiProviderStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`UserAiProviderResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserAiProviderResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/ai/providers/{provider}": {
+            "get": {
+                "operationId": "v1.ai.providers.show",
+                "tags": [
+                    "UserAiProvider"
+                ],
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "description": "The provider ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "fields[user_ai_providers]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "code",
+                                    "name",
+                                    "enabled",
+                                    "has_api_key",
+                                    "url",
+                                    "api_version",
+                                    "deployment",
+                                    "embedding_deployment",
+                                    "models",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`UserAiProviderResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserAiProviderResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "v1.ai.providers.update",
+                "tags": [
+                    "UserAiProvider"
+                ],
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "description": "The provider ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "fields[user_ai_providers]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "code",
+                                    "name",
+                                    "enabled",
+                                    "has_api_key",
+                                    "url",
+                                    "api_version",
+                                    "deployment",
+                                    "embedding_deployment",
+                                    "models",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserAiProviderUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`UserAiProviderResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserAiProviderResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.ai.providers.destroy",
+                "tags": [
+                    "UserAiProvider"
+                ],
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "description": "The provider ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/ai/providers/{provider}/models": {
+            "post": {
+                "operationId": "v1.ai.providers.models.store",
+                "tags": [
+                    "UserAiProvider"
+                ],
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "description": "The provider ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "fields[user_ai_models]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "provider_id",
+                                    "name",
+                                    "enabled",
+                                    "supports_text",
+                                    "supports_images",
+                                    "supports_tts",
+                                    "supports_stt",
+                                    "supports_embeddings",
+                                    "supports_reranking",
+                                    "created_at",
+                                    "updated_at"
+                                ]
+                            }
+                        },
+                        "explode": false
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserAiModelStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`UserAiModelResource`",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserAiModelResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ForgotPasswordRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    }
+                },
+                "required": [
+                    "email"
+                ],
+                "title": "ForgotPasswordRequest"
+            },
+            "HomepageItemResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "homepage_items"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {
+                            "slug": {
+                                "type": "string"
+                            },
+                            "title": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string"
+                            },
+                            "icon": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "icon_color": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "description": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "order": {
+                                "type": "integer"
+                            },
+                            "active": {
+                                "type": "boolean"
+                            },
+                            "tags": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ],
+                "title": "HomepageItemResource"
+            },
+            "HomepageSectionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "homepage_sections"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {
+                            "slug": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "order": {
+                                "type": "integer"
+                            },
+                            "created_at": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            },
+                            "updated_at": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            }
+                        }
+                    },
+                    "relationships": {
+                        "type": "object",
+                        "properties": {
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "const": "homepage_items"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "type"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "data"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ],
+                "title": "HomepageSectionResource"
+            },
+            "LoginRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "device": {
+                        "type": "string",
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "email",
+                    "password",
+                    "device"
+                ],
+                "title": "LoginRequest"
+            },
+            "PinCreateRequest": {
+                "type": "object",
+                "properties": {
+                    "section_slug": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "title": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 255
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "icon": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 10
+                    },
+                    "icon_color": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "pattern": "^#[0-9a-fA-F]{6}$",
+                        "maxLength": 20
+                    },
+                    "tags": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "section_slug",
+                    "title",
+                    "url"
+                ],
+                "title": "PinCreateRequest"
+            },
+            "PinUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "section_slug": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "title": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 255
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "icon": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 10
+                    },
+                    "icon_color": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "pattern": "^#[0-9a-fA-F]{6}$",
+                        "maxLength": 20
+                    },
+                    "order": {
+                        "type": "integer"
+                    },
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "tags": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "section_slug",
+                    "title",
+                    "url",
+                    "order",
+                    "active"
+                ],
+                "title": "PinUpdateRequest"
+            },
+            "RegisterRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 255
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "password_confirmation": {
+                        "type": "string"
+                    },
+                    "invitation": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation",
+                    "invitation"
+                ],
+                "title": "RegisterRequest"
+            },
+            "ResetPasswordRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "password_confirmation": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "token",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "title": "ResetPasswordRequest"
+            },
+            "SearchHistoryCreateRequest": {
+                "type": "object",
+                "properties": {
+                    "module": {
+                        "type": "string",
+                        "maxLength": 50
+                    },
+                    "type": {
+                        "type": "string",
+                        "maxLength": 50
+                    },
+                    "term": {
+                        "type": "string",
+                        "minLength": 2
+                    }
+                },
+                "required": [
+                    "module",
+                    "type",
+                    "term"
+                ],
+                "title": "SearchHistoryCreateRequest"
+            },
+            "SearchHistoryResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "search_histories"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {
+                            "module": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "query": {
+                                "type": "string"
+                            },
+                            "hash": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            },
+                            "updated_at": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ],
+                "title": "SearchHistoryResource"
+            },
+            "SearchProviderResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "search_providers"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string"
+                            },
+                            "icon": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "icon_color": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "order": {
+                                "type": "integer"
+                            },
+                            "default": {
+                                "type": "boolean"
+                            },
+                            "created_at": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            },
+                            "updated_at": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ],
+                "title": "SearchProviderResource"
+            },
+            "TagResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "tags"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {
+                            "slug": {
+                                "type": "array",
+                                "items": {}
+                            },
+                            "name": {
+                                "type": "array",
+                                "items": {}
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ],
+                "title": "TagResource"
+            },
+            "TwoFactorCodeRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "two_factor_code": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "two_factor_code"
+                ],
+                "title": "TwoFactorCodeRequest"
+            },
+            "UserAiModelResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "user_ai_models"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {
+                            "provider_id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "enabled": {
+                                "type": "boolean"
+                            },
+                            "supports_text": {
+                                "type": "boolean"
+                            },
+                            "supports_images": {
+                                "type": "boolean"
+                            },
+                            "supports_tts": {
+                                "type": "boolean"
+                            },
+                            "supports_stt": {
+                                "type": "boolean"
+                            },
+                            "supports_embeddings": {
+                                "type": "boolean"
+                            },
+                            "supports_reranking": {
+                                "type": "boolean"
+                            },
+                            "created_at": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            },
+                            "updated_at": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ],
+                "title": "UserAiModelResource"
+            },
+            "UserAiModelStoreRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "supports_text": {
+                        "type": "boolean"
+                    },
+                    "supports_images": {
+                        "type": "boolean"
+                    },
+                    "supports_tts": {
+                        "type": "boolean"
+                    },
+                    "supports_stt": {
+                        "type": "boolean"
+                    },
+                    "supports_embeddings": {
+                        "type": "boolean"
+                    },
+                    "supports_reranking": {
+                        "type": "boolean"
+                    },
+                    "supports_files": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "UserAiModelStoreRequest"
+            },
+            "UserAiModelUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "supports_text": {
+                        "type": "boolean"
+                    },
+                    "supports_images": {
+                        "type": "boolean"
+                    },
+                    "supports_tts": {
+                        "type": "boolean"
+                    },
+                    "supports_stt": {
+                        "type": "boolean"
+                    },
+                    "supports_embeddings": {
+                        "type": "boolean"
+                    },
+                    "supports_reranking": {
+                        "type": "boolean"
+                    },
+                    "supports_files": {
+                        "type": "boolean"
+                    }
+                },
+                "title": "UserAiModelUpdateRequest"
+            },
+            "UserAiProviderResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "user_ai_providers"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "enabled": {
+                                "type": "boolean"
+                            },
+                            "has_api_key": {
+                                "type": "boolean"
+                            },
+                            "url": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "api_version": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "deployment": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "embedding_deployment": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "models": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "minItems": 0,
+                                        "maxItems": 0,
+                                        "additionalItems": false
+                                    }
+                                ]
+                            },
+                            "created_at": {
+                                "type": "string"
+                            },
+                            "updated_at": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ],
+                "title": "UserAiProviderResource"
+            },
+            "UserAiProviderStoreRequest": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "enum": [
+                            "anthropic",
+                            "azure",
+                            "cohere",
+                            "deepseek",
+                            "eleven",
+                            "gemini",
+                            "groq",
+                            "jina",
+                            "mistral",
+                            "ollama",
+                            "openai",
+                            "firepass",
+                            "openrouter",
+                            "voyageai",
+                            "xai"
+                        ]
+                    },
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "api_key": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
+                    },
+                    "api_version": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "deployment": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "embedding_deployment": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "code",
+                    "api_key"
+                ],
+                "title": "UserAiProviderStoreRequest"
+            },
+            "UserAiProviderUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "api_key": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
+                    },
+                    "api_version": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "deployment": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "embedding_deployment": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    }
+                },
+                "title": "UserAiProviderUpdateRequest"
+            },
+            "UserApiResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "const": "users"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "is_admin": {
+                                "type": "boolean"
+                            },
+                            "remember_token": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "access_token": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "two_factor_enabled": {
+                                "type": "boolean"
+                            },
+                            "email_verified_at": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string"
+                            },
+                            "updated_at": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ],
+                "title": "UserApiResource"
+            }
+        },
+        "responses": {
+            "ValidationException": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Errors overview."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "A detailed description of each field that failed validation.",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "message",
+                                "errors"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AuthenticationException": {
+                "description": "Unauthenticated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AuthorizationException": {
+                "description": "Authorization error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            },
+            "ModelNotFoundException": {
+                "description": "Not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

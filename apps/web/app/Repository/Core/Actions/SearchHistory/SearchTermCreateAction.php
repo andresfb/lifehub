@@ -38,13 +38,14 @@ final readonly class SearchTermCreateAction
             $item->type,
         ));
 
+        /** @var array<int, array{term: string}> $list */
         $list = Cache::tags(["search:history:{$userId}"])
-            ->get($cacheKey, collect());
+            ->get($cacheKey, []);
 
-        if ($list->isEmpty()) {
+        if (blank($list)) {
             return false;
         }
 
-        return $list->firstWhere('term', $item->term) !== null;
+        return collect($list)->firstWhere('term', $item->term) !== null;
     }
 }

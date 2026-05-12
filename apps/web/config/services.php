@@ -40,6 +40,7 @@ return [
     'backend' => [
         'host' => env('API_HOST'),
         'url' => env('API_BASE_URL'),
+        'base_url' => env('API_OPEN_API_URL'), // TODO change the env() value to API_BASE_URL and remove the 'url' line
         'endpoints' => [
             'auth' => [
                 'register' => env('API_BASE_URL').'/register',
@@ -53,6 +54,7 @@ return [
                 'version' => env('API_BASE_URL').'/manifesto/version',
             ],
         ],
+        'user_agent' => sprintf('%s/%s', env('APP_NAME'), '0.0.1'),
     ],
 
 ];

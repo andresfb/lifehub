@@ -6,6 +6,7 @@ namespace Modules\Dashboard\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Modules\Dashboard\Actions\PinCreateAction;
 use Modules\Dashboard\Actions\PinsAction;
@@ -15,17 +16,19 @@ use Modules\Dashboard\Dtos\PinUpdateItem;
 use Modules\Dashboard\Http\Requests\Api\V1\PinCreateRequest;
 use Modules\Dashboard\Http\Requests\Api\V1\PinListRequest;
 use Modules\Dashboard\Http\Requests\Api\V1\PinUpdateRequest;
-use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionCollection;
+use Modules\Dashboard\Http\Resources\Api\V1\HomepageSectionResource;
 use Modules\Dashboard\Models\HomepageItem;
 use Throwable;
 
 final class PinController extends ApiController
 {
-    public function index(PinListRequest $request, PinsAction $homeAction): HomepageSectionCollection
+    public function index(PinListRequest $request, PinsAction $homeAction): AnonymousResourceCollection
     {
-        return new HomepageSectionCollection(
+        $this->authorize('viewAny', HomepageItem::class);
+
+        return HomepageSectionResource::collection(
             $homeAction->handle(
-                Auth::id(),
+                (int) Auth::id(),
                 (int) $request->validated('status', 1)
             )
         );

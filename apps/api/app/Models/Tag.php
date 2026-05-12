@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Contracts\UserModelInterface;
+use App\Policies\TagPolicy;
 use App\Traits\BelongsToUser;
 use Carbon\CarbonImmutable;
 use Database\Factories\TagFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\Tags\Tag as SpatieTag;
@@ -25,6 +27,7 @@ use Spatie\Tags\Tag as SpatieTag;
  * @property-read CarbonImmutable|null $updated_at
  * @property-read User $user
  */
+#[UsePolicy(TagPolicy::class)]
 #[UseFactory(TagFactory::class)]
 final class Tag extends SpatieTag implements UserModelInterface
 {

@@ -4,22 +4,17 @@ declare(strict_types=1);
 
 namespace App\Repository\Core\Services\SearchHistory;
 
-use App\Repository\Common\Libraries\ApiClient;
+use App\Repository\Api\Libraries\ApiLibrary;
 use App\Repository\Core\Dtos\SearchHistory\SearchTermItem;
-use App\Repository\Manifest\Enums\ManifestAction;
-use App\Repository\Manifest\Enums\ManifestActionOwner;
-use App\Repository\Manifest\Enums\ManifestMethod;
-use App\Repository\Manifest\Enums\ManifestModule;
-use App\Repository\Manifest\Libraries\ManifestActionsLibrary;
 use Exception;
+use LifeHub\ApiClient\Model\SearchHistoryCreateRequest;
+use LifeHub\ApiClient\Model\SearchHistoryResource;
+use LifeHub\ApiClient\Model\V1SearchHistoryStore201Response;
+use LifeHub\ApiClient\Model\V1SearchTerms200Response;
 use RuntimeException;
 
 final readonly class ApiSearchHistoryService
 {
-    public function __construct(
-        private ApiClient $apiClient,
-    ) {}
-
     /**
      * @return array<string, mixed>
      *
@@ -27,25 +22,33 @@ final readonly class ApiSearchHistoryService
      */
     public function listTerms(int $userId, SearchTermItem $item): array
     {
-        $endpoint = ManifestActionsLibrary::getEndpoint(
-            $userId,
-            ManifestModule::CORE,
-            ManifestActionOwner::SEARCH_TERNS,
-            ManifestAction::LIST,
-            ManifestMethod::GET,
-        );
+        $response = ApiLibrary::searchHistoryApi($userId)
+            ->v1SearchTerms(
+                module: $item->module,
+                type: $item->type,
+                term: $item->term,
+            );
 
-        if (blank($endpoint)) {
-            throw new RuntimeException('Endpoint not found');
+        if (! $response instanceof V1SearchTerms200Response) {
+            $message = $response->isNullableSetToNull('errors')
+                ? $response->getMessage()
+                : $response->getErrors();
+
+            throw new RuntimeException($message);
         }
 
-        return $this->apiClient
-            ->setUserId($userId)
-            ->request(
-                $endpoint->method,
-                $endpoint->getUri(),
-                $item->toArray(),
-            );
+        if ($response->isNullableSetToNull('data')) {
+            return [];
+        }
+
+        return collect($response->getData())
+            ->map(function (SearchHistoryResource $item): array {
+                return [
+                    'module' => $item->getAttributes()->getModule(),
+                    'type' => $item->getAttributes()->getType(),
+                    'term' => $item->getAttributes()->getQuery(),
+                ];
+            })->all();
     }
 
     /**
@@ -53,24 +56,21 @@ final readonly class ApiSearchHistoryService
      */
     public function saveTerm(int $userId, SearchTermItem $item): void
     {
-        $endpoint = ManifestActionsLibrary::getEndpoint(
-            $userId,
-            ManifestModule::CORE,
-            ManifestActionOwner::SEARCH_TERNS,
-            ManifestAction::SAVE,
-            ManifestMethod::POST,
-        );
+        $request = new SearchHistoryCreateRequest($item->toArray());
 
-        if (blank($endpoint)) {
-            throw new RuntimeException('Endpoint not found');
+        $response = ApiLibrary::searchHistoryApi($userId)
+            ->v1SearchHistoryStore($request);
+
+        if (! $response instanceof V1SearchHistoryStore201Response) {
+            $message = $response->isNullableSetToNull('errors')
+                ? $response->getMessage()
+                : $response->getErrors();
+
+            throw new RuntimeException($message);
         }
 
-        $this->apiClient
-            ->setUserId($userId)
-            ->request(
-                $endpoint->method,
-                $endpoint->getUri(),
-                $item->toArray(),
-            );
+        if ($response->getSuccess() !== true) {
+            throw new RuntimeException($response->getMessage());
+        }
     }
 }

@@ -5,10 +5,13 @@ info:
 
 http:
   method: GET
-  url: "{{process.env.API_URL}}/dashboard/pins?status=-1"
+  url: "{{process.env.API_URL}}/dashboard/pins?include=items&status=1"
   params:
+    - name: include
+      value: items
+      type: query
     - name: status
-      value: "-1"
+      value: "1"
       type: query
   auth: inherit
 

@@ -4,28 +4,25 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Http\Resources\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\JsonApi\JsonApiResource;
 use Modules\Dashboard\Models\HomepageSection;
 
 /**
  * @mixin HomepageSection
  */
-final class HomepageSectionResource extends JsonResource
+final class HomepageSectionResource extends JsonApiResource
 {
-    /**
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
-    {
-        return [
-            'id' => $this->id,
-            'slug' => $this->slug,
-            'name' => $this->name,
-            'order' => $this->order,
-            'items' => HomepageItemResource::collection($this->whenLoaded('items')),
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
-        ];
-    }
+    /** @var array<int, string> */
+    public array $attributes = [
+        'slug',
+        'name',
+        'order',
+        'created_at',
+        'updated_at',
+    ];
+
+    /** @var array<string, class-string<HomepageItemResource>> */
+    public array $relationships = [
+        'items' => HomepageItemResource::class,
+    ];
 }

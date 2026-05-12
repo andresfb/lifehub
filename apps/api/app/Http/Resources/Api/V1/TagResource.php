@@ -5,21 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Resources\Api\V1;
 
 use App\Models\Tag;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\JsonApi\JsonApiResource;
 
 /** @mixin Tag */
-final class TagResource extends JsonResource
+final class TagResource extends JsonApiResource
 {
-    /**
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
-    {
-        return [
-            'id' => $this->id,
-            'slug' => $this->slug,
-            'name' => $this->name,
-        ];
-    }
+    /** @var array<int, string> */
+    public array $attributes = [
+        'slug',
+        'name',
+    ];
 }

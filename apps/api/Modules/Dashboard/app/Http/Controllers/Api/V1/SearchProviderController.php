@@ -6,17 +6,22 @@ namespace Modules\Dashboard\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Mcp\Exceptions\NotImplementedException;
 use Modules\Dashboard\Actions\SearchProvidersAction;
-use Modules\Dashboard\Http\Resources\Api\V1\SearchProviderCollection;
+use Modules\Dashboard\Http\Resources\Api\V1\SearchProviderResource;
 use Modules\Dashboard\Models\SearchProvider;
 
 final class SearchProviderController extends ApiController
 {
-    public function index(SearchProvidersAction $providersAction): SearchProviderCollection
+    public function index(SearchProvidersAction $providersAction): AnonymousResourceCollection
     {
-        return $providersAction->handle(Auth::id());
+        $this->authorize('viewAny', SearchProvider::class);
+
+        return SearchProviderResource::collection(
+            $providersAction->handle(Auth::id())
+        );
     }
 
     public function store(Request $request): never

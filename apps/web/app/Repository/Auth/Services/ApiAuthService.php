@@ -6,60 +6,67 @@ namespace App\Repository\Auth\Services;
 
 use App\Libraries\CacheLibrary;
 use App\Models\User as UserModel;
+use App\Repository\Api\Libraries\ApiLibrary;
 use App\Repository\Auth\Dtos\RegisterItem;
 use App\Repository\Auth\Dtos\User;
 use App\Repository\Auth\Enums\AuthStatus;
 use App\Repository\Auth\Libraries\AuthSession;
-use App\Repository\Common\Libraries\ApiClient;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Concurrency;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Response;
+use LifeHub\ApiClient\Model\InlineObject;
+use LifeHub\ApiClient\Model\LoginRequest;
+use LifeHub\ApiClient\Model\RegisterRequest;
+use LifeHub\ApiClient\Model\TwoFactorCodeRequest;
+use LifeHub\ApiClient\Model\V1Login203Response;
+use LifeHub\ApiClient\Model\V1Login401Response;
+use LifeHub\ApiClient\Model\V1Register200Response;
+use RuntimeException;
 
 final readonly class ApiAuthService
 {
-    public function __construct(
-        private ApiClient $apiClient
-    ) {}
-
     /**
      * @throws Exception
      */
     public function login(string $email, string $password): AuthStatus
     {
         try {
-            $payload = $this->apiClient->post(
-                uri: Config::string('services.backend.endpoints.auth.login'),
-                data: [
-                    'email' => $email,
-                    'password' => $password,
-                    'device' => str(Config::string('app.name'))
+            $request = new LoginRequest()
+                ->setEmail($email)
+                ->setPassword($password)
+                ->setDevice(
+                    str(Config::string('app.name'))
                         ->slug()
-                        ->value(),
-                ]
-            );
+                        ->value()
+                );
+
+            $response = ApiLibrary::authApi()->v1Login($request);
+
+            if ($response instanceof V1Login401Response || $response instanceof InlineObject) {
+                throw new RuntimeException($response->getErrors() ?: $response->getMessage());
+            }
+
+            if ($response instanceof V1Login203Response) {
+                session()->flash('message', 'Two Factor Authentication Required');
+                session()->flash('tfa-ttl', $response->getTtl());
+
+                AuthSession::put('login.email', $email);
+
+                return AuthStatus::TWO_FACTOR;
+            }
+
+            $this->saveAuthInfo($response);
+
+            return AuthStatus::SUCCESS;
         } catch (Exception $e) {
             session()->flash('error', $e->getMessage());
-            Log::error($e->getMessage());
+            Log::error($e->getMessage(), $e->getTrace());
 
             return AuthStatus::FAILURE;
         }
-
-        if ($this->needsTwoFactor($payload)) {
-            session()->flash('message', 'Two Factor Authentication Required');
-            session()->flash('tfa-ttl', $payload['ttl']);
-
-            AuthSession::put('login.email', $email);
-
-            return AuthStatus::TWO_FACTOR;
-        }
-
-        $this->saveAuthInfo($payload);
-
-        return AuthStatus::SUCCESS;
     }
 
     /**
@@ -68,24 +75,26 @@ final readonly class ApiAuthService
     public function validateTwoFactorCode(string $email, string $code): AuthStatus
     {
         try {
-            $payload = $this->apiClient->post(
-                uri: Config::string('services.backend.endpoints.auth.validate'),
-                data: [
-                    'email' => $email,
-                    'code' => $code,
-                ]
-            );
+            $request = new TwoFactorCodeRequest()
+                ->setEmail($email)
+                ->setTwoFactorCode($code);
+
+            $response = ApiLibrary::authApi()->v1LoginValidate($request);
+
+            if ($response instanceof V1Login401Response || $response instanceof InlineObject) {
+                throw new RuntimeException($response->getErrors() ?: $response->getMessage());
+            }
+
+            AuthSession::forget('login.email');
+            $this->saveAuthInfo($response);
+
+            return AuthStatus::SUCCESS;
         } catch (Exception $e) {
             session()->flash('error', $e->getMessage());
             Log::error($e->getMessage());
 
             return AuthStatus::FAILURE;
         }
-
-        AuthSession::forget('login.email');
-        $this->saveAuthInfo($payload);
-
-        return AuthStatus::SUCCESS;
     }
 
     public function logout(): void
@@ -103,10 +112,7 @@ final readonly class ApiAuthService
         Concurrency::defer([
             function () use ($token) {
                 try {
-                    $this->apiClient->setToken($token)
-                        ->post(
-                            Config::string('services.backend.endpoints.auth.logout'),
-                        );
+                    ApiLibrary::authApi($token)->v1Logout();
                 } catch (Exception $e) {
                     Log::error($e->getMessage(), $e->getTrace());
                 }
@@ -127,78 +133,48 @@ final readonly class ApiAuthService
             }
         }
 
-        $response = $this->apiClient
-            ->setToken($token)
-            ->get(
-                Config::string('services.backend.endpoints.auth.user'),
-            );
+        $response = ApiLibrary::authApi($token)->v1Me();
+        [$user] = $this->loadResponseUser($response);
+        AuthSession::put('auth_user', $user->toArray());
 
-        AuthSession::put('auth_user', $response);
-
-        return User::from($response);
+        return $user;
     }
 
     public function register(RegisterItem $item): AuthStatus
     {
         try {
-            $payload = $this->apiClient->post(
-                uri: Config::string('services.backend.endpoints.auth.register'),
-                data: [
-                    'name' => $item->name,
-                    'email' => $item->email,
-                    'password' => $item->password,
-                    'password_confirmation' => $item->password_confirmation,
-                    'invitation' => $item->invitation,
-                ]
-            );
+            $request = new RegisterRequest()
+                ->setName($item->name)
+                ->setEmail($item->email)
+                ->setPassword($item->password)
+                ->setPasswordConfirmation($item->password_confirmation)
+                ->setInvitation($item->invitation);
+
+            $response = ApiLibrary::authApi()->v1Register($request);
+
+            if ($response instanceof InlineObject) {
+                throw new RuntimeException($response->getErrors() ?: $response->getMessage());
+            }
+
+            $this->saveAuthInfo($response);
+
+            return AuthStatus::SUCCESS;
         } catch (Exception $e) {
             session()->flash('error', $e->getMessage());
             Log::error($e->getMessage());
 
             return AuthStatus::FAILURE;
         }
-
-        $this->saveAuthInfo($payload);
-
-        return AuthStatus::SUCCESS;
     }
 
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    private function needsTwoFactor(array $payload): bool
+    private function saveAuthInfo(V1Register200Response $response): void
     {
-        if ($this->apiClient->statusCode !== Response::HTTP_NON_AUTHORITATIVE_INFORMATION) {
-            return false;
-        }
-
-        if (! array_key_exists('two_factor', $payload)) {
-            return false;
-        }
-
-        return (bool) $payload['two_factor'];
-    }
-
-    /**
-     * @param  array<string, mixed>  $payload
-     */
-    private function saveAuthInfo(array $payload): void
-    {
-        $token = $payload['token'] ?? null;
-        $user = $payload['user'] ?? null;
-
-        if (! $token || ! is_array($user)) {
-            throw ValidationException::withMessages([
-                'email' => ['The authentication response was invalid.'],
-            ]);
-        }
+        [$user, $token] = $this->loadResponseUser($response);
 
         session()->regenerate();
 
         AuthSession::put('api_token', $token);
-        AuthSession::put('auth_user', $user);
-
-        $user = User::from($user);
+        AuthSession::put('auth_user', $user->toArray());
         Auth::setUser($user);
 
         UserModel::query()
@@ -214,5 +190,38 @@ final readonly class ApiAuthService
                 'remember_token' => $user->getRememberToken(),
                 'password' => "{$user->email}:{$token}",
             ]);
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    private function loadResponseUser(V1Register200Response $response): array
+    {
+        if ($response->isNullableSetToNull('data')) {
+            throw ValidationException::withMessages([
+                'email' => ['The authentication response was invalid.'],
+            ]);
+        }
+
+        $payload = $response->getData();
+        if ($payload->isNullableSetToNull('attributes')) {
+            throw ValidationException::withMessages([
+                'email' => ['The authentication response was invalid.'],
+            ]);
+        }
+
+        $token = $payload->getAttributes()->getAccessToken();
+        $userData = $payload->getAttributes();
+
+        $user = new User(
+            id: (int) $payload->getId(),
+            name: $userData->getName(),
+            email: $userData->getEmail(),
+            two_factor_enabled: $userData->getTwoFactorEnabled(),
+            is_admin: $userData->getIsAdmin(),
+            remember_token: $userData->getRememberToken(),
+        );
+
+        return [$user, $token];
     }
 }

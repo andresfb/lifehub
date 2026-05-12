@@ -14,18 +14,6 @@ use Override;
  */
 final class UserAiProviderResource extends JsonApiResource
 {
-    #[Override]
-    public function toId(Request $request): string
-    {
-        return (string) $this->id;
-    }
-
-    #[Override]
-    public function toType(Request $request): string
-    {
-        return 'ai-provider';
-    }
-
     /**
      * @return array<string, mixed>
      */

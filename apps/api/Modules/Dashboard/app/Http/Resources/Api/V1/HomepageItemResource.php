@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Http\Resources\Api\V1;
 
-use App\Http\Resources\Api\V1\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\JsonApi\JsonApiResource;
 use Modules\Dashboard\Models\HomepageItem;
+use Override;
 
 /** @mixin HomepageItem */
-final class HomepageItemResource extends JsonResource
+final class HomepageItemResource extends JsonApiResource
 {
     /**
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    #[Override]
+    public function toAttributes(Request $request): array
     {
         return [
             'slug' => $this->slug,
@@ -23,14 +24,10 @@ final class HomepageItemResource extends JsonResource
             'url' => $this->url,
             'icon' => $this->icon,
             'icon_color' => $this->icon_color,
-            'description' => $this->description ?? '',
+            'description' => $this->description,
             'order' => $this->order,
             'active' => $this->active,
             'tags' => $this->getTags(),
-
-            'user_id' => $this->user_id,
-
-            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

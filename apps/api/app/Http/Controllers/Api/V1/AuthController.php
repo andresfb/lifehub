@@ -11,7 +11,7 @@ use App\Http\Requests\Api\V1\LoginRequest;
 use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V1\ResetPasswordRequest;
 use App\Http\Requests\Api\V1\TwoFactorCodeRequest;
-use App\Http\Resources\Api\V1\UserResource;
+use App\Http\Resources\Api\V1\UserApiResource;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
@@ -26,11 +26,17 @@ use Throwable;
 
 final class AuthController extends ApiController
 {
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request): UserApiResource|JsonResponse
     {
         $user = User::query()
             ->with('roles')
-            ->where('email', $request->safe()->string('email')->lower()->toString())
+            ->where(
+                'email',
+                $request->safe()
+                    ->string('email')
+                    ->lower()
+                    ->toString()
+            )
             ->first();
 
         if (! $user || ! Hash::check($request->safe()->string('password')->toString(), $user->password)) {
@@ -38,7 +44,7 @@ final class AuthController extends ApiController
         }
 
         if ($user->hasEnabledTwoFactorAuthentication()) {
-            $expire = 60 * 5; // 5 minutes
+            $expire = 60 * 8; // 8 minutes
 
             Cache::put(
                 md5(sprintf('%s:%s', $user->id, $user->email)),
@@ -56,15 +62,23 @@ final class AuthController extends ApiController
 
         return $this->authorized(
             $user,
-            $request->safe()->string('device')->toString()
+            $request->safe()
+                ->string('device')
+                ->toString()
         );
     }
 
-    public function validateTwoFactorCode(TwoFactorCodeRequest $request): JsonResponse
+    public function validateTwoFactorCode(TwoFactorCodeRequest $request): UserApiResource|JsonResponse
     {
         $user = User::query()
             ->with('roles')
-            ->where('email', $request->safe()->string('email')->lower()->toString())
+            ->where(
+                'email',
+                $request->safe()
+                    ->string('email')
+                    ->lower()
+                    ->toString()
+            )
             ->first();
 
         $code = $request->safe()->string('two_factor_code')->toString();
@@ -102,17 +116,15 @@ final class AuthController extends ApiController
         return $this->success(message: 'Token revoked successfully');
     }
 
-    public function me(Request $request): JsonResponse
+    public function me(Request $request): UserApiResource
     {
-        $userResource = new UserResource($request->user());
-
-        return $this->success($userResource->resolveResourceData($request));
+        return new UserApiResource($request->user());
     }
 
     /**
      * @throws Throwable
      */
-    public function register(RegisterRequest $request, CreateNewUser $action): JsonResponse
+    public function register(RegisterRequest $request, CreateNewUser $action): UserApiResource
     {
         $user = $action->create($request->validated());
 
@@ -167,21 +179,15 @@ final class AuthController extends ApiController
         );
     }
 
-    private function authorized(
-        User $user,
-        string $device,
-        string $message = 'Login successfully'
-    ): JsonResponse {
+    private function authorized(User $user, string $device, string $message = 'Login successfully'): UserApiResource
+    {
         $user->tokens()
             ->where('name', $device)
             ->delete();
 
-        $token = $user->createToken($device)->plainTextToken;
-        $userResource = new UserResource($user);
+        $user->access_token = $user->createToken($device)->plainTextToken;
 
-        return $this->created([
-            'user' => $userResource->jsonSerialize(),
-            'token' => $token,
-        ], $message);
+        return new UserApiResource($user)
+            ->setMessage($message);
     }
 }

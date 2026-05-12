@@ -17,47 +17,49 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Public routes with auth rate limiter (5/min - brute force protection)
-Route::middleware(['throttle:auth'])->group(function (): void {
-    Route::post('register', [AuthController::class, 'register'])
-        ->name('api.v1.register');
+Route::name('api.v1.')->group(function (): void {
+    // Public routes with auth rate limiter (5/min - brute force protection)
+    Route::middleware(['throttle:auth'])->group(function (): void {
+        Route::post('register', [AuthController::class, 'register'])
+            ->name('register');
 
-    Route::post('login', [AuthController::class, 'login'])
-        ->name('api.v1.login');
+        Route::post('login', [AuthController::class, 'login'])
+            ->name('login');
 
-    Route::post('login/validate', [AuthController::class, 'validateTwoFactorCode'])
-        ->name('api.v1.login.validate');
-});
-
-// Protected routes with authenticated rate limiter (120/min)
-Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function (): void {
-    Route::get('me', [AuthController::class, 'me'])
-        ->name('api.v1.me');
-
-    Route::controller(ManifestController::class)->group(function () {
-        Route::get('manifesto', 'index')
-            ->name('api.v1.manifesto');
-
-        Route::get('manifesto/version', 'show')
-            ->name('api.v1.manifesto.version');
+        Route::post('login/validate', [AuthController::class, 'validateTwoFactorCode'])
+            ->name('login.validate');
     });
 
-    Route::get('search', GlobalSearchController::class)
-        ->name('api.v1.search');
+    // Protected routes with authenticated rate limiter (120/min)
+    Route::middleware(['auth:sanctum', 'throttle:authenticated'])->group(function (): void {
+        Route::get('me', [AuthController::class, 'me'])
+            ->name('me');
 
-    Route::get('search/tags', SearchTagController::class)
-        ->name('api.v1.search.tags');
+        Route::controller(ManifestController::class)->group(function () {
+            Route::get('manifesto', 'index')
+                ->name('manifesto');
 
-    Route::post('logout', [AuthController::class, 'logout'])
-        ->name('api.v1.logout');
+            Route::get('manifesto/version', 'show')
+                ->name('manifesto.version');
+        });
 
-});
+        Route::get('search', GlobalSearchController::class)
+            ->name('search');
 
-// Password reset routes (public with rate limiting)
-Route::middleware(['throttle:6,1'])->group(function (): void {
-    Route::post('forgot-password', [AuthController::class, 'forgotPassword'])
-        ->name('api.v1.password.email');
+        Route::get('search/tags', SearchTagController::class)
+            ->name('search.tags');
 
-    Route::post('reset-password', [AuthController::class, 'resetPassword'])
-        ->name('api.v1.password.reset');
+        Route::post('logout', [AuthController::class, 'logout'])
+            ->name('logout');
+
+    });
+
+    // Password reset routes (public with rate limiting)
+    Route::middleware(['throttle:6,1'])->group(function (): void {
+        Route::post('forgot-password', [AuthController::class, 'forgotPassword'])
+            ->name('password.email');
+
+        Route::post('reset-password', [AuthController::class, 'resetPassword'])
+            ->name('password.reset');
+    });
 });

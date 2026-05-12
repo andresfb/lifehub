@@ -17,32 +17,33 @@ Route::middleware([
     'can:module.dashboard.read',
 ])
     ->prefix('v1/dashboard')
+    ->name('v1.dashboard.')
     ->group(function (): void {
 
         Route::get('/', DashboardController::class)
             ->name('v1.dashboard');
 
         Route::apiResource('/pins', PinController::class)
-            ->middlewareFor(
-                ['index'],
-                CacheResponse::for(
-                    lifetime: hours(8),
-                    tags: ['dashboard']
-                )
-            )
+//            ->middlewareFor(
+//                ['index'],
+//                CacheResponse::for(
+//                    lifetime: hours(8),
+//                    tags: ['dashboard']
+//                )
+//            )
             ->middlewareFor(
                 ['store', 'update', 'destroy'],
                 ['can:module.dashboard.write']
             )
             ->names([
-                'index' => 'v1.dashboard.pins.index',
-                'store' => 'v1.dashboard.pins.store',
-                'update' => 'v1.dashboard.pins.update',
-                'destroy' => 'v1.dashboard.pins.destroy',
+                'index' => 'pins.index',
+                'store' => 'pins.store',
+                'update' => 'pins.update',
+                'destroy' => 'pins.destroy',
             ]);
 
         Route::get('/pins/search', SearchPinController::class)
-            ->name('v1.dashboard.pins.search')
+            ->name('pins.search')
             ->middleware(
                 CacheResponse::for(
                     lifetime: hours(8),
@@ -63,11 +64,11 @@ Route::middleware([
                 ['can:module.dashboard.write']
             )
             ->names([
-                'index' => 'v1.dashboard.search.providers.index',
-                'store' => 'v1.dashboard.search.providers.store',
-                'show' => 'v1.dashboard.search.providers.show',
-                'update' => 'v1.dashboard.search.providers.update',
-                'destroy' => 'v1.dashboard.search.providers.destroy',
+                'index' => 'search.providers.index',
+                'store' => 'search.providers.store',
+                'show' => 'search.providers.show',
+                'update' => 'search.providers.update',
+                'destroy' => 'search.providers.destroy',
             ]);
 
     });

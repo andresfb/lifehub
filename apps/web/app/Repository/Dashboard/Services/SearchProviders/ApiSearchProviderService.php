@@ -4,21 +4,14 @@ declare(strict_types=1);
 
 namespace App\Repository\Dashboard\Services\SearchProviders;
 
-use App\Repository\Common\Libraries\ApiClient;
-use App\Repository\Manifest\Enums\ManifestAction;
-use App\Repository\Manifest\Enums\ManifestActionOwner;
-use App\Repository\Manifest\Enums\ManifestMethod;
-use App\Repository\Manifest\Enums\ManifestModule;
-use App\Repository\Manifest\Libraries\ManifestActionsLibrary;
+use App\Repository\Api\Libraries\ApiLibrary;
+use LifeHub\ApiClient\Model\SearchProviderResource;
+use LifeHub\ApiClient\Model\V1DashboardSearchProvidersIndex200Response;
 use RuntimeException;
 use Throwable;
 
 final readonly class ApiSearchProviderService
 {
-    public function __construct(
-        private ApiClient $apiClient,
-    ) {}
-
     /**
      * @return array<string, mixed>
      *
@@ -26,23 +19,28 @@ final readonly class ApiSearchProviderService
      */
     public function getProviders(int $userId): array
     {
-        $endpoint = ManifestActionsLibrary::getEndpoint(
-            $userId,
-            ManifestModule::DASHBOARD,
-            ManifestActionOwner::SEARCH,
-            ManifestAction::LIST,
-            ManifestMethod::GET,
-        );
+        $response = ApiLibrary::searchProviderApi($userId)
+            ->v1DashboardSearchProvidersIndex();
 
-        if (blank($endpoint)) {
-            throw new RuntimeException('Endpoint not found');
+        if (! $response instanceof V1DashboardSearchProvidersIndex200Response) {
+            throw new RuntimeException($response->getMessage());
         }
 
-        return $this->apiClient
-            ->setUserId($userId)
-            ->request(
-                $endpoint->method,
-                $endpoint->getUri()
-            );
+        if ($response->isNullableSetToNull('data')) {
+            return [];
+        }
+
+        return collect($response->getData())
+            ->map(function (SearchProviderResource $provider): array {
+                return [
+                    'id' => $provider->getId(),
+                    'name' => $provider->getAttributes()->getName(),
+                    'url' => $provider->getAttributes()->getUrl(),
+                    'default' => $provider->getAttributes()->getDefault(),
+                    'order' => $provider->getAttributes()->getOrder(),
+                    'icon' => $provider->getAttributes()->getIcon(),
+                    'icon_color' => $provider->getAttributes()->getIconColor(),
+                ];
+            })->all();
     }
 }
