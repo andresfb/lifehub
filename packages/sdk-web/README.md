@@ -92,11 +92,10 @@ Class | Method | HTTP request | Description
 *SearchHistoryApi* | [**v1SearchHistoryStore**](docs/Api/SearchHistoryApi.md#v1searchhistorystore) | **POST** /v1/search/history | 
 *SearchHistoryApi* | [**v1SearchTerms**](docs/Api/SearchHistoryApi.md#v1searchterms) | **GET** /v1/search/terms | 
 *SearchPinApi* | [**v1DashboardPinsSearch**](docs/Api/SearchPinApi.md#v1dashboardpinssearch) | **GET** /v1/dashboard/pins/search | 
-*SearchProviderApi* | [**v1DashboardSearchProvidersDestroy**](docs/Api/SearchProviderApi.md#v1dashboardsearchprovidersdestroy) | **DELETE** /v1/dashboard/search/providers/{provider} | 
-*SearchProviderApi* | [**v1DashboardSearchProvidersIndex**](docs/Api/SearchProviderApi.md#v1dashboardsearchprovidersindex) | **GET** /v1/dashboard/search/providers | 
-*SearchProviderApi* | [**v1DashboardSearchProvidersShow**](docs/Api/SearchProviderApi.md#v1dashboardsearchprovidersshow) | **GET** /v1/dashboard/search/providers/{provider} | 
-*SearchProviderApi* | [**v1DashboardSearchProvidersStore**](docs/Api/SearchProviderApi.md#v1dashboardsearchprovidersstore) | **POST** /v1/dashboard/search/providers | 
-*SearchProviderApi* | [**v1DashboardSearchProvidersUpdate**](docs/Api/SearchProviderApi.md#v1dashboardsearchprovidersupdate) | **PUT** /v1/dashboard/search/providers/{provider} | 
+*SearchProviderApi* | [**v1DashboardSearchProvidersDestroy**](docs/Api/SearchProviderApi.md#v1dashboardsearchprovidersdestroy) | **DELETE** /v1/dashboard/search-providers/{searchProvider} | 
+*SearchProviderApi* | [**v1DashboardSearchProvidersIndex**](docs/Api/SearchProviderApi.md#v1dashboardsearchprovidersindex) | **GET** /v1/dashboard/search-providers | 
+*SearchProviderApi* | [**v1DashboardSearchProvidersStore**](docs/Api/SearchProviderApi.md#v1dashboardsearchprovidersstore) | **POST** /v1/dashboard/search-providers | 
+*SearchProviderApi* | [**v1DashboardSearchProvidersUpdate**](docs/Api/SearchProviderApi.md#v1dashboardsearchprovidersupdate) | **PUT** /v1/dashboard/search-providers/{searchProvider} | 
 *SearchTagApi* | [**v1SearchTags**](docs/Api/SearchTagApi.md#v1searchtags) | **GET** /v1/search/tags | 
 *UserAiModelApi* | [**v1AiModelsDestroy**](docs/Api/UserAiModelApi.md#v1aimodelsdestroy) | **DELETE** /v1/ai/models/{model} | 
 *UserAiModelApi* | [**v1AiModelsShow**](docs/Api/UserAiModelApi.md#v1aimodelsshow) | **GET** /v1/ai/models/{model} | 
@@ -128,8 +127,10 @@ Class | Method | HTTP request | Description
 - [SearchHistoryCreateRequest](docs/Model/SearchHistoryCreateRequest.md)
 - [SearchHistoryResource](docs/Model/SearchHistoryResource.md)
 - [SearchHistoryResourceAttributes](docs/Model/SearchHistoryResourceAttributes.md)
+- [SearchProviderCreateRequest](docs/Model/SearchProviderCreateRequest.md)
 - [SearchProviderResource](docs/Model/SearchProviderResource.md)
 - [SearchProviderResourceAttributes](docs/Model/SearchProviderResourceAttributes.md)
+- [SearchProviderUpdateRequest](docs/Model/SearchProviderUpdateRequest.md)
 - [TagResource](docs/Model/TagResource.md)
 - [TagResourceAttributes](docs/Model/TagResourceAttributes.md)
 - [TwoFactorCodeRequest](docs/Model/TwoFactorCodeRequest.md)
@@ -147,13 +148,16 @@ Class | Method | HTTP request | Description
 - [V1AiModelsShow200Response](docs/Model/V1AiModelsShow200Response.md)
 - [V1AiProvidersIndex200Response](docs/Model/V1AiProvidersIndex200Response.md)
 - [V1AiProvidersStore200Response](docs/Model/V1AiProvidersStore200Response.md)
+- [V1DashboardPinsDestroy200Response](docs/Model/V1DashboardPinsDestroy200Response.md)
 - [V1DashboardPinsIndex200Response](docs/Model/V1DashboardPinsIndex200Response.md)
 - [V1DashboardPinsSearch200Response](docs/Model/V1DashboardPinsSearch200Response.md)
 - [V1DashboardPinsStore201Response](docs/Model/V1DashboardPinsStore201Response.md)
 - [V1DashboardPinsStore201ResponseData](docs/Model/V1DashboardPinsStore201ResponseData.md)
 - [V1DashboardPinsStore400Response](docs/Model/V1DashboardPinsStore400Response.md)
 - [V1DashboardPinsUpdate200Response](docs/Model/V1DashboardPinsUpdate200Response.md)
+- [V1DashboardSearchProvidersDestroy200Response](docs/Model/V1DashboardSearchProvidersDestroy200Response.md)
 - [V1DashboardSearchProvidersIndex200Response](docs/Model/V1DashboardSearchProvidersIndex200Response.md)
+- [V1DashboardSearchProvidersStore201Response](docs/Model/V1DashboardSearchProvidersStore201Response.md)
 - [V1Login203Response](docs/Model/V1Login203Response.md)
 - [V1Login401Response](docs/Model/V1Login401Response.md)
 - [V1LoginValidate401Response](docs/Model/V1LoginValidate401Response.md)

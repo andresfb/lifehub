@@ -26,6 +26,9 @@ final class SearchProviderResource extends JsonApiResource
         'updated_at',
     ];
 
+    /**
+     * @return array<string, mixed>
+     */
     #[Override]
     public function toAttributes(Request $request): array
     {

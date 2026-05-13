@@ -142,11 +142,12 @@ class PinApi
      *
      * @throws \LifeHub\ApiClient\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return void
+     * @return \LifeHub\ApiClient\Model\V1DashboardPinsDestroy200Response|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1
      */
     public function v1DashboardPinsDestroy($pin, string $contentType = self::contentTypes['v1DashboardPinsDestroy'][0])
     {
-        $this->v1DashboardPinsDestroyWithHttpInfo($pin, $contentType);
+        list($response) = $this->v1DashboardPinsDestroyWithHttpInfo($pin, $contentType);
+        return $response;
     }
 
     /**
@@ -157,7 +158,7 @@ class PinApi
      *
      * @throws \LifeHub\ApiClient\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of null, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \LifeHub\ApiClient\Model\V1DashboardPinsDestroy200Response|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1, HTTP status code, HTTP response headers (array of strings)
      */
     public function v1DashboardPinsDestroyWithHttpInfo($pin, string $contentType = self::contentTypes['v1DashboardPinsDestroy'][0])
     {
@@ -186,9 +187,63 @@ class PinApi
             $statusCode = $response->getStatusCode();
 
 
-            return [null, $statusCode, $response->getHeaders()];
+            switch($statusCode) {
+                case 200:
+                    return $this->handleResponseWithDataType(
+                        '\LifeHub\ApiClient\Model\V1DashboardPinsDestroy200Response',
+                        $request,
+                        $response,
+                    );
+                case 403:
+                    return $this->handleResponseWithDataType(
+                        '\LifeHub\ApiClient\Model\InlineObject1',
+                        $request,
+                        $response,
+                    );
+                case 404:
+                    return $this->handleResponseWithDataType(
+                        '\LifeHub\ApiClient\Model\InlineObject1',
+                        $request,
+                        $response,
+                    );
+                case 401:
+                    return $this->handleResponseWithDataType(
+                        '\LifeHub\ApiClient\Model\InlineObject1',
+                        $request,
+                        $response,
+                    );
+            }
+
+            
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            return $this->handleResponseWithDataType(
+                '\LifeHub\ApiClient\Model\V1DashboardPinsDestroy200Response',
+                $request,
+                $response,
+            );
         } catch (ApiException $e) {
             switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\LifeHub\ApiClient\Model\V1DashboardPinsDestroy200Response',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -250,14 +305,27 @@ class PinApi
      */
     public function v1DashboardPinsDestroyAsyncWithHttpInfo($pin, string $contentType = self::contentTypes['v1DashboardPinsDestroy'][0])
     {
-        $returnType = '';
+        $returnType = '\LifeHub\ApiClient\Model\V1DashboardPinsDestroy200Response';
         $request = $this->v1DashboardPinsDestroyRequest($pin, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
-                    return [null, $response->getStatusCode(), $response->getHeaders()];
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
                 },
                 function ($exception) {
                     $response = $exception->getResponse();

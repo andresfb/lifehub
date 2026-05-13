@@ -23,7 +23,6 @@ final class UserApiResource extends JsonApiResource
     /**
      * toAttributes Method.
      *
-     * @param Request $request
      * @return array<string, mixed>
      */
     #[Override]

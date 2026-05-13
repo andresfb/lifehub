@@ -51,7 +51,7 @@ Route::middleware([
                 )
             );
 
-        Route::apiResource('/search/providers', SearchProviderController::class)
+        Route::apiResource('/search-providers', SearchProviderController::class)
             ->middlewareFor(
                 ['index'],
                 CacheResponse::for(

@@ -12,7 +12,7 @@ final class TagPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool
+    public function viewAny(): bool
     {
         return true;
     }
@@ -22,7 +22,7 @@ final class TagPolicy
         return $user->is($tag->user);
     }
 
-    public function create(User $user): bool
+    public function create(): bool
     {
         return true;
     }
@@ -37,12 +37,12 @@ final class TagPolicy
         return $user->is($tag->user);
     }
 
-    public function restore(User $user, Tag $tag): bool
+    public function restore(User $user): bool
     {
         return $user->isAdmin();
     }
 
-    public function forceDelete(User $user, Tag $tag): bool
+    public function forceDelete(User $user): bool
     {
         return $user->isAdmin();
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * SearchProviderResourceAttributes
+ * SearchProviderCreateRequest
  *
  * PHP version 8.1
  *
@@ -32,7 +32,7 @@ use \ArrayAccess;
 use \LifeHub\ApiClient\ObjectSerializer;
 
 /**
- * SearchProviderResourceAttributes Class Doc Comment
+ * SearchProviderCreateRequest Class Doc Comment
  *
  * @category Class
  * @package  LifeHub\ApiClient
@@ -40,7 +40,7 @@ use \LifeHub\ApiClient\ObjectSerializer;
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<string, mixed>
  */
-class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \JsonSerializable
+class SearchProviderCreateRequest implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -49,7 +49,7 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
      *
      * @var string
      */
-    protected static $openAPIModelName = 'SearchProviderResource_attributes';
+    protected static $openAPIModelName = 'SearchProviderCreateRequest';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -59,13 +59,10 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     protected static $openAPITypes = [
         'name' => 'string',
         'url' => 'string',
+        'term_field' => 'string',
         'icon' => 'string',
         'icon_color' => 'string',
-        'order' => 'int',
-        'term_field' => 'string',
-        'default' => 'bool',
-        'created_at' => '\DateTime',
-        'updated_at' => '\DateTime'
+        'default' => 'bool'
     ];
 
     /**
@@ -77,14 +74,11 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
      */
     protected static $openAPIFormats = [
         'name' => null,
-        'url' => null,
+        'url' => 'uri',
+        'term_field' => null,
         'icon' => null,
         'icon_color' => null,
-        'order' => null,
-        'term_field' => null,
-        'default' => null,
-        'created_at' => 'date-time',
-        'updated_at' => 'date-time'
+        'default' => null
     ];
 
     /**
@@ -95,13 +89,10 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     protected static array $openAPINullables = [
         'name' => false,
         'url' => false,
+        'term_field' => false,
         'icon' => true,
         'icon_color' => true,
-        'order' => false,
-        'term_field' => false,
-        'default' => false,
-        'created_at' => true,
-        'updated_at' => true
+        'default' => false
     ];
 
     /**
@@ -192,13 +183,10 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     protected static $attributeMap = [
         'name' => 'name',
         'url' => 'url',
+        'term_field' => 'term_field',
         'icon' => 'icon',
         'icon_color' => 'icon_color',
-        'order' => 'order',
-        'term_field' => 'term_field',
-        'default' => 'default',
-        'created_at' => 'created_at',
-        'updated_at' => 'updated_at'
+        'default' => 'default'
     ];
 
     /**
@@ -209,13 +197,10 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     protected static $setters = [
         'name' => 'setName',
         'url' => 'setUrl',
+        'term_field' => 'setTermField',
         'icon' => 'setIcon',
         'icon_color' => 'setIconColor',
-        'order' => 'setOrder',
-        'term_field' => 'setTermField',
-        'default' => 'setDefault',
-        'created_at' => 'setCreatedAt',
-        'updated_at' => 'setUpdatedAt'
+        'default' => 'setDefault'
     ];
 
     /**
@@ -226,13 +211,10 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     protected static $getters = [
         'name' => 'getName',
         'url' => 'getUrl',
+        'term_field' => 'getTermField',
         'icon' => 'getIcon',
         'icon_color' => 'getIconColor',
-        'order' => 'getOrder',
-        'term_field' => 'getTermField',
-        'default' => 'getDefault',
-        'created_at' => 'getCreatedAt',
-        'updated_at' => 'getUpdatedAt'
+        'default' => 'getDefault'
     ];
 
     /**
@@ -294,13 +276,10 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     {
         $this->setIfExists('name', $data ?? [], null);
         $this->setIfExists('url', $data ?? [], null);
+        $this->setIfExists('term_field', $data ?? [], null);
         $this->setIfExists('icon', $data ?? [], null);
         $this->setIfExists('icon_color', $data ?? [], null);
-        $this->setIfExists('order', $data ?? [], null);
-        $this->setIfExists('term_field', $data ?? [], null);
         $this->setIfExists('default', $data ?? [], null);
-        $this->setIfExists('created_at', $data ?? [], null);
-        $this->setIfExists('updated_at', $data ?? [], null);
     }
 
     /**
@@ -330,6 +309,43 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     {
         $invalidProperties = [];
 
+        if ($this->container['name'] === null) {
+            $invalidProperties[] = "'name' can't be null";
+        }
+        if ((mb_strlen($this->container['name']) > 255)) {
+            $invalidProperties[] = "invalid value for 'name', the character length must be smaller than or equal to 255.";
+        }
+
+        if ((mb_strlen($this->container['name']) < 3)) {
+            $invalidProperties[] = "invalid value for 'name', the character length must be bigger than or equal to 3.";
+        }
+
+        if ($this->container['url'] === null) {
+            $invalidProperties[] = "'url' can't be null";
+        }
+        if ((mb_strlen($this->container['url']) > 2000)) {
+            $invalidProperties[] = "invalid value for 'url', the character length must be smaller than or equal to 2000.";
+        }
+
+        if ($this->container['term_field'] === null) {
+            $invalidProperties[] = "'term_field' can't be null";
+        }
+        if ((mb_strlen($this->container['term_field']) > 10)) {
+            $invalidProperties[] = "invalid value for 'term_field', the character length must be smaller than or equal to 10.";
+        }
+
+        if (!is_null($this->container['icon']) && (mb_strlen($this->container['icon']) > 10)) {
+            $invalidProperties[] = "invalid value for 'icon', the character length must be smaller than or equal to 10.";
+        }
+
+        if (!is_null($this->container['icon_color']) && (mb_strlen($this->container['icon_color']) > 20)) {
+            $invalidProperties[] = "invalid value for 'icon_color', the character length must be smaller than or equal to 20.";
+        }
+
+        if (!is_null($this->container['icon_color']) && !preg_match("/^#[0-9a-fA-F]{6}$/", $this->container['icon_color'])) {
+            $invalidProperties[] = "invalid value for 'icon_color', must be conform to the pattern /^#[0-9a-fA-F]{6}$/.";
+        }
+
         return $invalidProperties;
     }
 
@@ -348,7 +364,7 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     /**
      * Gets name
      *
-     * @return string|null
+     * @return string
      */
     public function getName()
     {
@@ -358,7 +374,7 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     /**
      * Sets name
      *
-     * @param string|null $name name
+     * @param string $name name
      *
      * @return self
      */
@@ -367,6 +383,13 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
         if (is_null($name)) {
             throw new \InvalidArgumentException('non-nullable name cannot be null');
         }
+        if ((mb_strlen($name) > 255)) {
+            throw new \InvalidArgumentException('invalid length for $name when calling SearchProviderCreateRequest., must be smaller than or equal to 255.');
+        }
+        if ((mb_strlen($name) < 3)) {
+            throw new \InvalidArgumentException('invalid length for $name when calling SearchProviderCreateRequest., must be bigger than or equal to 3.');
+        }
+
         $this->container['name'] = $name;
 
         return $this;
@@ -375,7 +398,7 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     /**
      * Gets url
      *
-     * @return string|null
+     * @return string
      */
     public function getUrl()
     {
@@ -385,7 +408,7 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     /**
      * Sets url
      *
-     * @param string|null $url url
+     * @param string $url url
      *
      * @return self
      */
@@ -394,7 +417,42 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
         if (is_null($url)) {
             throw new \InvalidArgumentException('non-nullable url cannot be null');
         }
+        if ((mb_strlen($url) > 2000)) {
+            throw new \InvalidArgumentException('invalid length for $url when calling SearchProviderCreateRequest., must be smaller than or equal to 2000.');
+        }
+
         $this->container['url'] = $url;
+
+        return $this;
+    }
+
+    /**
+     * Gets term_field
+     *
+     * @return string
+     */
+    public function getTermField()
+    {
+        return $this->container['term_field'];
+    }
+
+    /**
+     * Sets term_field
+     *
+     * @param string $term_field term_field
+     *
+     * @return self
+     */
+    public function setTermField($term_field)
+    {
+        if (is_null($term_field)) {
+            throw new \InvalidArgumentException('non-nullable term_field cannot be null');
+        }
+        if ((mb_strlen($term_field) > 10)) {
+            throw new \InvalidArgumentException('invalid length for $term_field when calling SearchProviderCreateRequest., must be smaller than or equal to 10.');
+        }
+
+        $this->container['term_field'] = $term_field;
 
         return $this;
     }
@@ -428,6 +486,10 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
                 $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
             }
         }
+        if (!is_null($icon) && (mb_strlen($icon) > 10)) {
+            throw new \InvalidArgumentException('invalid length for $icon when calling SearchProviderCreateRequest., must be smaller than or equal to 10.');
+        }
+
         $this->container['icon'] = $icon;
 
         return $this;
@@ -462,61 +524,14 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
                 $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
             }
         }
+        if (!is_null($icon_color) && (mb_strlen($icon_color) > 20)) {
+            throw new \InvalidArgumentException('invalid length for $icon_color when calling SearchProviderCreateRequest., must be smaller than or equal to 20.');
+        }
+        if (!is_null($icon_color) && (!preg_match("/^#[0-9a-fA-F]{6}$/", ObjectSerializer::toString($icon_color)))) {
+            throw new \InvalidArgumentException("invalid value for \$icon_color when calling SearchProviderCreateRequest., must conform to the pattern /^#[0-9a-fA-F]{6}$/.");
+        }
+
         $this->container['icon_color'] = $icon_color;
-
-        return $this;
-    }
-
-    /**
-     * Gets order
-     *
-     * @return int|null
-     */
-    public function getOrder()
-    {
-        return $this->container['order'];
-    }
-
-    /**
-     * Sets order
-     *
-     * @param int|null $order order
-     *
-     * @return self
-     */
-    public function setOrder($order)
-    {
-        if (is_null($order)) {
-            throw new \InvalidArgumentException('non-nullable order cannot be null');
-        }
-        $this->container['order'] = $order;
-
-        return $this;
-    }
-
-    /**
-     * Gets term_field
-     *
-     * @return string|null
-     */
-    public function getTermField()
-    {
-        return $this->container['term_field'];
-    }
-
-    /**
-     * Sets term_field
-     *
-     * @param string|null $term_field term_field
-     *
-     * @return self
-     */
-    public function setTermField($term_field)
-    {
-        if (is_null($term_field)) {
-            throw new \InvalidArgumentException('non-nullable term_field cannot be null');
-        }
-        $this->container['term_field'] = $term_field;
 
         return $this;
     }
@@ -544,74 +559,6 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
             throw new \InvalidArgumentException('non-nullable default cannot be null');
         }
         $this->container['default'] = $default;
-
-        return $this;
-    }
-
-    /**
-     * Gets created_at
-     *
-     * @return \DateTime|null
-     */
-    public function getCreatedAt()
-    {
-        return $this->container['created_at'];
-    }
-
-    /**
-     * Sets created_at
-     *
-     * @param \DateTime|null $created_at created_at
-     *
-     * @return self
-     */
-    public function setCreatedAt($created_at)
-    {
-        if (is_null($created_at)) {
-            array_push($this->openAPINullablesSetToNull, 'created_at');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('created_at', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['created_at'] = $created_at;
-
-        return $this;
-    }
-
-    /**
-     * Gets updated_at
-     *
-     * @return \DateTime|null
-     */
-    public function getUpdatedAt()
-    {
-        return $this->container['updated_at'];
-    }
-
-    /**
-     * Sets updated_at
-     *
-     * @param \DateTime|null $updated_at updated_at
-     *
-     * @return self
-     */
-    public function setUpdatedAt($updated_at)
-    {
-        if (is_null($updated_at)) {
-            array_push($this->openAPINullablesSetToNull, 'updated_at');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('updated_at', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['updated_at'] = $updated_at;
 
         return $this;
     }

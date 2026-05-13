@@ -71,6 +71,6 @@ final class PinController extends ApiController
 
         $pin->delete();
 
-        return $this->noContent();
+        return $this->success(message: 'Pin deleted successfully');
     }
 }

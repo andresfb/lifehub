@@ -180,7 +180,7 @@ class ReminderApi
             return [null, $statusCode, $response->getHeaders()];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
-                case 403:
+                case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\LifeHub\ApiClient\Model\InlineObject1',
@@ -188,7 +188,7 @@ class ReminderApi
                     );
                     $e->setResponseObject($data);
                     throw $e;
-                case 404:
+                case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\LifeHub\ApiClient\Model\InlineObject1',

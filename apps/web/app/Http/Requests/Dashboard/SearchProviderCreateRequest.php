@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Modules\Dashboard\Http\Requests\Api\V1;
+namespace App\Http\Requests\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\Dashboard\Models\SearchProvider;
 
 final class SearchProviderCreateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('create', SearchProvider::class);
+        return true;
     }
 
     /**

@@ -5,15 +5,15 @@ info:
 
 http:
   method: PUT
-  url: "{{process.env.API_URL}}/dashboard/search/providers/6"
+  url: "{{process.env.API_URL}}/dashboard/search-providers/Df89NNrNhub"
   body:
     type: json
     data: |-
       {
         "name": "Example Search",
-        "url": "https://www.example.com/?q=&noai=1",
+        "url": "https://www.example.com/?noai=1&q=",
         "term_field": "q",
-        "active": true,
+        "active": false,
         "default": false,
         "icon": "E",
         "icon_color": "#bd77f8",

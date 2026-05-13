@@ -1,6 +1,6 @@
 <?php
 /**
- * SearchProviderResourceAttributes
+ * V1DashboardPinsDestroy200Response
  *
  * PHP version 8.1
  *
@@ -32,7 +32,7 @@ use \ArrayAccess;
 use \LifeHub\ApiClient\ObjectSerializer;
 
 /**
- * SearchProviderResourceAttributes Class Doc Comment
+ * V1DashboardPinsDestroy200Response Class Doc Comment
  *
  * @category Class
  * @package  LifeHub\ApiClient
@@ -40,7 +40,7 @@ use \LifeHub\ApiClient\ObjectSerializer;
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<string, mixed>
  */
-class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \JsonSerializable
+class V1DashboardPinsDestroy200Response implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -49,7 +49,7 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
      *
      * @var string
      */
-    protected static $openAPIModelName = 'SearchProviderResource_attributes';
+    protected static $openAPIModelName = 'v1_dashboard_pins_destroy_200_response';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -57,15 +57,9 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
      * @var string[]
      */
     protected static $openAPITypes = [
-        'name' => 'string',
-        'url' => 'string',
-        'icon' => 'string',
-        'icon_color' => 'string',
-        'order' => 'int',
-        'term_field' => 'string',
-        'default' => 'bool',
-        'created_at' => '\DateTime',
-        'updated_at' => '\DateTime'
+        'success' => 'bool',
+        'message' => 'string',
+        'data' => 'Null'
     ];
 
     /**
@@ -76,15 +70,9 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
-        'name' => null,
-        'url' => null,
-        'icon' => null,
-        'icon_color' => null,
-        'order' => null,
-        'term_field' => null,
-        'default' => null,
-        'created_at' => 'date-time',
-        'updated_at' => 'date-time'
+        'success' => null,
+        'message' => null,
+        'data' => null
     ];
 
     /**
@@ -93,15 +81,9 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'name' => false,
-        'url' => false,
-        'icon' => true,
-        'icon_color' => true,
-        'order' => false,
-        'term_field' => false,
-        'default' => false,
-        'created_at' => true,
-        'updated_at' => true
+        'success' => false,
+        'message' => false,
+        'data' => false
     ];
 
     /**
@@ -190,15 +172,9 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
      * @var string[]
      */
     protected static $attributeMap = [
-        'name' => 'name',
-        'url' => 'url',
-        'icon' => 'icon',
-        'icon_color' => 'icon_color',
-        'order' => 'order',
-        'term_field' => 'term_field',
-        'default' => 'default',
-        'created_at' => 'created_at',
-        'updated_at' => 'updated_at'
+        'success' => 'success',
+        'message' => 'message',
+        'data' => 'data'
     ];
 
     /**
@@ -207,15 +183,9 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
      * @var string[]
      */
     protected static $setters = [
-        'name' => 'setName',
-        'url' => 'setUrl',
-        'icon' => 'setIcon',
-        'icon_color' => 'setIconColor',
-        'order' => 'setOrder',
-        'term_field' => 'setTermField',
-        'default' => 'setDefault',
-        'created_at' => 'setCreatedAt',
-        'updated_at' => 'setUpdatedAt'
+        'success' => 'setSuccess',
+        'message' => 'setMessage',
+        'data' => 'setData'
     ];
 
     /**
@@ -224,15 +194,9 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
      * @var string[]
      */
     protected static $getters = [
-        'name' => 'getName',
-        'url' => 'getUrl',
-        'icon' => 'getIcon',
-        'icon_color' => 'getIconColor',
-        'order' => 'getOrder',
-        'term_field' => 'getTermField',
-        'default' => 'getDefault',
-        'created_at' => 'getCreatedAt',
-        'updated_at' => 'getUpdatedAt'
+        'success' => 'getSuccess',
+        'message' => 'getMessage',
+        'data' => 'getData'
     ];
 
     /**
@@ -276,6 +240,19 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
         return self::$openAPIModelName;
     }
 
+    public const MESSAGE_PIN_DELETED_SUCCESSFULLY = 'Pin deleted successfully';
+
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public function getMessageAllowableValues()
+    {
+        return [
+            self::MESSAGE_PIN_DELETED_SUCCESSFULLY,
+        ];
+    }
 
     /**
      * Associative array for storing property values
@@ -292,15 +269,9 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('name', $data ?? [], null);
-        $this->setIfExists('url', $data ?? [], null);
-        $this->setIfExists('icon', $data ?? [], null);
-        $this->setIfExists('icon_color', $data ?? [], null);
-        $this->setIfExists('order', $data ?? [], null);
-        $this->setIfExists('term_field', $data ?? [], null);
-        $this->setIfExists('default', $data ?? [], null);
-        $this->setIfExists('created_at', $data ?? [], null);
-        $this->setIfExists('updated_at', $data ?? [], null);
+        $this->setIfExists('success', $data ?? [], null);
+        $this->setIfExists('message', $data ?? [], null);
+        $this->setIfExists('data', $data ?? [], null);
     }
 
     /**
@@ -330,6 +301,24 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
     {
         $invalidProperties = [];
 
+        if ($this->container['success'] === null) {
+            $invalidProperties[] = "'success' can't be null";
+        }
+        if ($this->container['message'] === null) {
+            $invalidProperties[] = "'message' can't be null";
+        }
+        $allowedValues = $this->getMessageAllowableValues();
+        if (!is_null($this->container['message']) && !in_array($this->container['message'], $allowedValues, true)) {
+            $invalidProperties[] = sprintf(
+                "invalid value '%s' for 'message', must be one of '%s'",
+                $this->container['message'],
+                implode("', '", $allowedValues)
+            );
+        }
+
+        if ($this->container['data'] === null) {
+            $invalidProperties[] = "'data' can't be null";
+        }
         return $invalidProperties;
     }
 
@@ -346,272 +335,92 @@ class SearchProviderResourceAttributes implements ModelInterface, ArrayAccess, \
 
 
     /**
-     * Gets name
+     * Gets success
      *
-     * @return string|null
+     * @return bool
      */
-    public function getName()
+    public function getSuccess()
     {
-        return $this->container['name'];
+        return $this->container['success'];
     }
 
     /**
-     * Sets name
+     * Sets success
      *
-     * @param string|null $name name
+     * @param bool $success success
      *
      * @return self
      */
-    public function setName($name)
+    public function setSuccess($success)
     {
-        if (is_null($name)) {
-            throw new \InvalidArgumentException('non-nullable name cannot be null');
+        if (is_null($success)) {
+            throw new \InvalidArgumentException('non-nullable success cannot be null');
         }
-        $this->container['name'] = $name;
+        $this->container['success'] = $success;
 
         return $this;
     }
 
     /**
-     * Gets url
+     * Gets message
      *
-     * @return string|null
+     * @return string
      */
-    public function getUrl()
+    public function getMessage()
     {
-        return $this->container['url'];
+        return $this->container['message'];
     }
 
     /**
-     * Sets url
+     * Sets message
      *
-     * @param string|null $url url
+     * @param string $message message
      *
      * @return self
      */
-    public function setUrl($url)
+    public function setMessage($message)
     {
-        if (is_null($url)) {
-            throw new \InvalidArgumentException('non-nullable url cannot be null');
+        if (is_null($message)) {
+            throw new \InvalidArgumentException('non-nullable message cannot be null');
         }
-        $this->container['url'] = $url;
+        $allowedValues = $this->getMessageAllowableValues();
+        if (!in_array($message, $allowedValues, true)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    "Invalid value '%s' for 'message', must be one of '%s'",
+                    $message,
+                    implode("', '", $allowedValues)
+                )
+            );
+        }
+        $this->container['message'] = $message;
 
         return $this;
     }
 
     /**
-     * Gets icon
+     * Gets data
      *
-     * @return string|null
+     * @return Null
      */
-    public function getIcon()
+    public function getData()
     {
-        return $this->container['icon'];
+        return $this->container['data'];
     }
 
     /**
-     * Sets icon
+     * Sets data
      *
-     * @param string|null $icon icon
+     * @param Null $data data
      *
      * @return self
      */
-    public function setIcon($icon)
+    public function setData($data)
     {
-        if (is_null($icon)) {
-            array_push($this->openAPINullablesSetToNull, 'icon');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('icon', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
+        if (is_null($data)) {
+            throw new \InvalidArgumentException('non-nullable data cannot be null');
         }
-        $this->container['icon'] = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Gets icon_color
-     *
-     * @return string|null
-     */
-    public function getIconColor()
-    {
-        return $this->container['icon_color'];
-    }
-
-    /**
-     * Sets icon_color
-     *
-     * @param string|null $icon_color icon_color
-     *
-     * @return self
-     */
-    public function setIconColor($icon_color)
-    {
-        if (is_null($icon_color)) {
-            array_push($this->openAPINullablesSetToNull, 'icon_color');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('icon_color', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['icon_color'] = $icon_color;
-
-        return $this;
-    }
-
-    /**
-     * Gets order
-     *
-     * @return int|null
-     */
-    public function getOrder()
-    {
-        return $this->container['order'];
-    }
-
-    /**
-     * Sets order
-     *
-     * @param int|null $order order
-     *
-     * @return self
-     */
-    public function setOrder($order)
-    {
-        if (is_null($order)) {
-            throw new \InvalidArgumentException('non-nullable order cannot be null');
-        }
-        $this->container['order'] = $order;
-
-        return $this;
-    }
-
-    /**
-     * Gets term_field
-     *
-     * @return string|null
-     */
-    public function getTermField()
-    {
-        return $this->container['term_field'];
-    }
-
-    /**
-     * Sets term_field
-     *
-     * @param string|null $term_field term_field
-     *
-     * @return self
-     */
-    public function setTermField($term_field)
-    {
-        if (is_null($term_field)) {
-            throw new \InvalidArgumentException('non-nullable term_field cannot be null');
-        }
-        $this->container['term_field'] = $term_field;
-
-        return $this;
-    }
-
-    /**
-     * Gets default
-     *
-     * @return bool|null
-     */
-    public function getDefault()
-    {
-        return $this->container['default'];
-    }
-
-    /**
-     * Sets default
-     *
-     * @param bool|null $default default
-     *
-     * @return self
-     */
-    public function setDefault($default)
-    {
-        if (is_null($default)) {
-            throw new \InvalidArgumentException('non-nullable default cannot be null');
-        }
-        $this->container['default'] = $default;
-
-        return $this;
-    }
-
-    /**
-     * Gets created_at
-     *
-     * @return \DateTime|null
-     */
-    public function getCreatedAt()
-    {
-        return $this->container['created_at'];
-    }
-
-    /**
-     * Sets created_at
-     *
-     * @param \DateTime|null $created_at created_at
-     *
-     * @return self
-     */
-    public function setCreatedAt($created_at)
-    {
-        if (is_null($created_at)) {
-            array_push($this->openAPINullablesSetToNull, 'created_at');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('created_at', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['created_at'] = $created_at;
-
-        return $this;
-    }
-
-    /**
-     * Gets updated_at
-     *
-     * @return \DateTime|null
-     */
-    public function getUpdatedAt()
-    {
-        return $this->container['updated_at'];
-    }
-
-    /**
-     * Sets updated_at
-     *
-     * @param \DateTime|null $updated_at updated_at
-     *
-     * @return self
-     */
-    public function setUpdatedAt($updated_at)
-    {
-        if (is_null($updated_at)) {
-            array_push($this->openAPINullablesSetToNull, 'updated_at');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('updated_at', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['updated_at'] = $updated_at;
+        $this->container['data'] = $data;
 
         return $this;
     }

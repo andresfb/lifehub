@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Modules\Dashboard\Database\Factories\SearchProviderFactory;
 use Modules\Dashboard\Http\Resources\Api\V1\SearchProviderResource;
@@ -48,13 +47,6 @@ final class SearchProvider extends Model implements UserModelInterface
     use BelongsToUser;
     use HasFactory;
     use HasSlug;
-    use SoftDeletes;
-
-    #[Override]
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
 
     /**
      * @return Collection<int, SearchProvider>
@@ -78,17 +70,10 @@ final class SearchProvider extends Model implements UserModelInterface
             ->exists();
     }
 
-    public static function rules(): array
+    #[Override]
+    public function getRouteKeyName(): string
     {
-        return [
-            'name' => ['required', 'string', 'min:3', 'max:255'],
-            'url' => ['required', 'string', 'url', 'max:2000'],
-            'term_field' => ['required', 'string', 'max:10'],
-            'icon' => ['nullable', 'string', 'max:10'],
-            'icon_color' => ['nullable', 'string', 'regex:/^#[0-9a-fA-F]{6}$/', 'max:20'],
-            'active' => ['boolean'],
-            'default' => ['boolean'],
-        ];
+        return 'slug';
     }
 
     /**

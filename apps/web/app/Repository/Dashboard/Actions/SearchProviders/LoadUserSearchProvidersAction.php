@@ -9,6 +9,7 @@ use App\Repository\Dashboard\Services\SearchProviders\ApiSearchProviderService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use RuntimeException;
+use Throwable;
 
 final readonly class LoadUserSearchProvidersAction
 {
@@ -18,16 +19,19 @@ final readonly class LoadUserSearchProvidersAction
 
     /**
      * @return Collection<string, SearchProviderItem>
+     *
+     * @throws Throwable
      */
     public function handle(int $userId): Collection
     {
-        $cached = Cache::remember(
-            md5("user-search-providers-{$userId}"),
-            now()->addDay(),
-            function () use ($userId): array {
-                return $this->providerService->getProviders($userId);
-            }
-        );
+        $cached = Cache::tags(['search-providers'])
+            ->remember(
+                md5("user-search-providers-{$userId}"),
+                now()->addDay(),
+                function () use ($userId): array {
+                    return $this->providerService->getProviders($userId);
+                }
+            );
 
         if (blank($cached)) {
             throw new RuntimeException('Search Providers not found');

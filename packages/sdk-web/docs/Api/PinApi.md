@@ -15,7 +15,7 @@ All URIs are relative to http://localhost:8000/api, except if the operation defi
 ## `v1DashboardPinsDestroy()`
 
 ```php
-v1DashboardPinsDestroy($pin)
+v1DashboardPinsDestroy($pin): \LifeHub\ApiClient\Model\V1DashboardPinsDestroy200Response
 ```
 
 
@@ -36,7 +36,8 @@ $apiInstance = new LifeHub\ApiClient\Api\PinApi(
 $pin = 'pin_example'; // string | The pin slug
 
 try {
-    $apiInstance->v1DashboardPinsDestroy($pin);
+    $result = $apiInstance->v1DashboardPinsDestroy($pin);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PinApi->v1DashboardPinsDestroy: ', $e->getMessage(), PHP_EOL;
 }
@@ -50,7 +51,7 @@ try {
 
 ### Return type
 
-void (empty response body)
+[**\LifeHub\ApiClient\Model\V1DashboardPinsDestroy200Response**](../Model/V1DashboardPinsDestroy200Response.md)
 
 ### Authorization
 

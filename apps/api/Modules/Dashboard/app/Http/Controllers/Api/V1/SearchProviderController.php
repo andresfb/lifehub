@@ -13,7 +13,7 @@ use Modules\Dashboard\Actions\SearchProvidersAction;
 use Modules\Dashboard\Actions\SearchProviderUpdateAction;
 use Modules\Dashboard\Dtos\SearchProviderItem;
 use Modules\Dashboard\Http\Requests\Api\V1\SearchProviderCreateRequest;
-use Modules\Dashboard\Http\Requests\SearchProviderUpdateRequest;
+use Modules\Dashboard\Http\Requests\Api\V1\SearchProviderUpdateRequest;
 use Modules\Dashboard\Http\Resources\Api\V1\SearchProviderResource;
 use Modules\Dashboard\Models\SearchProvider;
 use Throwable;
@@ -47,12 +47,12 @@ final class SearchProviderController extends ApiController
 
     public function update(
         SearchProviderUpdateRequest $request,
-        SearchProvider $provider,
-        SearchProviderUpdateAction $action
+        SearchProviderUpdateAction $action,
+        SearchProvider $searchProvider,
     ): JsonResponse {
         try {
             $action->handle(
-                provider: $provider,
+                provider: $searchProvider,
                 item: SearchProviderItem::from($request->validated()),
             );
         } catch (Throwable $e) {
@@ -62,12 +62,12 @@ final class SearchProviderController extends ApiController
         return $this->success(message: 'Pin updated successfully');
     }
 
-    public function destroy(SearchProvider $provider): JsonResponse
+    public function destroy(SearchProvider $searchProvider): JsonResponse
     {
-        $this->authorize('delete', $provider);
+        $this->authorize('delete', $searchProvider);
 
-        $provider->delete();
+        $searchProvider->delete();
 
-        return $this->noContent();
+        return $this->success(message: 'Search Provider deleted successfully');
     }
 }

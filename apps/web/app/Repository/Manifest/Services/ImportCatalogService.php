@@ -133,7 +133,7 @@ final class ImportCatalogService
         int $sortOrder,
         ?ApiManifestNavigationNode $parent = null,
     ): void {
-        if ($nodePayload === null) {
+        if (! $nodePayload instanceof stdClass) {
             return;
         }
 

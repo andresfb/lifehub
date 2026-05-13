@@ -2,29 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Modules\Dashboard\Dtos;
+namespace App\Repository\Dashboard\Dtos\SearchProviders;
 
 use Spatie\LaravelData\Data;
 
-final class SearchProviderItem extends Data
+final class SearchProviderCreateItem extends Data
 {
     public function __construct(
         public readonly string $name,
         public readonly string $url,
         public readonly string $term_field,
         public readonly bool $default,
-        public readonly bool $active = true,
-        public readonly ?int $order = null,
         public readonly ?string $icon = null,
         public readonly ?string $icon_color = null,
     ) {}
-
-    public function getUrl(): string
-    {
-        return str($this->url)
-            ->trim()
-            ->lower()
-            ->replaceEnd('/', '')
-            ->value();
-    }
 }

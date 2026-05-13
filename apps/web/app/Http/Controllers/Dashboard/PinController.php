@@ -22,17 +22,16 @@ final class PinController extends Controller
         private readonly ApiPinsService $pinsService,
     ) {}
 
-    /**
-     * @throws Throwable
-     */
-    public function index(PinIndexAction $action): View
+    public function index(PinIndexAction $action): View|RedirectResponse
     {
-        $userId = (int) Auth::id();
-
-        return view(
-            'dashboard.pins.index',
-            ['data' => $action->handle($userId)],
-        );
+        try {
+            return view(
+                'dashboard.pins.index',
+                ['data' => $action->handle((int) Auth::id())],
+            );
+        } catch (Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function store(PinCreateRequest $request): RedirectResponse

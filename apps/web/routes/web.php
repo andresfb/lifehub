@@ -82,9 +82,18 @@ Route::middleware(['auth'])->group(function () {
                 ->name('dashboard.pins.show');
         });
 
-        Route::controller(SearchProviderController::class)->group( function () {
+        Route::controller(SearchProviderController::class)->group(function () {
             Route::get('/search-providers', 'index')
                 ->name('dashboard.search-providers.index');
+
+            Route::post('/search-providers', 'store')
+                ->name('dashboard.search-providers.store');
+
+            Route::put('/search-providers/{provider}', 'update')
+                ->name('dashboard.search-providers.update');
+
+            Route::delete('/search-providers/{provider}', 'destroy')
+                ->name('dashboard.search-providers.delete');
         });
 
     });

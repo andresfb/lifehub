@@ -80,9 +80,6 @@ class SearchProviderApi
         'v1DashboardSearchProvidersIndex' => [
             'application/json',
         ],
-        'v1DashboardSearchProvidersShow' => [
-            'application/json',
-        ],
         'v1DashboardSearchProvidersStore' => [
             'application/json',
         ],
@@ -140,32 +137,32 @@ class SearchProviderApi
     /**
      * Operation v1DashboardSearchProvidersDestroy
      *
-     * @param  int $provider The provider ID (required)
+     * @param  string $search_provider The search provider slug (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersDestroy'] to see the possible values for this operation
      *
      * @throws \LifeHub\ApiClient\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return object|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1
+     * @return \LifeHub\ApiClient\Model\V1DashboardSearchProvidersDestroy200Response|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1
      */
-    public function v1DashboardSearchProvidersDestroy($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersDestroy'][0])
+    public function v1DashboardSearchProvidersDestroy($search_provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersDestroy'][0])
     {
-        list($response) = $this->v1DashboardSearchProvidersDestroyWithHttpInfo($provider, $contentType);
+        list($response) = $this->v1DashboardSearchProvidersDestroyWithHttpInfo($search_provider, $contentType);
         return $response;
     }
 
     /**
      * Operation v1DashboardSearchProvidersDestroyWithHttpInfo
      *
-     * @param  int $provider The provider ID (required)
+     * @param  string $search_provider The search provider slug (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersDestroy'] to see the possible values for this operation
      *
      * @throws \LifeHub\ApiClient\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of object|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \LifeHub\ApiClient\Model\V1DashboardSearchProvidersDestroy200Response|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1, HTTP status code, HTTP response headers (array of strings)
      */
-    public function v1DashboardSearchProvidersDestroyWithHttpInfo($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersDestroy'][0])
+    public function v1DashboardSearchProvidersDestroyWithHttpInfo($search_provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersDestroy'][0])
     {
-        $request = $this->v1DashboardSearchProvidersDestroyRequest($provider, $contentType);
+        $request = $this->v1DashboardSearchProvidersDestroyRequest($search_provider, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -193,17 +190,17 @@ class SearchProviderApi
             switch($statusCode) {
                 case 200:
                     return $this->handleResponseWithDataType(
-                        'object',
+                        '\LifeHub\ApiClient\Model\V1DashboardSearchProvidersDestroy200Response',
                         $request,
                         $response,
                     );
-                case 404:
+                case 403:
                     return $this->handleResponseWithDataType(
                         '\LifeHub\ApiClient\Model\InlineObject1',
                         $request,
                         $response,
                     );
-                case 403:
+                case 404:
                     return $this->handleResponseWithDataType(
                         '\LifeHub\ApiClient\Model\InlineObject1',
                         $request,
@@ -233,7 +230,7 @@ class SearchProviderApi
             }
 
             return $this->handleResponseWithDataType(
-                'object',
+                '\LifeHub\ApiClient\Model\V1DashboardSearchProvidersDestroy200Response',
                 $request,
                 $response,
             );
@@ -242,12 +239,12 @@ class SearchProviderApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\LifeHub\ApiClient\Model\V1DashboardSearchProvidersDestroy200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
                     throw $e;
-                case 404:
+                case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\LifeHub\ApiClient\Model\InlineObject1',
@@ -255,7 +252,7 @@ class SearchProviderApi
                     );
                     $e->setResponseObject($data);
                     throw $e;
-                case 403:
+                case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\LifeHub\ApiClient\Model\InlineObject1',
@@ -281,15 +278,15 @@ class SearchProviderApi
     /**
      * Operation v1DashboardSearchProvidersDestroyAsync
      *
-     * @param  int $provider The provider ID (required)
+     * @param  string $search_provider The search provider slug (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersDestroy'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function v1DashboardSearchProvidersDestroyAsync($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersDestroy'][0])
+    public function v1DashboardSearchProvidersDestroyAsync($search_provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersDestroy'][0])
     {
-        return $this->v1DashboardSearchProvidersDestroyAsyncWithHttpInfo($provider, $contentType)
+        return $this->v1DashboardSearchProvidersDestroyAsyncWithHttpInfo($search_provider, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -300,16 +297,16 @@ class SearchProviderApi
     /**
      * Operation v1DashboardSearchProvidersDestroyAsyncWithHttpInfo
      *
-     * @param  int $provider The provider ID (required)
+     * @param  string $search_provider The search provider slug (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersDestroy'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function v1DashboardSearchProvidersDestroyAsyncWithHttpInfo($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersDestroy'][0])
+    public function v1DashboardSearchProvidersDestroyAsyncWithHttpInfo($search_provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersDestroy'][0])
     {
-        $returnType = 'object';
-        $request = $this->v1DashboardSearchProvidersDestroyRequest($provider, $contentType);
+        $returnType = '\LifeHub\ApiClient\Model\V1DashboardSearchProvidersDestroy200Response';
+        $request = $this->v1DashboardSearchProvidersDestroyRequest($search_provider, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -350,24 +347,24 @@ class SearchProviderApi
     /**
      * Create request for operation 'v1DashboardSearchProvidersDestroy'
      *
-     * @param  int $provider The provider ID (required)
+     * @param  string $search_provider The search provider slug (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersDestroy'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function v1DashboardSearchProvidersDestroyRequest($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersDestroy'][0])
+    public function v1DashboardSearchProvidersDestroyRequest($search_provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersDestroy'][0])
     {
 
-        // verify the required parameter 'provider' is set
-        if ($provider === null || (is_array($provider) && count($provider) === 0)) {
+        // verify the required parameter 'search_provider' is set
+        if ($search_provider === null || (is_array($search_provider) && count($search_provider) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $provider when calling v1DashboardSearchProvidersDestroy'
+                'Missing the required parameter $search_provider when calling v1DashboardSearchProvidersDestroy'
             );
         }
 
 
-        $resourcePath = '/v1/dashboard/search/providers/{provider}';
+        $resourcePath = '/v1/dashboard/search-providers/{searchProvider}';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -377,10 +374,10 @@ class SearchProviderApi
 
 
         // path params
-        if ($provider !== null) {
+        if ($search_provider !== null) {
             $resourcePath = str_replace(
-                '{provider}',
-                ObjectSerializer::toPathValue($provider),
+                '{searchProvider}',
+                ObjectSerializer::toPathValue($search_provider),
                 $resourcePath
             );
         }
@@ -649,7 +646,7 @@ class SearchProviderApi
 
 
 
-        $resourcePath = '/v1/dashboard/search/providers';
+        $resourcePath = '/v1/dashboard/search-providers';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -723,334 +720,34 @@ class SearchProviderApi
     }
 
     /**
-     * Operation v1DashboardSearchProvidersShow
-     *
-     * @param  int $provider The provider ID (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersShow'] to see the possible values for this operation
-     *
-     * @throws \LifeHub\ApiClient\ApiException on non-2xx response or if the response body is not in the expected format
-     * @throws \InvalidArgumentException
-     * @return object|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1
-     */
-    public function v1DashboardSearchProvidersShow($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersShow'][0])
-    {
-        list($response) = $this->v1DashboardSearchProvidersShowWithHttpInfo($provider, $contentType);
-        return $response;
-    }
-
-    /**
-     * Operation v1DashboardSearchProvidersShowWithHttpInfo
-     *
-     * @param  int $provider The provider ID (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersShow'] to see the possible values for this operation
-     *
-     * @throws \LifeHub\ApiClient\ApiException on non-2xx response or if the response body is not in the expected format
-     * @throws \InvalidArgumentException
-     * @return array of object|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function v1DashboardSearchProvidersShowWithHttpInfo($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersShow'][0])
-    {
-        $request = $this->v1DashboardSearchProvidersShowRequest($provider, $contentType);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    (int) $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
-                );
-            } catch (ConnectException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    (int) $e->getCode(),
-                    null,
-                    null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-
-            switch($statusCode) {
-                case 200:
-                    return $this->handleResponseWithDataType(
-                        'object',
-                        $request,
-                        $response,
-                    );
-                case 404:
-                    return $this->handleResponseWithDataType(
-                        '\LifeHub\ApiClient\Model\InlineObject1',
-                        $request,
-                        $response,
-                    );
-                case 403:
-                    return $this->handleResponseWithDataType(
-                        '\LifeHub\ApiClient\Model\InlineObject1',
-                        $request,
-                        $response,
-                    );
-                case 401:
-                    return $this->handleResponseWithDataType(
-                        '\LifeHub\ApiClient\Model\InlineObject1',
-                        $request,
-                        $response,
-                    );
-            }
-
-            
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        (string) $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    (string) $response->getBody()
-                );
-            }
-
-            return $this->handleResponseWithDataType(
-                'object',
-                $request,
-                $response,
-            );
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-                case 200:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        'object',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    throw $e;
-                case 404:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\LifeHub\ApiClient\Model\InlineObject1',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    throw $e;
-                case 403:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\LifeHub\ApiClient\Model\InlineObject1',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    throw $e;
-                case 401:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\LifeHub\ApiClient\Model\InlineObject1',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    throw $e;
-            }
-        
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation v1DashboardSearchProvidersShowAsync
-     *
-     * @param  int $provider The provider ID (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersShow'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function v1DashboardSearchProvidersShowAsync($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersShow'][0])
-    {
-        return $this->v1DashboardSearchProvidersShowAsyncWithHttpInfo($provider, $contentType)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation v1DashboardSearchProvidersShowAsyncWithHttpInfo
-     *
-     * @param  int $provider The provider ID (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersShow'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function v1DashboardSearchProvidersShowAsyncWithHttpInfo($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersShow'][0])
-    {
-        $returnType = 'object';
-        $request = $this->v1DashboardSearchProvidersShowRequest($provider, $contentType);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    if ($returnType === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        (string) $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'v1DashboardSearchProvidersShow'
-     *
-     * @param  int $provider The provider ID (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersShow'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    public function v1DashboardSearchProvidersShowRequest($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersShow'][0])
-    {
-
-        // verify the required parameter 'provider' is set
-        if ($provider === null || (is_array($provider) && count($provider) === 0)) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $provider when calling v1DashboardSearchProvidersShow'
-            );
-        }
-
-
-        $resourcePath = '/v1/dashboard/search/providers/{provider}';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-
-
-        // path params
-        if ($provider !== null) {
-            $resourcePath = str_replace(
-                '{provider}',
-                ObjectSerializer::toPathValue($provider),
-                $resourcePath
-            );
-        }
-
-
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        // for model (json/xml)
-        if (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
-                    foreach ($formParamValueItems as $formParamValueItem) {
-                        $multipartContents[] = [
-                            'name' => $formParamName,
-                            'contents' => $formParamValueItem
-                        ];
-                    }
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the form parameters
-                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
-            } else {
-                // for HTTP post (form)
-                $httpBody = ObjectSerializer::buildQuery($formParams);
-            }
-        }
-
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
-        return new Request(
-            'GET',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
      * Operation v1DashboardSearchProvidersStore
      *
+     * @param  \LifeHub\ApiClient\Model\SearchProviderCreateRequest $search_provider_create_request search_provider_create_request (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersStore'] to see the possible values for this operation
      *
      * @throws \LifeHub\ApiClient\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return object|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1
+     * @return \LifeHub\ApiClient\Model\V1DashboardSearchProvidersStore201Response|\LifeHub\ApiClient\Model\V1DashboardPinsStore400Response|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject
      */
-    public function v1DashboardSearchProvidersStore(string $contentType = self::contentTypes['v1DashboardSearchProvidersStore'][0])
+    public function v1DashboardSearchProvidersStore($search_provider_create_request, string $contentType = self::contentTypes['v1DashboardSearchProvidersStore'][0])
     {
-        list($response) = $this->v1DashboardSearchProvidersStoreWithHttpInfo($contentType);
+        list($response) = $this->v1DashboardSearchProvidersStoreWithHttpInfo($search_provider_create_request, $contentType);
         return $response;
     }
 
     /**
      * Operation v1DashboardSearchProvidersStoreWithHttpInfo
      *
+     * @param  \LifeHub\ApiClient\Model\SearchProviderCreateRequest $search_provider_create_request (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersStore'] to see the possible values for this operation
      *
      * @throws \LifeHub\ApiClient\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of object|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \LifeHub\ApiClient\Model\V1DashboardSearchProvidersStore201Response|\LifeHub\ApiClient\Model\V1DashboardPinsStore400Response|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject, HTTP status code, HTTP response headers (array of strings)
      */
-    public function v1DashboardSearchProvidersStoreWithHttpInfo(string $contentType = self::contentTypes['v1DashboardSearchProvidersStore'][0])
+    public function v1DashboardSearchProvidersStoreWithHttpInfo($search_provider_create_request, string $contentType = self::contentTypes['v1DashboardSearchProvidersStore'][0])
     {
-        $request = $this->v1DashboardSearchProvidersStoreRequest($contentType);
+        $request = $this->v1DashboardSearchProvidersStoreRequest($search_provider_create_request, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1076,9 +773,15 @@ class SearchProviderApi
 
 
             switch($statusCode) {
-                case 200:
+                case 201:
                     return $this->handleResponseWithDataType(
-                        'object',
+                        '\LifeHub\ApiClient\Model\V1DashboardSearchProvidersStore201Response',
+                        $request,
+                        $response,
+                    );
+                case 400:
+                    return $this->handleResponseWithDataType(
+                        '\LifeHub\ApiClient\Model\V1DashboardPinsStore400Response',
                         $request,
                         $response,
                     );
@@ -1091,6 +794,12 @@ class SearchProviderApi
                 case 401:
                     return $this->handleResponseWithDataType(
                         '\LifeHub\ApiClient\Model\InlineObject1',
+                        $request,
+                        $response,
+                    );
+                case 422:
+                    return $this->handleResponseWithDataType(
+                        '\LifeHub\ApiClient\Model\InlineObject',
                         $request,
                         $response,
                     );
@@ -1112,16 +821,24 @@ class SearchProviderApi
             }
 
             return $this->handleResponseWithDataType(
-                'object',
+                '\LifeHub\ApiClient\Model\V1DashboardSearchProvidersStore201Response',
                 $request,
                 $response,
             );
         } catch (ApiException $e) {
             switch ($e->getCode()) {
-                case 200:
+                case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\LifeHub\ApiClient\Model\V1DashboardSearchProvidersStore201Response',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\LifeHub\ApiClient\Model\V1DashboardPinsStore400Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1138,6 +855,14 @@ class SearchProviderApi
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\LifeHub\ApiClient\Model\InlineObject1',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 422:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\LifeHub\ApiClient\Model\InlineObject',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1152,14 +877,15 @@ class SearchProviderApi
     /**
      * Operation v1DashboardSearchProvidersStoreAsync
      *
+     * @param  \LifeHub\ApiClient\Model\SearchProviderCreateRequest $search_provider_create_request (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersStore'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function v1DashboardSearchProvidersStoreAsync(string $contentType = self::contentTypes['v1DashboardSearchProvidersStore'][0])
+    public function v1DashboardSearchProvidersStoreAsync($search_provider_create_request, string $contentType = self::contentTypes['v1DashboardSearchProvidersStore'][0])
     {
-        return $this->v1DashboardSearchProvidersStoreAsyncWithHttpInfo($contentType)
+        return $this->v1DashboardSearchProvidersStoreAsyncWithHttpInfo($search_provider_create_request, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1170,15 +896,16 @@ class SearchProviderApi
     /**
      * Operation v1DashboardSearchProvidersStoreAsyncWithHttpInfo
      *
+     * @param  \LifeHub\ApiClient\Model\SearchProviderCreateRequest $search_provider_create_request (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersStore'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function v1DashboardSearchProvidersStoreAsyncWithHttpInfo(string $contentType = self::contentTypes['v1DashboardSearchProvidersStore'][0])
+    public function v1DashboardSearchProvidersStoreAsyncWithHttpInfo($search_provider_create_request, string $contentType = self::contentTypes['v1DashboardSearchProvidersStore'][0])
     {
-        $returnType = 'object';
-        $request = $this->v1DashboardSearchProvidersStoreRequest($contentType);
+        $returnType = '\LifeHub\ApiClient\Model\V1DashboardSearchProvidersStore201Response';
+        $request = $this->v1DashboardSearchProvidersStoreRequest($search_provider_create_request, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1219,16 +946,24 @@ class SearchProviderApi
     /**
      * Create request for operation 'v1DashboardSearchProvidersStore'
      *
+     * @param  \LifeHub\ApiClient\Model\SearchProviderCreateRequest $search_provider_create_request (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersStore'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function v1DashboardSearchProvidersStoreRequest(string $contentType = self::contentTypes['v1DashboardSearchProvidersStore'][0])
+    public function v1DashboardSearchProvidersStoreRequest($search_provider_create_request, string $contentType = self::contentTypes['v1DashboardSearchProvidersStore'][0])
     {
 
+        // verify the required parameter 'search_provider_create_request' is set
+        if ($search_provider_create_request === null || (is_array($search_provider_create_request) && count($search_provider_create_request) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $search_provider_create_request when calling v1DashboardSearchProvidersStore'
+            );
+        }
 
-        $resourcePath = '/v1/dashboard/search/providers';
+
+        $resourcePath = '/v1/dashboard/search-providers';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -1246,7 +981,14 @@ class SearchProviderApi
         );
 
         // for model (json/xml)
-        if (count($formParams) > 0) {
+        if (isset($search_provider_create_request)) {
+            if (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the body
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($search_provider_create_request));
+            } else {
+                $httpBody = $search_provider_create_request;
+            }
+        } elseif (count($formParams) > 0) {
             if ($multipart) {
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
@@ -1295,32 +1037,34 @@ class SearchProviderApi
     /**
      * Operation v1DashboardSearchProvidersUpdate
      *
-     * @param  int $provider The provider ID (required)
+     * @param  string $search_provider The search provider slug (required)
+     * @param  \LifeHub\ApiClient\Model\SearchProviderUpdateRequest $search_provider_update_request search_provider_update_request (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersUpdate'] to see the possible values for this operation
      *
      * @throws \LifeHub\ApiClient\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return object|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1
+     * @return \LifeHub\ApiClient\Model\V1DashboardPinsUpdate200Response|\LifeHub\ApiClient\Model\V1DashboardPinsStore400Response|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject
      */
-    public function v1DashboardSearchProvidersUpdate($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersUpdate'][0])
+    public function v1DashboardSearchProvidersUpdate($search_provider, $search_provider_update_request, string $contentType = self::contentTypes['v1DashboardSearchProvidersUpdate'][0])
     {
-        list($response) = $this->v1DashboardSearchProvidersUpdateWithHttpInfo($provider, $contentType);
+        list($response) = $this->v1DashboardSearchProvidersUpdateWithHttpInfo($search_provider, $search_provider_update_request, $contentType);
         return $response;
     }
 
     /**
      * Operation v1DashboardSearchProvidersUpdateWithHttpInfo
      *
-     * @param  int $provider The provider ID (required)
+     * @param  string $search_provider The search provider slug (required)
+     * @param  \LifeHub\ApiClient\Model\SearchProviderUpdateRequest $search_provider_update_request (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersUpdate'] to see the possible values for this operation
      *
      * @throws \LifeHub\ApiClient\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of object|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \LifeHub\ApiClient\Model\V1DashboardPinsUpdate200Response|\LifeHub\ApiClient\Model\V1DashboardPinsStore400Response|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject1|\LifeHub\ApiClient\Model\InlineObject, HTTP status code, HTTP response headers (array of strings)
      */
-    public function v1DashboardSearchProvidersUpdateWithHttpInfo($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersUpdate'][0])
+    public function v1DashboardSearchProvidersUpdateWithHttpInfo($search_provider, $search_provider_update_request, string $contentType = self::contentTypes['v1DashboardSearchProvidersUpdate'][0])
     {
-        $request = $this->v1DashboardSearchProvidersUpdateRequest($provider, $contentType);
+        $request = $this->v1DashboardSearchProvidersUpdateRequest($search_provider, $search_provider_update_request, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1348,7 +1092,13 @@ class SearchProviderApi
             switch($statusCode) {
                 case 200:
                     return $this->handleResponseWithDataType(
-                        'object',
+                        '\LifeHub\ApiClient\Model\V1DashboardPinsUpdate200Response',
+                        $request,
+                        $response,
+                    );
+                case 400:
+                    return $this->handleResponseWithDataType(
+                        '\LifeHub\ApiClient\Model\V1DashboardPinsStore400Response',
                         $request,
                         $response,
                     );
@@ -1367,6 +1117,12 @@ class SearchProviderApi
                 case 401:
                     return $this->handleResponseWithDataType(
                         '\LifeHub\ApiClient\Model\InlineObject1',
+                        $request,
+                        $response,
+                    );
+                case 422:
+                    return $this->handleResponseWithDataType(
+                        '\LifeHub\ApiClient\Model\InlineObject',
                         $request,
                         $response,
                     );
@@ -1388,7 +1144,7 @@ class SearchProviderApi
             }
 
             return $this->handleResponseWithDataType(
-                'object',
+                '\LifeHub\ApiClient\Model\V1DashboardPinsUpdate200Response',
                 $request,
                 $response,
             );
@@ -1397,7 +1153,15 @@ class SearchProviderApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\LifeHub\ApiClient\Model\V1DashboardPinsUpdate200Response',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\LifeHub\ApiClient\Model\V1DashboardPinsStore400Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1426,6 +1190,14 @@ class SearchProviderApi
                     );
                     $e->setResponseObject($data);
                     throw $e;
+                case 422:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\LifeHub\ApiClient\Model\InlineObject',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
             }
         
 
@@ -1436,15 +1208,16 @@ class SearchProviderApi
     /**
      * Operation v1DashboardSearchProvidersUpdateAsync
      *
-     * @param  int $provider The provider ID (required)
+     * @param  string $search_provider The search provider slug (required)
+     * @param  \LifeHub\ApiClient\Model\SearchProviderUpdateRequest $search_provider_update_request (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersUpdate'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function v1DashboardSearchProvidersUpdateAsync($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersUpdate'][0])
+    public function v1DashboardSearchProvidersUpdateAsync($search_provider, $search_provider_update_request, string $contentType = self::contentTypes['v1DashboardSearchProvidersUpdate'][0])
     {
-        return $this->v1DashboardSearchProvidersUpdateAsyncWithHttpInfo($provider, $contentType)
+        return $this->v1DashboardSearchProvidersUpdateAsyncWithHttpInfo($search_provider, $search_provider_update_request, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1455,16 +1228,17 @@ class SearchProviderApi
     /**
      * Operation v1DashboardSearchProvidersUpdateAsyncWithHttpInfo
      *
-     * @param  int $provider The provider ID (required)
+     * @param  string $search_provider The search provider slug (required)
+     * @param  \LifeHub\ApiClient\Model\SearchProviderUpdateRequest $search_provider_update_request (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersUpdate'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function v1DashboardSearchProvidersUpdateAsyncWithHttpInfo($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersUpdate'][0])
+    public function v1DashboardSearchProvidersUpdateAsyncWithHttpInfo($search_provider, $search_provider_update_request, string $contentType = self::contentTypes['v1DashboardSearchProvidersUpdate'][0])
     {
-        $returnType = 'object';
-        $request = $this->v1DashboardSearchProvidersUpdateRequest($provider, $contentType);
+        $returnType = '\LifeHub\ApiClient\Model\V1DashboardPinsUpdate200Response';
+        $request = $this->v1DashboardSearchProvidersUpdateRequest($search_provider, $search_provider_update_request, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1505,24 +1279,32 @@ class SearchProviderApi
     /**
      * Create request for operation 'v1DashboardSearchProvidersUpdate'
      *
-     * @param  int $provider The provider ID (required)
+     * @param  string $search_provider The search provider slug (required)
+     * @param  \LifeHub\ApiClient\Model\SearchProviderUpdateRequest $search_provider_update_request (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['v1DashboardSearchProvidersUpdate'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function v1DashboardSearchProvidersUpdateRequest($provider, string $contentType = self::contentTypes['v1DashboardSearchProvidersUpdate'][0])
+    public function v1DashboardSearchProvidersUpdateRequest($search_provider, $search_provider_update_request, string $contentType = self::contentTypes['v1DashboardSearchProvidersUpdate'][0])
     {
 
-        // verify the required parameter 'provider' is set
-        if ($provider === null || (is_array($provider) && count($provider) === 0)) {
+        // verify the required parameter 'search_provider' is set
+        if ($search_provider === null || (is_array($search_provider) && count($search_provider) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $provider when calling v1DashboardSearchProvidersUpdate'
+                'Missing the required parameter $search_provider when calling v1DashboardSearchProvidersUpdate'
+            );
+        }
+
+        // verify the required parameter 'search_provider_update_request' is set
+        if ($search_provider_update_request === null || (is_array($search_provider_update_request) && count($search_provider_update_request) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $search_provider_update_request when calling v1DashboardSearchProvidersUpdate'
             );
         }
 
 
-        $resourcePath = '/v1/dashboard/search/providers/{provider}';
+        $resourcePath = '/v1/dashboard/search-providers/{searchProvider}';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -1532,10 +1314,10 @@ class SearchProviderApi
 
 
         // path params
-        if ($provider !== null) {
+        if ($search_provider !== null) {
             $resourcePath = str_replace(
-                '{provider}',
-                ObjectSerializer::toPathValue($provider),
+                '{searchProvider}',
+                ObjectSerializer::toPathValue($search_provider),
                 $resourcePath
             );
         }
@@ -1548,7 +1330,14 @@ class SearchProviderApi
         );
 
         // for model (json/xml)
-        if (count($formParams) > 0) {
+        if (isset($search_provider_update_request)) {
+            if (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the body
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($search_provider_update_request));
+            } else {
+                $httpBody = $search_provider_update_request;
+            }
+        } elseif (count($formParams) > 0) {
             if ($multipart) {
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {

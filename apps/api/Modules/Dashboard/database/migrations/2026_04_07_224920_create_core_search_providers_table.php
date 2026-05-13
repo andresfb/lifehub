@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -25,7 +26,6 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->boolean('default')->default(false);
             $table->smallInteger('order')->default(0);
-            $table->softDeletes();
             $table->timestamps();
 
             $table->index(
@@ -33,10 +33,10 @@ return new class extends Migration
                 'idx_user_active',
             );
 
-            DB::statement("
+            DB::statement('
                 ALTER TABLE dashboard_search_providers
                 ADD INDEX idx_user_name_url (user_id, name, url(500))
-            ");
+            ');
         });
     }
 
