@@ -1,0 +1,16 @@
+---
+# Ensures Composer is available; installs via apt if missing.
+
+- name: Check whether composer is on PATH
+  ansible.builtin.command: which composer
+  register: composer_check
+  changed_when: false
+  failed_when: false
+
+- name: Install composer via apt when absent
+  ansible.builtin.apt:
+    name: composer
+    state: present
+    update_cache: true
+  when: composer_check.rc != 0
+  become: true

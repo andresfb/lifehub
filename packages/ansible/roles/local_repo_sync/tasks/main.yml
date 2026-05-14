@@ -1,0 +1,17 @@
+---
+# Run in a "hosts: localhost" play. Clones the repo on first run; pulls on subsequent runs.
+
+- name: Ensure local deploy directory exists
+  ansible.builtin.file:
+    path: "{{ deploy_local_base }}"
+    state: directory
+    mode: '0755'
+
+- name: Ensure repository is cloned and up to date
+  ansible.builtin.git:
+    repo: "{{ deploy_repo_url }}"
+    dest: "{{ deploy_repo_path }}"
+    version: "{{ deploy_repo_branch }}"
+    update: true
+    force: true
+    accept_hostkey: true

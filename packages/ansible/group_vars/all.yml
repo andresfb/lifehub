@@ -1,0 +1,11 @@
+---
+# Paths on the Ansible control machine (resolved relative to the running playbook)
+deploy_local_base: "{{ playbook_dir }}/deploy"
+deploy_repo_path:  "{{ playbook_dir }}/deploy/lifehub"
+
+# Git repository to clone/pull before each deployment
+deploy_repo_url:    "git@github.com:andresfb/lifehub.git"
+deploy_repo_branch: main
+
+# Maximum number of release directories to keep on each host
+max_releases: 3

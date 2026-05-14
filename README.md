@@ -36,3 +36,8 @@ A Personal Everything App
 26. TODO (Like Workflowy)
 27. Subscription Manager 
 28. YouTube Watch History
+
+
+## Deployment
+
+See [packages/ansible/README.md](packages/ansible/README.md) for deployment instructions.

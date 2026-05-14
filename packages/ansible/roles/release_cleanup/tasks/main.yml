@@ -1,0 +1,30 @@
+---
+# Keeps only the `max_releases` newest release directories; deletes older ones.
+# Requires: deploy_path, max_releases
+
+- name: Find all release directories
+  ansible.builtin.find:
+    paths: "{{ deploy_path }}/releases"
+    file_type: directory
+    recurse: false
+  register: release_dirs
+
+- name: Build sorted list of release numbers
+  ansible.builtin.set_fact:
+    sorted_releases: >-
+      {{
+        release_dirs.files
+        | map(attribute='path')
+        | map('basename')
+        | map('int')
+        | sort
+        | list
+      }}
+
+- name: Delete oldest releases that exceed the max_releases limit
+  ansible.builtin.file:
+    path: "{{ deploy_path }}/releases/{{ item }}"
+    state: absent
+  loop: "{{ sorted_releases[:-max_releases | int] }}"
+  when: sorted_releases | length > max_releases | int
+  become: true

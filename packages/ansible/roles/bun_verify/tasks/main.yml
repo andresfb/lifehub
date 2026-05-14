@@ -1,0 +1,17 @@
+---
+# Ensures bun is installed for the remote user; uses the official install script if absent.
+
+- name: Check whether bun is installed
+  ansible.builtin.shell:
+    cmd: which bun || test -f "$HOME/.bun/bin/bun"
+    executable: /bin/bash
+  register: bun_check
+  changed_when: false
+  failed_when: false
+
+- name: Install bun via official install script when absent
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://bun.sh/install | bash
+    executable: /bin/bash
+  when: bun_check.rc != 0
+  changed_when: true

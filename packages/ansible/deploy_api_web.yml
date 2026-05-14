@@ -1,0 +1,148 @@
+---
+# Playbook: deploy_api_web.yml
+# Description: Deploy LifeHub API to webeloper.lan
+# Requirements:
+#   - Ansible 2.14+
+#   - ansible.posix collection  (ansible-galaxy collection install -r requirements.yml)
+#   - 1Password CLI (op) authenticated locally
+#   - SSH access to webeloper.lan as root
+# Usage:
+#   ansible-playbook -i inventory/hosts.yml deploy_api_web.yml
+
+# ---------------------------------------------------------------------------
+# Play 1 – runs locally: sync repo and fetch secrets
+# ---------------------------------------------------------------------------
+- name: Prepare local repository and secrets
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+
+  roles:
+    - local_repo_sync
+
+  tasks:
+    - name: Ensure local api env directory exists
+      ansible.builtin.file:
+        path: "{{ deploy_local_base }}/api"
+        state: directory
+        mode: '0700'
+
+    - name: Fetch API .env from 1Password
+      ansible.builtin.command:
+        cmd: "op read 'op://LifeHub/EnvProdApi/.env' --out-file {{ deploy_local_base }}/api/.env"
+      changed_when: true
+      no_log: true
+
+# ---------------------------------------------------------------------------
+# Play 2 – runs on webeloper.lan: verify tooling, upload, build, finalize
+# ---------------------------------------------------------------------------
+- name: Deploy API Web to webeloper.lan
+  hosts: api_web
+  gather_facts: true
+  become: false
+
+  vars:
+    deploy_path: /opt/data1/lifehub/api/web
+    env_local_path: "{{ deploy_local_base }}/api/.env"
+    rsync_excludes:
+      - "--exclude=.agents"
+      - "--exclude=.claude"
+      - "--exclude=.bruno"
+      - "--exclude=.codex"
+      - "--exclude=bootstrap/cache"
+      - "--exclude=deployer"
+      - "--exclude=docker"
+      - "--exclude=storage"
+      - "--exclude=stubs"
+      - "--exclude=tests"
+      - "--exclude=vendor"
+      - "--exclude=.*"
+      - "--exclude=AGENTS.md"
+      - "--exclude=CLAUDE.md"
+      - "--exclude=README.md"
+      - "--exclude=LICENSE"
+      - "--exclude=boost.json"
+      - "--exclude=deploy.php"
+      - "--exclude=docker-compose*"
+      - "--exclude=phpstan*"
+      - "--exclude=phpunit.xml"
+      - "--exclude=pint.json"
+      - "--exclude=rector.php"
+
+  roles:
+    - php_verify
+    - composer_verify
+    - release_setup
+
+  tasks:
+    - name: Upload .env to shared directory
+      ansible.builtin.copy:
+        src: "{{ env_local_path }}"
+        dest: "{{ deploy_path }}/shared/.env"
+        mode: '0600'
+      no_log: true
+
+    - name: Sync API application files to release directory
+      ansible.posix.synchronize:
+        src: "{{ deploy_repo_path }}/apps/api/"
+        dest: "{{ deploy_path }}/releases/{{ new_release_num }}/apps/api/"
+        rsync_opts: "{{ rsync_excludes }}"
+        recursive: true
+        delete: false
+      become: false
+
+    - name: Create .env symlink inside release
+      ansible.builtin.file:
+        src: "{{ deploy_path }}/shared/.env"
+        dest: "{{ deploy_path }}/releases/{{ new_release_num }}/apps/api/.env"
+        state: link
+        force: true
+
+    - name: Create persistent storage directories in shared (survives across releases)
+      ansible.builtin.file:
+        path: "{{ deploy_path }}/shared/storage/{{ item }}"
+        state: directory
+        mode: '0777'
+      loop:
+        - app/private
+        - app/public
+        - framework/cache/data
+        - framework/sessions
+        - framework/testing
+        - framework/views
+        - logs
+
+    - name: Create bootstrap/cache directory in release
+      ansible.builtin.file:
+        path: "{{ deploy_path }}/releases/{{ new_release_num }}/apps/api/bootstrap/cache"
+        state: directory
+        mode: '0777'
+
+    - name: Link release storage to shared storage
+      ansible.builtin.file:
+        src: "{{ deploy_path }}/shared/storage"
+        dest: "{{ deploy_path }}/releases/{{ new_release_num }}/apps/api/storage"
+        state: link
+        force: true
+
+    - name: Run composer install
+      ansible.builtin.command:
+        cmd: "composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader"
+        chdir: "{{ deploy_path }}/releases/{{ new_release_num }}/apps/api"
+      changed_when: true
+
+    - name: Run artisan optimize
+      ansible.builtin.command:
+        cmd: "{{ php_bin }} artisan optimize"
+        chdir: "{{ deploy_path }}/releases/{{ new_release_num }}/apps/api"
+      changed_when: true
+
+  post_tasks:
+    - name: Finalize release – switch symlink and update counter
+      ansible.builtin.include_role:
+        name: release_finalize
+
+    - name: Remove oldest releases beyond the configured limit
+      ansible.builtin.include_role:
+        name: release_cleanup
