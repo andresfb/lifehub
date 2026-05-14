@@ -95,10 +95,10 @@ Missing tools are installed automatically during deployment (Composer and superv
 All commands are run from the **project root**.
 
 ```bash
-make deploy-api-web       # API → webeloper.lan
-make deploy-api-worker    # API worker → horizon.lan  (prompts for sudo password)
-make deploy-front-web     # Frontend → webeloper.lan
-make deploy-front-worker  # Frontend worker → horizon.lan  (prompts for sudo password)
+make deploy-api-web       # API → api_web host
+make deploy-api-worker    # API worker → api_worker host  (prompts for sudo password)
+make deploy-front-web     # Frontend → frontend_web host
+make deploy-front-worker  # Frontend worker → frontend_worker host  (prompts for sudo password)
 
 make deploy-all           # Runs all four in sequence
 ```
@@ -109,25 +109,25 @@ make deploy-all           # Runs all four in sequence
 
 ## What each deployment does
 
-### API Web (`webeloper.lan`)
+### API Web
 - Syncs `apps/api/` to the new release directory
 - Uploads `.env` to `shared/` and symlinks it
 - Symlinks `shared/storage/` into the release
 - Runs `composer install` and `php artisan optimize`
 
-### API Worker (`horizon.lan`)
+### API Worker
 - Syncs `apps/api/` (as `apps/worker/`) and `packages/tools/scripts/` to the new release
 - Same `.env` and storage setup as API Web
 - Runs `composer install` and `php artisan optimize`
 - Restarts the `lifehub-api:*` supervisord process
 
-### Frontend Web (`webeloper.lan`)
+### Frontend Web
 - Syncs `apps/web/` and `packages/sdk-web/` to the new release
 - Uploads `.env` to `shared/` and symlinks it
 - Symlinks `shared/storage/` into the release
 - Runs `composer install`, `php artisan optimize`, `npm install`, and `npm run build`
 
-### Frontend Worker (`horizon.lan`)
+### Frontend Worker
 - Same files as Frontend Web
 - Same `.env` and storage setup
 - Runs `composer install` and `php artisan optimize`
