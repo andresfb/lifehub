@@ -1,0 +1,45 @@
+---
+# Creates the capistrano-style directory layout on the remote host, reads the
+# current release counter, and exposes `new_release_num` for the rest of the play.
+# Requires: deploy_path (play var)
+
+- name: Ensure deployment base directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ deploy_path }}"
+    - "{{ deploy_path }}/.meta"
+    - "{{ deploy_path }}/releases"
+    - "{{ deploy_path }}/shared"
+  become: true
+
+- name: Check whether latest_release tracking file exists
+  ansible.builtin.stat:
+    path: "{{ deploy_path }}/.meta/latest_release"
+  register: latest_release_stat
+
+- name: Initialise latest_release file to 0 if absent
+  ansible.builtin.copy:
+    content: "0"
+    dest: "{{ deploy_path }}/.meta/latest_release"
+    mode: '0644'
+  when: not latest_release_stat.stat.exists
+  become: true
+
+- name: Read current release number
+  ansible.builtin.slurp:
+    src: "{{ deploy_path }}/.meta/latest_release"
+  register: latest_release_raw
+
+- name: Compute and store new release number
+  ansible.builtin.set_fact:
+    new_release_num: "{{ (latest_release_raw.content | b64decode | trim | int) + 1 }}"
+
+- name: Create new release directory
+  ansible.builtin.file:
+    path: "{{ deploy_path }}/releases/{{ new_release_num }}"
+    state: directory
+    mode: '0755'
+  become: true

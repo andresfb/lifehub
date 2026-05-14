@@ -53,6 +53,9 @@ Temporary Items
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 .idea
 
+# Ansible
+packages/ansible/inventory/hosts.yml
+
 # Custom Values
 .sync/
 contruction/

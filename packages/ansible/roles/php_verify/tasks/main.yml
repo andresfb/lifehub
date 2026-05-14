@@ -1,0 +1,25 @@
+---
+# Verifies PHP 8.5 is installed, aborts if not, and exposes `php_bin`.
+
+- name: Get PHP version string
+  ansible.builtin.command: php --version
+  register: php_version_result
+  changed_when: false
+  failed_when: php_version_result.rc != 0
+
+- name: Abort if PHP 8.5 is not the installed version
+  ansible.builtin.fail:
+    msg: >
+      PHP 8.5 is required on {{ inventory_hostname }} but found:
+      {{ php_version_result.stdout_lines[0] | default('unknown') }}.
+      Aborting deployment.
+  when: "'8.5' not in php_version_result.stdout"
+
+- name: Resolve PHP binary path
+  ansible.builtin.command: which php
+  register: php_bin_result
+  changed_when: false
+
+- name: Store PHP binary path as fact
+  ansible.builtin.set_fact:
+    php_bin: "{{ php_bin_result.stdout | trim }}"

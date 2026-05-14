@@ -36,3 +36,7 @@ A Personal Everything App
 26. Invoices
 27. TODO (Like Workflowy)
 28. Subscription Manager
+
+## Deployment
+
+See [packages/ansible/README.md](packages/ansible/README.md) for deployment instructions.

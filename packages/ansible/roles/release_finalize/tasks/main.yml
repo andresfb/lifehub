@@ -1,0 +1,19 @@
+---
+# Atomically switches the `current` symlink to the new release and updates
+# the .meta/latest_release counter.
+# Requires: deploy_path, new_release_num (set by release_setup)
+
+- name: Switch current symlink to new release
+  ansible.builtin.file:
+    src: "{{ deploy_path }}/releases/{{ new_release_num }}"
+    dest: "{{ deploy_path }}/current"
+    state: link
+    force: true
+  become: true
+
+- name: Update latest_release tracking file
+  ansible.builtin.copy:
+    content: "{{ new_release_num }}"
+    dest: "{{ deploy_path }}/.meta/latest_release"
+    mode: '0644'
+  become: true

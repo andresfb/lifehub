@@ -1,0 +1,23 @@
+---
+# Ensures Node 24 and npm are available; installs via nvm v0.40.4 if absent.
+
+- name: Check whether node is available (PATH or nvm)
+  ansible.builtin.shell:
+    cmd: |
+      which node 2>/dev/null || \
+      ls "$HOME/.nvm/versions/node/"*/bin/node 2>/dev/null | head -1
+    executable: /bin/bash
+  register: node_check
+  changed_when: false
+  failed_when: false
+
+- name: Install nvm and Node 24 when absent
+  ansible.builtin.shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    nvm install 24
+  args:
+    executable: /bin/bash
+  when: node_check.rc != 0 or node_check.stdout | trim | length == 0
+  changed_when: true
