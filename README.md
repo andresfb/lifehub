@@ -11,32 +11,31 @@ A Personal Everything App
 5. File Storage 
 6. AI Chats
 7. Emby
+8. YouTube Watch History
 
 - Go live
 
-7. Notes
-8. News Feed
-9. Prompt Generator
-10. Gallery
-11. Magazines
-12. Writings
-13. InstaSlop
-14. Personal Journal
-15. Personal CRM
-16. Budget
-17. Medicine Tracker
-18. Lube-Logger
-19. Wiki
-20. Recipes
-21. Project Management
-22. Bug Tracker
-23. Car Maintenance
-24. Shopping List
-25. Invoices
-26. TODO (Like Workflowy)
-27. Subscription Manager 
-28. YouTube Watch History
-
+9. Notes
+10. News Feed
+11. Prompt Generator
+12. Gallery
+13. Magazines
+14. Writings
+15. InstaSlop
+16. Personal Journal
+17. Personal CRM
+18. Budget
+19. Medicine Tracker
+10. Lube-Logger
+20. Wiki
+21. Recipes
+22. Project Management
+23. Bug Tracker
+24. Car Maintenance
+25. Shopping List
+26. Invoices
+27. TODO (Like Workflowy)
+28. Subscription Manager
 
 ## Deployment
 
