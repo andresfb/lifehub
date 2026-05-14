@@ -2,7 +2,18 @@
   "permissions": {
     "allow": [
       "Bash(php artisan *)",
-      "Bash(vendor/bin/pint *)"
+      "Bash(vendor/bin/pint *)",
+      "Skill(ansible-generator)",
+      "Skill(ansible-validator)",
+      "Bash(bash scripts/setup_tools.sh)",
+      "Bash(ansible-playbook --syntax-check deploy_api_web.yml)",
+      "Bash(ansible-playbook --syntax-check deploy_api_worker.yml)",
+      "Bash(bash scripts/validate_playbook.sh /Volumes/Personal/SourceControl/Projects/lifehub/packages/ansible/deploy_api_web.yml)",
+      "Bash(cd *)",
+      "Bash(grep -n \":\\\\s\\\\{2,\\\\}\" /Volumes/Personal/SourceControl/Projects/lifehub/packages/ansible/deploy_api_web.yml)",
+      "Bash(ansible-galaxy collection *)",
+      "Bash(git rm *)",
+      "Bash(git check-ignore *)"
     ]
   }
 }

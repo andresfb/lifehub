@@ -1,0 +1,16 @@
+---
+# Ensures supervisord / supervisorctl is available; installs via apt if missing.
+
+- name: Check whether supervisorctl is on PATH
+  ansible.builtin.command: which supervisorctl
+  register: supervisor_check
+  changed_when: false
+  failed_when: false
+
+- name: Install supervisor via apt when absent
+  ansible.builtin.apt:
+    name: supervisor
+    state: present
+    update_cache: true
+  when: supervisor_check.rc != 0
+  become: true

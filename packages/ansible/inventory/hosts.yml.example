@@ -1,0 +1,36 @@
+---
+# Copy this file to hosts.yml and fill in your actual values.
+# hosts.yml is gitignored — never commit it.
+#
+# Usage:
+#   cp packages/ansible/inventory/hosts.yml.example packages/ansible/inventory/hosts.yml
+#   then edit hosts.yml with your server hostnames and SSH users
+
+all:
+  hosts:
+    # Web server (SSH as root or a privileged user — no sudo needed)
+    YOUR_WEB_SERVER_HOSTNAME:
+      ansible_user: YOUR_WEB_SSH_USER        # e.g. root
+      ansible_python_interpreter: /usr/bin/python3
+
+    # Worker server (SSH as a regular user — sudo required for some tasks)
+    YOUR_WORKER_HOSTNAME:
+      ansible_user: YOUR_WORKER_SSH_USER     # e.g. deployer
+      ansible_python_interpreter: /usr/bin/python3
+
+  children:
+    api_web:
+      hosts:
+        YOUR_WEB_SERVER_HOSTNAME:
+
+    api_worker:
+      hosts:
+        YOUR_WORKER_HOSTNAME:
+
+    front_web:
+      hosts:
+        YOUR_WEB_SERVER_HOSTNAME:
+
+    front_worker:
+      hosts:
+        YOUR_WORKER_HOSTNAME:

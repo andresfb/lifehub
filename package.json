@@ -8,7 +8,14 @@
   "main": "index.js",
   "scripts": {
     "openapi:export": "php apps/api/artisan scramble:export --path=packages/contracts/openapi.json",
-    "sdk:web": "openapi-generator generate -i packages/contracts/openapi.json -g php -o packages/sdk-web --additional-properties=invokerPackage=LifeHub\\\\ApiClient",
-    "sdk:all": "npm run sdk:web"
+    "sdk:web": "openapi-generator-cli generate -i packages/contracts/openapi.json -g php -o packages/sdk-web --additional-properties=invokerPackage=LifeHub\\\\ApiClient",
+    "sdk:all": "npm run sdk:web",
+    "download:ansible-hosts": "op read 'op://LifeHub/AnsibleHosts/hosts.yml' --out-file packages/ansible/inventory/hosts.yml",
+    "download:heimdall": "op read 'op://LifeHub/HeimdallData/heimdall.json' --out-file apps/api/storage/app/private/heimdall.json",
+    "download:ai-providers": "op read 'op://LifeHub/AiProvidersData/ai-providers.json' --out-file apps/api/storage/app/private/ai-providers.json",
+    "download:homepage-seeder": "op read 'op://LifeHub/HomepageSeeder/Seeder.php' --out-file apps/api/Modules/Dashboard/database/seeders/AdminHomepageSeeder.php",
+    "download:search-seeder": "op read 'op://LifeHub/SearchSeeder/Seeder.php' --out-file apps/api/Modules/Dashboard/database/seeders/AdminSearchProviders.php",
+    "download:ai-providers-seeder": "op read 'op://LifeHub/AiProvidersSeeder/Seeder.php' --out-file apps/api/Modules/Core/database/Seeders/AiProvidersSeeder.php",
+    "download:all": "npm run download:heimdall && npm run download:ai-providers && npm run download:homepage-seeder && npm run download:search-seeder && npm run download:ai-providers-seeder"
   }
 }
