@@ -25,8 +25,8 @@ use Spatie\MediaLibrary\ResponsiveImages\TinyPlaceholderGenerator\Blurred;
 use Spatie\MediaLibrary\ResponsiveImages\WidthCalculator\FileSizeOptimizedWidthCalculator;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator;
 use Spatie\MediaLibraryPro\Models\TemporaryUpload\TemporaryUpload;
-use XLaravel\SpatieMediaLibraryUuidPath\UuidFileRemover;
-use XLaravel\SpatieMediaLibraryUuidPath\UuidPathGenerator;
+use XLaravel\Spatie\MediaLibrary\UuidPathGenerator\PathGenerators\UuidLevel2PathGenerator;
+use XLaravel\Spatie\MediaLibrary\UuidPathGenerator\UuidFileRemover;
 
 return [
 
@@ -109,7 +109,7 @@ return [
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => UuidPathGenerator::class,
+    'path_generator' => UuidLevel2PathGenerator::class,
 
     /*
      * The class that contains the strategy for determining how to remove files.

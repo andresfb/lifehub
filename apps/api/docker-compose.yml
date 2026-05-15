@@ -66,6 +66,26 @@ services:
       - project_network
     restart: unless-stopped
 
+  n8n:
+    image: n8nio/n8n
+    container_name: n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=America/New_York
+      - TZ=America/New_York
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_SECURE_COOKIE=false
+      - N8N_HOST=localhost
+      - WEBHOOK_TUNNEL_URL=http://localhost
+    volumes:
+      - n8n_data:/home/node/.n8ก
+      - ./docker/n8n/files:/files
+
   database:
     image: mariadb:latest
     container_name: database
@@ -109,5 +129,6 @@ volumes:
   s3-data:
   s3-logs:
   search:
+  n8n_data:
   database:
   ui:
