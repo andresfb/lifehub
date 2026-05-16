@@ -138,7 +138,7 @@
                         {{ $section->name }}
                     </h3>
                 </div>
-                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lx:grid-cols-6">
                     @foreach($section->items as $bookmark)
                         <a
                             href="{{ $bookmark->url }}"

@@ -106,3 +106,9 @@ html, body {
 input:focus {
     outline: none;
 }
+
+@media (min-width: 1280px) {
+    .max-w-7xl {
+        max-width: 96rem;
+    }
+}
